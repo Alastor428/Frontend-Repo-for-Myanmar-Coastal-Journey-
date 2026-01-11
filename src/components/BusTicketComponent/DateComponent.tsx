@@ -18,7 +18,7 @@ const DateComponent: React.FC<DateComponentProps> = ({
   const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
         label={label}
         mode="outlined"
@@ -28,16 +28,28 @@ const DateComponent: React.FC<DateComponentProps> = ({
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         style={styles.input}
-        outlineColor="rgba(28, 181, 176, 0.5)"
-        activeOutlineColor="rgba(28, 181, 176, 0.5)"
+        contentStyle={{
+          fontSize: 14,          
+          color: "#000",          
+          fontFamily: "Poppins",
+        }}
+        outlineColor={isFocused ? "#1CB5B0" : "rgba(28, 181, 176, 0.5)"}
+        activeOutlineColor="#1CB5B0"
         theme={{
+          roundness: 8,
           colors: {
-            primary: value ? "#1cb5b0" : "#000", 
+            primary: "#1CB5B0",  
             text: "#000",
           },
-          roundness: 8
+          fonts: {
+            bodyLarge: {
+              fontSize: 12,        
+              fontFamily: "Poppins",
+              fontWeight: "500",   
+            },
+          },
         }}
-        right={<TextInput.Icon icon="calendar" color="#1cb5b0" />}
+        right={<TextInput.Icon icon="calendar" color="#1CB5B0" />}
       />
 
       <DatePickerModal
@@ -60,6 +72,13 @@ const DateComponent: React.FC<DateComponentProps> = ({
 export default DateComponent;
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    width: 328,      
+    height: 48,
+    marginTop: -4,
+    marginBottom:24
+  },
   input: {
     borderRadius: 8,
     backgroundColor: "white",

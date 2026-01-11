@@ -52,10 +52,10 @@
           }}
           renderLeftIcon={() => (
             <Icon
-    source="map-marker"
-    size={20}
-    color={ "#1CB5B0" }
-  />
+              source="map-marker"
+              size={20}
+              color={ "#1CB5B0" }
+            />
           )}
         />
       </View>
@@ -107,6 +107,6 @@
     },
     inputSearchStyle: {
       height: 40,
-      fontSize: 16,
+      fontSize: 14,
     },
   });

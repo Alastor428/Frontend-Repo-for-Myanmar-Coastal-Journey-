@@ -12,8 +12,8 @@ import {
   Image,
 
 } from "react-native";
-import BeachScreenPhoto from "../../components/BeachComponent/BeachScreenPhoto";
-import { IconButton } from "react-native-paper";
+import { IconButton, shadow } from "react-native-paper";
+import BeachScreenPhoto from "../../../../../components/BeachComponent/BeachScreenPhoto";
 
 const { width } = Dimensions.get("window");
 
@@ -22,19 +22,24 @@ const Ngapali1Screen: React.FC = () => {
   const scrollRef = useRef<ScrollView>(null);
   const [rating, setRating] = useState(4.5);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [bookmarked, setBookmarked] = useState(false);
+
+  const handleBookmarkPress = () => {
+    setBookmarked(!bookmarked);
+  };
 
   const beachPhotos = [
-    { id: 1, image: require("../../../assets/Ngapali/NP29.png") },
-    { id: 2, image: require("../../../assets/Ngapali/NP1.png") },
-    { id: 3, image: require("../../../assets/Ngapali/NP2.png") },
-    { id: 4, image: require("../../../assets/Ngapali/NP3.png") },
-    { id: 5, image: require("../../../assets/Ngapali/NP13.png") },
-    { id: 6, image: require("../../../assets/Ngapali/NP11.png") },
-    { id: 7, image: require("../../../assets/Ngapali/NP12.png") },
-    { id: 8, image: require("../../../assets/Ngapali/NP7.png") },
-    { id: 9, image: require("../../../assets/Ngapali/NP8.png") },
-    { id: 10, image: require("../../../assets/Ngapali/NP9.png") },
-    { id: 11, image: require("../../../assets/Ngapali/NP10.png") },
+    { id: 1, image: require("../../../../../../assets/Ngapali/NP29.png") },
+    { id: 2, image: require("../../../../../../assets/Ngapali/NP1.png") },
+    { id: 3, image: require("../../../../../../assets/Ngapali/NP2.png") },
+    { id: 4, image: require("../../../../../../assets/Ngapali/NP3.png") },
+    { id: 5, image: require("../../../../../../assets/Ngapali/NP13.png") },
+    { id: 6, image: require("../../../../../../assets/Ngapali/NP11.png") },
+    { id: 7, image: require("../../../../../../assets/Ngapali/NP12.png") },
+    { id: 8, image: require("../../../../../../assets/Ngapali/NP7.png") },
+    { id: 9, image: require("../../../../../../assets/Ngapali/NP8.png") },
+    { id: 10, image: require("../../../../../../assets/Ngapali/NP9.png") },
+    { id: 11, image: require("../../../../../../assets/Ngapali/NP10.png") },
   ];
 
   const handleScroll = (
@@ -85,11 +90,15 @@ Fishing families, friendly villagers, ox-drawn carts, and a tranquil atmosphere.
 Useful Tips:
 Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respectful of local customs.`;
 const souvenirImages = [
-  require("../../../assets/Ngapali/i-would-say-the-best.png"),
-  require("../../../assets/Ngapali/NP1.png"),
-  require("../../../assets/Ngapali/NP2.png"),
-  require("../../../assets/Ngapali/NP3.png"),
-  require("../../../assets/Ngapali/NP7.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS1.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS2.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS3.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS4.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS5.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS6.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS7.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS8.png"),
+  require("../../../../../../assets/Ngapali/Souvenirs/NPS9.png"),
 ];
 const [viewerVisible, setViewerVisible] = useState(false);
 const [selectedIndex, setSelectedIndex] = useState(0);
@@ -99,6 +108,7 @@ const [selectedIndex, setSelectedIndex] = useState(0);
     <ScrollView 
     style={styles.container}>
       <View style={styles.sliderContainer}>
+        
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -115,6 +125,32 @@ const [selectedIndex, setSelectedIndex] = useState(0);
             ))}
             
         </ScrollView>
+        <View  style={styles.header}>
+              <IconButton
+                icon="chevron-left"   
+                size={32}
+                iconColor="#fff"
+                onPress={() => {
+                Linking.openURL("myapp://BusTicketHome");
+                }}
+                style={{ 
+                  margin: 0, 
+                  padding: 0,
+                  backgroundColor: "rgb(255,255,255,0.09)",  
+                }} 
+              />  
+              <IconButton
+                icon={bookmarked ? "bookmark" : "bookmark-outline"}
+                size={32}
+                iconColor={bookmarked ? "#FFD700" : "#fff"}
+                style={{ 
+                marginLeft: 232,
+                marginTop: 4,
+                backgroundColor: "rgb(255,255,255,0.09)",
+                }}
+                onPress={handleBookmarkPress}
+              />
+        </View>
         <View style={styles.dotsOverlay}>
                 {beachPhotos.map((_, index) => (
                 <View
@@ -257,16 +293,26 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 24,
     borderBottomLeftRadius: 24,
   },
+  header: {
+    flexDirection: "row",
+    paddingTop: 60,
+    paddingHorizontal: 32, 
+    position: "absolute",
+    shadowColor: "#000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+  },
   dotsOverlay: {
-  position: "absolute",
-  alignSelf: "center",
-  flexDirection: "row",
-  paddingHorizontal: 12,
-  paddingTop: 420,
-  borderRadius: 16,
-  zIndex: 10,       
-  marginBottom: 16,
-},
+    position: "absolute",
+    alignSelf: "center",
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    paddingTop: 420,
+    borderRadius: 16,
+    zIndex: 10,       
+    marginBottom: 16,
+  },
 
   dot: {
     height: 8,

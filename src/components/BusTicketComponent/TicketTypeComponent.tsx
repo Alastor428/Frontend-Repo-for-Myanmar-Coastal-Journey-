@@ -8,7 +8,7 @@ import { Icon } from 'react-native-paper';
     { label: 'Foreigner', value: '2' },
   ];
 
-  const DestinationComponent = () => {
+  const TicketTypeComponent = () => {
     const [value, setValue] = useState(null);
     const [isFocus, setIsFocus] = useState(false);
 
@@ -48,7 +48,7 @@ import { Icon } from 'react-native-paper';
     );
   };
 
-  export default DestinationComponent;
+  export default TicketTypeComponent;
 
   const styles = StyleSheet.create({
     container: {

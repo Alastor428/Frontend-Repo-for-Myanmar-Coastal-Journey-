@@ -10,10 +10,10 @@ import {
   Animated
 } from "react-native";
 import { IconButton, Button, Surface } from "react-native-paper";
-import RestruantDataComponent from "../../../components/RestruantComponent/RestruantData";
-import TopImageComponent from "../../../components/RestruantComponent/TopImage";
-import MenuComponent from "../../../components/RestruantComponent/Menu";
-import RestruantPhotoComponent from "../../../components/RestruantComponent/ResPhoto";
+import RestruantDataComponent from "../../../../../../components/RestruantComponent/RestruantData";
+import RestruantPhotoComponent from "../../../../../../components/RestruantComponent/ResPhoto";
+import TopImageComponent from "../../../../../../components/RestruantComponent/TopImage";
+import MenuComponent from "../../../../../../components/RestruantComponent/Menu";
 
 const { width } = Dimensions.get("window");
 
@@ -49,7 +49,7 @@ const OceanPearl: React.FC = () => {
 const topimage = [
   {
     id: 1,
-    image: require("../../../../assets/Ngapali/OceanPearlRestruant/ocean-pearl-1.png"),
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/ocean-pearl-1.png"),
   },
 ];
 
@@ -139,7 +139,7 @@ const Menu=[
 const photo=[
   {
     id:1,
-    image: require("../../../../assets/Ngapali/OceanPearlRestruant/4.png")
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/4.png")
   }
 ];
   return (
@@ -147,7 +147,7 @@ const photo=[
       <View  style={styles.header}>
             <IconButton
               icon="chevron-left"   
-              size={40}
+              size={32}
               onPress={() => {
               Linking.openURL("myapp://BusTicketHome");
               }}

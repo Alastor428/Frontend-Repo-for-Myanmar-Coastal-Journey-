@@ -12,13 +12,13 @@ import {
   Image,
 } from "react-native";
 import { IconButton } from "react-native-paper";
-import SourceComponent from "../../components/BusTicketComponent/SourceComponent";
-import DestinationComponent from "../../components/BusTicketComponent/DestinationComponent";
-import DateComponent from "../../components/BusTicketComponent/DateComponent";
-import PassengerCountComponent from "../../components/BusTicketComponent/No.ofPeopleComponent";
-import TicketComponent from "../../components/BusTicketComponent/TicketTypeComponent";
-import PassengerComponent from "../../components/BusTicketComponent/PassengerTypeComponent";
-import SearchComponent from "../../components/BusTicketComponent/SearchButton";
+import SourceComponent from "../../../../../../components/BusTicketComponent/SourceComponent";
+import DestinationComponent from "../../../../../../components/BusTicketComponent/DestinationComponent";
+import DateComponent from "../../../../../../components/BusTicketComponent/DateComponent";
+import PeopleCountComponent from "../../../../../../components/BusTicketComponent/No.ofPeopleComponent";
+import TicketTypeComponent from "../../../../../../components/BusTicketComponent/TicketTypeComponent";
+import PassengerComponent from "../../../../../../components/BusTicketComponent/PassengerTypeComponent";
+import SearchComponent from "../../../../../../components/BusTicketComponent/SearchButton";
 
 const { width } = Dimensions.get("window");
 const BusTicket1: React.FC = () => {
@@ -30,7 +30,7 @@ const BusTicket1: React.FC = () => {
         <View  style={styles.header}>
             <IconButton
                 icon="chevron-left"   
-                size={40}
+                size={32}
                 onPress={() => {
                 Linking.openURL("myapp://BusTicketHome");
                 }}
@@ -40,7 +40,7 @@ const BusTicket1: React.FC = () => {
         </View>
         <View>
             <Image
-                source={require("../../../assets/Other/image.png")}
+                source={require("../../../../../../../assets/Other/image.png")}
                 style={{ 
                     width: 328,
                     height: 158,
@@ -64,7 +64,7 @@ const BusTicket1: React.FC = () => {
             </View>
             <View>
                 <Image
-                    source={require("../../../assets/Other/icon.png")}
+                    source={require("../../../../../../../assets/Other/icon.png")}
                 style={{ 
                     marginLeft: 8,
                     marginTop: 24,
@@ -80,7 +80,7 @@ const BusTicket1: React.FC = () => {
             />
         </View>
         <View style={styles.date}>
-          <PassengerCountComponent
+          <PeopleCountComponent
             label="Adult"
             value={passengers}
             onChange={setPassengers}
@@ -90,7 +90,7 @@ const BusTicket1: React.FC = () => {
         </View>
         <View style={styles.type}>
           <View>
-            <TicketComponent/>
+            <TicketTypeComponent/>
           </View>
           <View style={styles.passenger}>
             <PassengerComponent/>
@@ -112,16 +112,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-    header: {
-  flexDirection: "row",
-  alignItems: "center",
-  paddingTop: 60,
-  paddingLeft: 32, 
-  justifyContent: "flex-start", 
-  width: "100%",
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingTop: 60,
+    paddingLeft: 32, 
+    justifyContent: "flex-start", 
+    width: "100%",
   },
     headerText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     marginLeft: 60,
     fontFamily: "Poppins",
