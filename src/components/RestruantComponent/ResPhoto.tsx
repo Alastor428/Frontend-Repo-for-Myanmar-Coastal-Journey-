@@ -30,11 +30,11 @@ const styles=StyleSheet.create({
     container:{
         flex: 1,
         height:104,
-        width:104
+        width:104,
     },
-      image: {
-    width: 104,
-    height: 104,
-    borderRadius: 8,
-  },
+    image: {
+        width: 104,
+        height: 104,
+        borderRadius: 8,
+    },
 });

@@ -140,8 +140,29 @@ const photo=[
   {
     id:1,
     image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/4.png")
-  }
+  },
+  {
+    id:2,
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/5.png")
+  },
+  {
+    id:3,
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/7.png")
+  },
+  {
+    id:4,
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/65.png")
+  },
+  {
+    id:5,
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/1.png")
+  },
+  {
+    id:6,
+    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/2.png")
+  },
 ];
+
   return (
     <ScrollView style={styles.container} ref={scrollRef}>
       <View  style={styles.header}>
@@ -244,13 +265,14 @@ const photo=[
           ))}
           </View>
         ) : (
-          <View>
-            {photo.map((photo)=>(
-              <RestruantPhotoComponent
-                key={photo.id}
-                imageUrl={photo.image}
-              />
-            ))}
+          <View style={styles.grid}>
+            {photo.map((item) => (
+              <View key={item.id} style={styles.gridItem}>
+                <RestruantPhotoComponent
+                  imageUrl={item.image}
+                />
+                </View>
+              ))}
           </View>
         )}
       </View>
@@ -262,6 +284,7 @@ const photo=[
 };
 
 export default OceanPearl;
+const GAP = 12;
 
 const styles = StyleSheet.create({
   container: {
@@ -309,5 +332,20 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal:32,
     paddingBottom:32,
+  },
+  grid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginHorizontal: -GAP / 2,
+  },
+  gridItem: {
+    width: "28%",   
+    height: 104,
+    marginBottom: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: GAP / 2,
   },
 });
