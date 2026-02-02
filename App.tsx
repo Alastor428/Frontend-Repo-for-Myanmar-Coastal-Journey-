@@ -1,23 +1,42 @@
-import * as React from "react";
-import { Provider as PaperProvider, Button } from "react-native-paper";
+import React from "react";
 import { View, StyleSheet } from "react-native";
+import { Provider as PaperProvider } from "react-native-paper";
 
-export default function App() {
+import { useFonts } from "expo-font";
+
+
+const App: React.FC = () => {
+  const [fontsLoaded] = useFonts({
+    "OpenSans-Regular": require("./assets/fonts/OpenSans-Regular.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <PaperProvider>
       <View style={styles.container}>
-        <Button mode="contained" onPress={() => alert("Hello!")}>
-          Press me
-        </Button>
+        
+
+   
+     
+
+       
+        
+        
+        
+
       </View>
     </PaperProvider>
   );
-}
+};
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
 });
