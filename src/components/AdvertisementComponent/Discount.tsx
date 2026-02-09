@@ -18,7 +18,6 @@ const SNAP_INTERVAL = CARD_WIDTH - OVERLAP;
 const Discount = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
 
-  // ✅ Use ScrollView type here, not Animated.ScrollView
   const scrollRef = useRef<ScrollView | null>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -51,10 +50,8 @@ const Discount = () => {
     const index = Math.round(offsetX / SNAP_INTERVAL) % discounts.length;
     setActiveIndex(index);
 
-    // 🔁 Loop scroll
     const contentWidth = SNAP_INTERVAL * discounts.length;
     if (offsetX >= contentWidth) {
-      // ✅ Use scrollRef.current as ScrollView
       scrollRef.current?.scrollTo({ x: offsetX - contentWidth, animated: false });
     }
   };
@@ -66,21 +63,21 @@ const Discount = () => {
         : activeIndex + 1;
 
     scrollRef.current?.scrollTo({
-      x: nextIndex * SNAP_INTERVAL, // ✅ correct distance
+      x: nextIndex * SNAP_INTERVAL,
       animated: true,
     });
 
     setActiveIndex(nextIndex);
   }, 2000); // ⏱ 2 seconds
 
-  return () => clearInterval(interval); // ✅ cleanup
+  return () => clearInterval(interval); 
 }, [activeIndex]);
 
 
   return (
     <View style={styles.wrapper}>
       <Animated.ScrollView
-        ref={scrollRef} // ✅ Works now
+        ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         snapToInterval={SNAP_INTERVAL}

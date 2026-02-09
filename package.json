@@ -17,6 +17,7 @@
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-element-dropdown": "^2.12.4",
+    "react-native-inner-shadow": "^2.4.0",
     "react-native-paper": "^5.14.5",
     "react-native-paper-dates": "^0.22.53",
     "react-native-safe-area-context": "^5.6.2",
