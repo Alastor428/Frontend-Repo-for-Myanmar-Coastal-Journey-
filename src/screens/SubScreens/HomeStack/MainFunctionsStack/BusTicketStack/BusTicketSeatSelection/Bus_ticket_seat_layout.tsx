@@ -97,8 +97,12 @@ const SeatLayout: React.FC = () => {
         <View style={styles.summaryCard}>
           <View style={styles.summaryHeaderRow}>
             <Text style={styles.summaryHeaderText}>Selected Seat</Text>
-            <Text style={[styles.summaryHeaderText, { textAlign: 'center' }]}>Number of Seat</Text>
-            <Text style={[styles.summaryHeaderText, { textAlign: 'right' }]}>Total Price</Text>
+            <Text style={[styles.summaryHeaderText, { textAlign: "center" }]}>
+              Number of Seat
+            </Text>
+            <Text style={[styles.summaryHeaderText, { textAlign: "right" }]}>
+              Total Price
+            </Text>
           </View>
 
           <View style={styles.summaryDivider} />
@@ -109,11 +113,21 @@ const SeatLayout: React.FC = () => {
               {selectedSeats.length > 0 ? selectedSeats.join(", ") : "-"}
             </Text>
 
-            <Text style={[styles.summaryDataText, { textAlign: 'center', flex: 0.7 }]}>
+            <Text
+              style={[
+                styles.summaryDataText,
+                { textAlign: "center", flex: 0.7 },
+              ]}
+            >
               {selectedSeats.length}
             </Text>
 
-            <Text style={[styles.summaryDataText, { textAlign: 'right', flex: 1.2 }]}>
+            <Text
+              style={[
+                styles.summaryDataText,
+                { textAlign: "right", flex: 1.2 },
+              ]}
+            >
               {selectedSeats.length * SEAT_PRICE} MMK
             </Text>
           </View>
@@ -149,14 +163,19 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 12,
     marginLeft: 32,
-    marginTop: 40,
+    marginTop: 4,
     marginRight: 230,
     width: 88,
     height: 24,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
-  driverText: { color: "#ffffff", fontWeight: "600", fontSize: 12, textAlign: "center" },
+  driverText: {
+    color: "#ffffff",
+    fontWeight: "600",
+    fontSize: 12,
+    textAlign: "center",
+  },
   busContainer: {
     backgroundColor: "#F6FBFB",
     padding: 12,
@@ -186,15 +205,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6FBFB",
     borderRadius: 4,
     paddingBottom: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
   },
   summaryHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 15,
     paddingTop: 15,
     paddingBottom: 10,
@@ -212,17 +231,17 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   summaryDataRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     paddingHorizontal: 15,
     marginBottom: 25,
     width: "100%",
-    alignItems: 'flex-start', 
+    alignItems: "flex-start",
   },
   summaryDataText: {
     fontSize: 16,
     color: "#000",
-    flexWrap: 'wrap', 
+    flexWrap: "wrap",
   },
   buyButton: {
     backgroundColor: "#1db0a9",

@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Pressable } from "react-native";
 import { TextInput } from "react-native-paper";
-import { DatePickerModal } from "react-native-paper-dates";
+import {
+  DatePickerModal,
+  registerTranslation,
+  en,
+} from "react-native-paper-dates";
+
+registerTranslation("en", en);
 
 interface DateComponentProps {
   label: string;
@@ -19,44 +25,46 @@ const DateComponent: React.FC<DateComponentProps> = ({
 
   return (
     <View style={styles.container}>
-      <TextInput
-        label={label}
-        mode="outlined"
-        value={value ? value.toDateString() : ""}
-        editable={false}
-        onPressIn={() => setOpen(true)}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-        style={styles.input}
-        contentStyle={{
-          fontSize: 14,          
-          color: "#000",          
-          fontFamily: "Poppins",
-        }}
-        outlineColor={isFocused ? "#1CB5B0" : "rgba(28, 181, 176, 0.5)"}
-        activeOutlineColor="#1CB5B0"
-        theme={{
-          roundness: 8,
-          colors: {
-            primary: "#1CB5B0",  
-            text: "#000",
-          },
-          fonts: {
-            bodyLarge: {
-              fontSize: 12,        
-              fontFamily: "Poppins",
-              fontWeight: "500",   
+      <Pressable onPress={() => setOpen(true)}>
+        <TextInput
+          label={label}
+          mode="outlined"
+          value={value ? value.toDateString() : ""}
+          editable={false}
+          pointerEvents="none"
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          style={styles.input}
+          contentStyle={{
+            fontSize: 14,
+            color: "#000",
+            fontFamily: "Poppins",
+          }}
+          outlineColor={isFocused ? "#1CB5B0" : "rgba(28, 181, 176, 0.5)"}
+          activeOutlineColor="#1CB5B0"
+          theme={{
+            roundness: 8,
+            colors: {
+              primary: "#1CB5B0",
+              text: "#000",
             },
-          },
-        }}
-        right={<TextInput.Icon icon="calendar" color="#1CB5B0" />}
-      />
+            fonts: {
+              bodyLarge: {
+                fontSize: 12,
+                fontFamily: "Poppins",
+                fontWeight: "500",
+              },
+            },
+          }}
+          right={<TextInput.Icon icon="calendar" color="#1CB5B0" />}
+        />
+      </Pressable>
 
       <DatePickerModal
         locale="en"
         mode="single"
         visible={open}
-        date={value}
+        date={value ?? new Date()}
         onDismiss={() => setOpen(false)}
         onConfirm={(params: { date?: Date }) => {
           setOpen(false);
@@ -74,10 +82,10 @@ export default DateComponent;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    width: 328,      
+    width: 328,
     height: 48,
     marginTop: -4,
-    marginBottom:24
+    marginBottom: 24,
   },
   input: {
     borderRadius: 8,

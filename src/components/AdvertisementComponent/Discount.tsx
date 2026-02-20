@@ -52,27 +52,27 @@ const Discount = () => {
 
     const contentWidth = SNAP_INTERVAL * discounts.length;
     if (offsetX >= contentWidth) {
-      scrollRef.current?.scrollTo({ x: offsetX - contentWidth, animated: false });
+      scrollRef.current?.scrollTo({
+        x: offsetX - contentWidth,
+        animated: false,
+      });
     }
   };
   useEffect(() => {
-  const interval = setInterval(() => {
-    const nextIndex =
-      activeIndex === discounts.length - 1
-        ? 0
-        : activeIndex + 1;
+    const interval = setInterval(() => {
+      const nextIndex =
+        activeIndex === discounts.length - 1 ? 0 : activeIndex + 1;
 
-    scrollRef.current?.scrollTo({
-      x: nextIndex * SNAP_INTERVAL,
-      animated: true,
-    });
+      scrollRef.current?.scrollTo({
+        x: nextIndex * SNAP_INTERVAL,
+        animated: true,
+      });
 
-    setActiveIndex(nextIndex);
-  }, 2000); // ⏱ 2 seconds
+      setActiveIndex(nextIndex);
+    }, 2000); // ⏱ 2 seconds
 
-  return () => clearInterval(interval); 
-}, [activeIndex]);
-
+    return () => clearInterval(interval);
+  }, [activeIndex]);
 
   return (
     <View style={styles.wrapper}>
@@ -111,7 +111,9 @@ const Discount = () => {
           });
 
           const zIndex =
-            realIndex === activeIndex ? discounts.length : discounts.length - (realIndex + 1);
+            realIndex === activeIndex
+              ? discounts.length
+              : discounts.length - (realIndex + 1);
 
           return (
             <Animated.View
@@ -143,11 +145,12 @@ export default Discount;
 
 const styles = StyleSheet.create({
   wrapper: {
-    width: 328,
+    width: "100%",
     height: 188,
     backgroundColor: "#fff",
     borderRadius: 8,
     overflow: "hidden",
+    marginBottom: 20,
   },
   scrollContainer: {
     paddingHorizontal: 16,

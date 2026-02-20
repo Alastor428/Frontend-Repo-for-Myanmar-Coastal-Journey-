@@ -1,21 +1,21 @@
 import React from "react";
-import { Text, StyleSheet, Pressable, Alert } from "react-native";
+import { Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   ticketId: string;
 }
 
 const BuyTicketButton: React.FC<Props> = ({ ticketId }) => {
+  const navigation = useNavigation<any>();
+
   const handlePress = () => {
-    Alert.alert("Success", `You bought ${ticketId}`);
+    navigation.navigate("BusTicketSeatSelection");
   };
 
   return (
     <Pressable
-      style={({ pressed }) => [
-        styles.button,
-        pressed && { opacity: 0.7 },
-      ]}
+      style={({ pressed }) => [styles.button, pressed && { opacity: 0.7 }]}
       onPress={handlePress}
     >
       <Text style={styles.text}>Buy Ticket</Text>

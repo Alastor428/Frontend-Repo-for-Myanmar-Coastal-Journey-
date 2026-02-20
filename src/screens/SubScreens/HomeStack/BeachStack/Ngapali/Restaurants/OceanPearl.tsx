@@ -4,10 +4,9 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  Linking, 
   Text,
   TouchableOpacity,
-  Animated
+  Animated,
 } from "react-native";
 import { IconButton, Button, Surface } from "react-native-paper";
 import RestruantDataComponent from "../../../../../../components/RestruantComponent/RestruantData";
@@ -17,11 +16,11 @@ import MenuComponent from "../../../../../../components/RestruantComponent/Menu"
 
 const { width } = Dimensions.get("window");
 
-const OceanPearl: React.FC = () => {
+const OceanPearl: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const scrollRef = useRef<ScrollView | null>(null);
   const [bookmarked, setBookmarked] = useState(false);
   const [activeTab, setActiveTab] = useState<"first" | "second">("first");
-  
+
   const handleBookmarkPress = () => {
     setBookmarked(!bookmarked);
   };
@@ -46,153 +45,147 @@ const OceanPearl: React.FC = () => {
       map: "https://maps.app.goo.gl/gXw9DiYjsUFUZj4k9",
     },
   ];
-const topimage = [
-  {
-    id: 1,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/ocean-pearl-1.png"),
-  },
-];
-
-const Menu=[
-  {
-    id: 1,
-    menu: "Prown Curry",
-    prise: "4000ks",
-  },
-  {
-    id: 2,
-    menu: "Tiger Prawn Curry",
-    prise: "6000ks",
-  },
-  {
-    id: 3,
-    menu: "Squid Curry",
-    prise: "4000ks",
-  },
-  {
-    id: 4,
-    menu: "Chicken Curry",
-    prise: "5000ks",
-  },
+  const topimage = [
     {
-    id: 5,
-    menu: "Pork Curry",
-    prise: "5000ks",
-  },
-  {
-    id: 6,
-    menu: "Vegetable Curry",
-    prise: "3000ks",
-  },
-  {
-    id: 7,
-    menu: "Fish Curry",
-    prise: "4000ks",
-  },
-  {
-    id: 8,
-    menu: "Fisherman Curry(Traditional Style)",
-    prise: "8000ks",
-  },
-  {
-    id: 9,
-    menu: "Chicken with Ground",
-    prise: "5000ks",
-  },
-  {
-    id: 10,
-    menu: "Crab with Masala Curry",
-    prise: "5000ks",
-  },
-  {
-    id: 11,
-    menu: "Lobster",
-    prise: "25000ks",
-  },
-  {
-    id: 12,
-    menu: "Fisherman Mixed Grill",
-    prise: "8000ks",
-  },
-    {
-    id: 13,
-    menu: "King Prawn",
-    prise: "6000ks",
-  },
-  {
-    id: 14,
-    menu: "Small Prawn",
-    prise: "4000ks",
-  },
-  {
-    id: 15,
-    menu: "Crab",
-    prise: "5000ks",
-  },
-  {
-    id: 16,
-    menu: "Squid",
-    prise: "4000ks",
-  },
-];
+      id: 1,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/ocean-pearl-1.png"),
+    },
+  ];
 
-const photo=[
-  {
-    id:1,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/4.png")
-  },
-  {
-    id:2,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/5.png")
-  },
-  {
-    id:3,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/7.png")
-  },
-  {
-    id:4,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/65.png")
-  },
-  {
-    id:5,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/1.png")
-  },
-  {
-    id:6,
-    image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/2.png")
-  },
-];
+  const Menu = [
+    {
+      id: 1,
+      menu: "Prown Curry",
+      prise: "4000ks",
+    },
+    {
+      id: 2,
+      menu: "Tiger Prawn Curry",
+      prise: "6000ks",
+    },
+    {
+      id: 3,
+      menu: "Squid Curry",
+      prise: "4000ks",
+    },
+    {
+      id: 4,
+      menu: "Chicken Curry",
+      prise: "5000ks",
+    },
+    {
+      id: 5,
+      menu: "Pork Curry",
+      prise: "5000ks",
+    },
+    {
+      id: 6,
+      menu: "Vegetable Curry",
+      prise: "3000ks",
+    },
+    {
+      id: 7,
+      menu: "Fish Curry",
+      prise: "4000ks",
+    },
+    {
+      id: 8,
+      menu: "Fisherman Curry(Traditional Style)",
+      prise: "8000ks",
+    },
+    {
+      id: 9,
+      menu: "Chicken with Ground",
+      prise: "5000ks",
+    },
+    {
+      id: 10,
+      menu: "Crab with Masala Curry",
+      prise: "5000ks",
+    },
+    {
+      id: 11,
+      menu: "Lobster",
+      prise: "25000ks",
+    },
+    {
+      id: 12,
+      menu: "Fisherman Mixed Grill",
+      prise: "8000ks",
+    },
+    {
+      id: 13,
+      menu: "King Prawn",
+      prise: "6000ks",
+    },
+    {
+      id: 14,
+      menu: "Small Prawn",
+      prise: "4000ks",
+    },
+    {
+      id: 15,
+      menu: "Crab",
+      prise: "5000ks",
+    },
+    {
+      id: 16,
+      menu: "Squid",
+      prise: "4000ks",
+    },
+  ];
+
+  const photo = [
+    {
+      id: 1,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/4.png"),
+    },
+    {
+      id: 2,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/5.png"),
+    },
+    {
+      id: 3,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/7.png"),
+    },
+    {
+      id: 4,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/65.png"),
+    },
+    {
+      id: 5,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/1.png"),
+    },
+    {
+      id: 6,
+      image: require("../../../../../../../assets/Ngapali/OceanPearlRestruant/2.png"),
+    },
+  ];
 
   return (
     <ScrollView style={styles.container} ref={scrollRef}>
-      <View  style={styles.header}>
-            <IconButton
-              icon="chevron-left"   
-              size={32}
-              onPress={() => {
-              Linking.openURL("myapp://BusTicketHome");
-              }}
-              style={{ margin: 0, padding: 0 }} 
-            />  
-            <IconButton
-              icon={bookmarked ? "bookmark" : "bookmark-outline"}
-              size={32}
-              iconColor={bookmarked ? "#FFD700" : "#000"}
-              style={{ 
-                marginLeft: 232,
-                marginTop: 4,
-              }}
-              onPress={handleBookmarkPress}
-            />
+      <View style={styles.header}>
+        <IconButton
+          icon="chevron-left"
+          size={32}
+          onPress={() => navigation?.goBack?.()}
+          style={{ margin: 0, padding: 0 }}
+        />
+        <IconButton
+          icon={bookmarked ? "bookmark" : "bookmark-outline"}
+          size={32}
+          iconColor={bookmarked ? "#FFD700" : "#000"}
+          style={{
+            marginLeft: 232,
+            marginTop: 4,
+          }}
+          onPress={handleBookmarkPress}
+        />
       </View>
       <View style={styles.topimage}>
         {topimage.map((item) => (
-          <TopImageComponent
-            key={item.id}
-            imageUrl={item.image}
-          />
+          <TopImageComponent key={item.id} imageUrl={item.image} />
         ))}
-
       </View>
       <View style={styles.data}>
         {data.map((item) => (
@@ -216,7 +209,7 @@ const photo=[
                   {
                     translateX: tabAnim.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [0, (width - 64) / 2], 
+                      outputRange: [0, (width - 64) / 2],
                     }),
                   },
                 ],
@@ -255,30 +248,26 @@ const photo=[
       </View>
       <View style={styles.content}>
         {activeTab === "first" ? (
-          <View >
+          <View>
             {Menu.map((Menu) => (
-            <MenuComponent
-              key={Menu.id}
-              menu={Menu.menu}
-              prise={Menu.prise}
-            />
-          ))}
+              <MenuComponent
+                key={Menu.id}
+                menu={Menu.menu}
+                prise={Menu.prise}
+              />
+            ))}
           </View>
         ) : (
           <View style={styles.grid}>
             {photo.map((item) => (
               <View key={item.id} style={styles.gridItem}>
-                <RestruantPhotoComponent
-                  imageUrl={item.image}
-                />
-                </View>
-              ))}
+                <RestruantPhotoComponent imageUrl={item.image} />
+              </View>
+            ))}
           </View>
         )}
       </View>
-      <View>
-        
-      </View>
+      <View></View>
     </ScrollView>
   );
 };
@@ -291,22 +280,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  data:{
-    paddingHorizontal:46,
+  data: {
+    paddingHorizontal: 46,
     marginTop: -44,
   },
   header: {
     flexDirection: "row",
     paddingTop: 60,
-    paddingHorizontal: 32, 
+    paddingHorizontal: 32,
   },
   topimage: {
     paddingHorizontal: 32,
     paddingTop: 10,
   },
-  tabbar:{
-    paddingVertical:16,
-    paddingHorizontal:32,
+  tabbar: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
   },
   tabContainer: {
     flexDirection: "row",
@@ -320,7 +309,7 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: (width - 64) / 2, 
+    width: (width - 64) / 2,
     backgroundColor: "#1cb5b0",
     borderRadius: 8,
   },
@@ -330,8 +319,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal:32,
-    paddingBottom:32,
+    paddingHorizontal: 32,
+    paddingBottom: 32,
   },
   grid: {
     flexDirection: "row",
@@ -341,7 +330,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -GAP / 2,
   },
   gridItem: {
-    width: "28%",   
+    width: "28%",
     height: 104,
     marginBottom: 8,
     alignItems: "center",

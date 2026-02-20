@@ -7,7 +7,6 @@ import {
   NativeScrollEvent,
   NativeSyntheticEvent,
   Text,
-  Linking,
   TouchableOpacity,
   Image,
 } from "react-native";
@@ -21,89 +20,69 @@ import PassengerComponent from "../../../../../../components/BusTicketComponent/
 import SearchComponent from "../../../../../../components/BusTicketComponent/SearchButton";
 
 const { width } = Dimensions.get("window");
-const BusTicket1: React.FC = () => {
+const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const scrollRef = useRef<ScrollView | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [travelDate, setTravelDate] = useState<Date | undefined>();
-    return (
-    <ScrollView style={styles.container}>
-        <View  style={styles.header}>
-            <IconButton
-                icon="chevron-left"   
-                size={32}
-                onPress={() => {
-                Linking.openURL("myapp://BusTicketHome");
-                }}
-                style={{ margin: 0, padding: 0 }} 
-            />  
-            <Text style={styles.headerText}>Bus Tickets</Text>
-        </View>
-        <View>
-            <Image
-                source={require("../../../../../../../assets/Other/image.png")}
-                style={{ 
-                    width: 328,
-                    height: 158,
-                    marginLeft: 32,
-                    marginTop: 12,
-                    borderColor: "#1CB5B0",
-                    borderWidth: 1,
-                    borderRadius:4,
-                 }}
-                resizeMode="cover"
-            />  
-        </View>
-        <View style={styles.desContainer}>
-            <View>
-                <View style={{ marginLeft: 32, marginTop: 4 }}>
-                    <SourceComponent />
-                </View>
-                <View style={{ marginLeft: 32, marginTop: 16 }}>
-                    <DestinationComponent />
-                </View>
-            </View>
-            <View>
-                <Image
-                    source={require("../../../../../../../assets/Other/icon.png")}
-                style={{ 
-                    marginLeft: 8,
-                    marginTop: 24,
-                 }}
-                 />
-            </View>
-        </View>
-        <View style={styles.date}>
-            <DateComponent
-              label="Depart on"
-              value={travelDate}
-              onConfirm={setTravelDate}
-            />
-        </View>
-        <View style={styles.date}>
-          <PeopleCountComponent
-            label="Adult"
-            value={passengers}
-            onChange={setPassengers}
-            min={1}
-            max={20}
-          />
-        </View>
-        <View style={styles.type}>
-          <View>
-            <TicketTypeComponent/>
-          </View>
-          <View style={styles.passenger}>
-            <PassengerComponent/>
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.header}>
+        <IconButton
+          icon="chevron-left"
+          size={32}
+          onPress={() => navigation?.goBack?.()}
+          style={{ margin: 0, padding: 0 }}
+        />
+        <Text style={styles.headerText}>Bus Tickets</Text>
+      </View>
+      <View style={styles.imageWrapper}>
+        <Image
+          source={require("../../../../../../../assets/Other/image.png")}
+          style={styles.bannerImage}
+          resizeMode="cover"
+        />
+      </View>
+      <View style={styles.desContainer}>
+        <View style={styles.sourceDest}>
+          <SourceComponent />
+          <View style={styles.destSpacer}>
+            <DestinationComponent />
           </View>
         </View>
-        <View style={styles.button}>
-          <SearchComponent 
-          onPress={() => {
-          console.log("Search button pressed");}}
+        <View style={styles.swapIcon}>
+          <Image
+            source={require("../../../../../../../assets/Other/icon.png")}
+            style={styles.swapImage}
           />
         </View>
-    </ScrollView>  
-    );
+      </View>
+      <View style={styles.formSection}>
+        <DateComponent
+          label="Depart on"
+          value={travelDate}
+          onConfirm={setTravelDate}
+        />
+      </View>
+      <View style={styles.formSection}>
+        <PeopleCountComponent
+          label="Adult"
+          value={passengers}
+          onChange={setPassengers}
+          min={1}
+          max={20}
+        />
+      </View>
+      <View style={styles.type}>
+        <TicketTypeComponent />
+        <PassengerComponent />
+      </View>
+      <View style={styles.button}>
+        <SearchComponent
+          onPress={() => navigation?.navigate("BusTicketSearchResult")}
+        />
+      </View>
+    </ScrollView>
+  );
 };
 
 export default BusTicket1;
@@ -112,36 +91,69 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
+  content: {
+    alignItems: "center",
+    paddingBottom: 40,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 60,
-    paddingLeft: 32, 
-    justifyContent: "flex-start", 
+    paddingTop: 40,
+    paddingLeft: 16,
     width: "100%",
+    alignSelf: "flex-start",
   },
-    headerText: {
+  headerText: {
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 60,
     fontFamily: "Poppins",
   },
-  desContainer:{
-    flexDirection: "row"
+  imageWrapper: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 12,
   },
-  date: {
-    paddingHorizontal: 32,
-    marginTop: 8,
+  bannerImage: {
+    width: 328,
+    height: 158,
+    borderColor: "#1CB5B0",
+    borderWidth: 1,
+    borderRadius: 4,
   },
-  type:{
+  desContainer: {
     flexDirection: "row",
-    paddingHorizontal: 32,
+    width: 328,
+    alignItems: "flex-start",
+    marginTop: 4,
   },
-  passenger:{
+  sourceDest: {
+    flex: 1,
+    marginTop: 4,
+  },
+  destSpacer: {
+    marginTop: 16,
+  },
+  swapIcon: {
+    marginTop: 24,
     marginLeft: 8,
   },
-  button:{
-    marginLeft:32,
-    paddingTop: 32,
-  }
-}); 
+  swapImage: {
+    width: 24,
+    height: 24,
+  },
+  formSection: {
+    width: 328,
+    marginTop: 8,
+  },
+  type: {
+    flexDirection: "row",
+    width: 328,
+    marginTop: 8,
+    gap: 8,
+  },
+  button: {
+    width: 328,
+    marginTop: 32,
+  },
+});

@@ -8,38 +8,41 @@ interface BeachComponentProps {
   imageUrl: ImageSourcePropType;
   title: string;
   onPress?: () => void;
+  width?: number;
+  height?: number;
 }
 const BeachComponent: React.FC<BeachComponentProps> = ({
   imageUrl,
   title,
   onPress,
+  width = 160,
+  height = 168,
 }) => {
   const [bookmarked, setBookmarked] = useState(false);
 
   const handleBookmarkPress = () => {
     setBookmarked(!bookmarked);
   };
-  
+
   return (
-    
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-    <Card style={styles.card}>
-      <View style={styles.container}>
-        <Image source={imageUrl} style={styles.image} />
-         <View style={styles.topRightIcon}>
-          <IconButton
-            icon="bookmark"
-            size={20}
-            iconColor={bookmarked ? "#FFD700" : "#fff"}
-            style={{ margin: 0 }}
-             onPress={handleBookmarkPress}
-          />
+      <Card style={styles.card}>
+        <View style={styles.container}>
+          <Image source={imageUrl} style={[styles.image, { width, height }]} />
+          <View style={styles.topRightIcon}>
+            <IconButton
+              icon="bookmark"
+              size={20}
+              iconColor={bookmarked ? "#FFD700" : "#fff"}
+              style={{ margin: 0 }}
+              onPress={handleBookmarkPress}
+            />
+          </View>
+          <View style={styles.overlay}>
+            <Text style={styles.title}>{title}</Text>
+          </View>
         </View>
-         <View style={styles.overlay}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      </View>
-    </Card>
+      </Card>
     </TouchableOpacity>
   );
 };
@@ -50,7 +53,6 @@ const styles = StyleSheet.create({
   card: {
     margin: 0,
     borderRadius: 10,
-
   },
   container: {
     flexDirection: "row",
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   textContainer: {
-    flex: 1, 
+    flex: 1,
   },
   title: {
     fontWeight: "bold",
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: "absolute",
-    top: 66,
+    bottom: 0,
     left: 0,
     right: 0,
     padding: 12,

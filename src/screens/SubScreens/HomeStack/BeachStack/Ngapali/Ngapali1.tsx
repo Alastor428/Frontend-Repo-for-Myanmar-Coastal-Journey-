@@ -10,14 +10,58 @@ import {
   Linking,
   TouchableOpacity,
   Image,
-
 } from "react-native";
 import { IconButton, shadow } from "react-native-paper";
 import BeachScreenPhoto from "../../../../../components/BeachComponent/BeachScreenPhoto";
-
+import ActivitiesGroup from "../../../../../components/Activities/ActivitiesGroup";
+import Restaurant_home from "@/components/Ngapali/Restaurant_home";
+import Pagoda_home from "@/components/Ngapali/Pagoda_home";
 const { width } = Dimensions.get("window");
 
-const Ngapali1Screen: React.FC = () => {
+const NGAPALI_ACTIVITIES = [
+  {
+    id: "1",
+    title: "Boat Tours",
+    image: require("../../../../../../assets/activities/BoatTour.png"),
+  },
+  {
+    id: "2",
+    title: "Camping",
+    image: require("../../../../../../assets/activities/Campsite.png"),
+  },
+  {
+    id: "3",
+    title: "Horse Riding",
+    image: require("../../../../../../assets/activities/Horse.png"),
+  },
+  {
+    id: "4",
+    title: "Kite Surfing",
+    image: require("../../../../../../assets/activities/Kitesurfing.png"),
+  },
+  {
+    id: "5",
+    title: "Motorbike Tour",
+    image: require("../../../../../../assets/activities/Motorcycle.png"),
+  },
+  {
+    id: "6",
+    title: "Sunset View",
+    image: require("../../../../../../assets/activities/Sunset.png"),
+  },
+  {
+    id: "7",
+    title: "Surfing",
+    image: require("../../../../../../assets/activities/Surfing.png"),
+  },
+  {
+    id: "8",
+    title: "Boat Trip",
+    image: require("../../../../../../assets/activities/Boat.png"),
+  },
+];
+
+const Ngapali1Screen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const [rating, setRating] = useState(4.5);
@@ -42,33 +86,27 @@ const Ngapali1Screen: React.FC = () => {
     { id: 11, image: require("../../../../../../assets/Ngapali/NP10.png") },
   ];
 
-  const handleScroll = (
-    event: NativeSyntheticEvent<NativeScrollEvent>
-  ) => {
-    const index = Math.round(
-      event.nativeEvent.contentOffset.x / width
-    );
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setActiveIndex(index);
   };
   useEffect(() => {
-  const interval = setInterval(() => {
-    const nextIndex =
-      activeIndex === beachPhotos.length - 1
-        ? 0
-        : activeIndex + 1;
+    const interval = setInterval(() => {
+      const nextIndex =
+        activeIndex === beachPhotos.length - 1 ? 0 : activeIndex + 1;
 
-    scrollRef.current?.scrollTo({
-      x: nextIndex * width,
-      animated: true,
-    });
+      scrollRef.current?.scrollTo({
+        x: nextIndex * width,
+        animated: true,
+      });
 
-    setActiveIndex(nextIndex);
-  }, 2000); 
+      setActiveIndex(nextIndex);
+    }, 2000);
 
-  return () => clearInterval(interval);
-}, [activeIndex]);
+    return () => clearInterval(interval);
+  }, [activeIndex]);
 
- const descriptionText = `Ngapali Beach is one of the most beautiful coastal destinations in Myanmar, well-known for its clean water, soft white sand, and quiet atmosphere. The beach offers a peaceful natural environment with stunning views, fresh local seafood, and a relaxing lifestyle. Travelers especially love its breathtaking sunset scenery, wide beachfront, and calm, clear waves.
+  const descriptionText = `Ngapali Beach is one of the most beautiful coastal destinations in Myanmar, well-known for its clean water, soft white sand, and quiet atmosphere. The beach offers a peaceful natural environment with stunning views, fresh local seafood, and a relaxing lifestyle. Travelers especially love its breathtaking sunset scenery, wide beachfront, and calm, clear waves.
 
 Major Highlights:
 - Visit nearby fishing villages such as Gyeik Taw
@@ -89,26 +127,23 @@ Fishing families, friendly villagers, ox-drawn carts, and a tranquil atmosphere.
 
 Useful Tips:
 Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respectful of local customs.`;
-const souvenirImages = [
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS1.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS2.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS3.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS4.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS5.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS6.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS7.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS8.png"),
-  require("../../../../../../assets/Ngapali/Souvenirs/NPS9.png"),
-];
-const [viewerVisible, setViewerVisible] = useState(false);
-const [selectedIndex, setSelectedIndex] = useState(0);
-
+  const souvenirImages = [
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS1.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS2.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS3.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS4.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS5.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS6.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS7.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS8.png"),
+    require("../../../../../../assets/Ngapali/Souvenirs/NPS9.png"),
+  ];
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <ScrollView 
-    style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.sliderContainer}>
-        
         <ScrollView
           ref={scrollRef}
           horizontal
@@ -122,45 +157,39 @@ const [selectedIndex, setSelectedIndex] = useState(0);
             <View key={photo.id} style={{ width }}>
               <BeachScreenPhoto imageUrl={photo.image} />
             </View>
-            ))}
-            
+          ))}
         </ScrollView>
-        <View  style={styles.header}>
-              <IconButton
-                icon="chevron-left"   
-                size={32}
-                iconColor="#fff"
-                onPress={() => {
-                Linking.openURL("myapp://BusTicketHome");
-                }}
-                style={{ 
-                  margin: 0, 
-                  padding: 0,
-                  backgroundColor: "rgb(255,255,255,0.09)",  
-                }} 
-              />  
-              <IconButton
-                icon={bookmarked ? "bookmark" : "bookmark-outline"}
-                size={32}
-                iconColor={bookmarked ? "#FFD700" : "#fff"}
-                style={{ 
-                marginLeft: 232,
-                marginTop: 4,
-                backgroundColor: "rgb(255,255,255,0.09)",
-                }}
-                onPress={handleBookmarkPress}
-              />
+        <View style={styles.header}>
+          <IconButton
+            icon="chevron-left"
+            size={32}
+            iconColor="#fff"
+            onPress={() => navigation?.goBack?.()}
+            style={{
+              margin: 0,
+              padding: 0,
+              backgroundColor: "rgb(255,255,255,0.09)",
+            }}
+          />
+          <IconButton
+            icon={bookmarked ? "bookmark" : "bookmark-outline"}
+            size={32}
+            iconColor={bookmarked ? "#FFD700" : "#fff"}
+            style={{
+              marginLeft: 232,
+              marginTop: 4,
+              backgroundColor: "rgb(255,255,255,0.09)",
+            }}
+            onPress={handleBookmarkPress}
+          />
         </View>
         <View style={styles.dotsOverlay}>
-                {beachPhotos.map((_, index) => (
-                <View
-                    key={index}
-                    style={[
-                        styles.dot,
-                        activeIndex === index && styles.activeDot,
-                    ]}
-                    />
-                    ))}
+          {beachPhotos.map((_, index) => (
+            <View
+              key={index}
+              style={[styles.dot, activeIndex === index && styles.activeDot]}
+            />
+          ))}
         </View>
         <View style={styles.Name}>
           <Text style={styles.Beach}>Ngapali</Text>
@@ -171,27 +200,27 @@ const [selectedIndex, setSelectedIndex] = useState(0);
         </View>
         <View style={styles.locationContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <IconButton
-            icon="map-marker"
-            size={24}
-            iconColor="#1CB5B0"
-          />
-          <Text style={styles.locationText}>Rakhine, Myanmar</Text>
+            <IconButton icon="map-marker" size={24} iconColor="#1CB5B0" />
+            <Text style={styles.locationText}>Rakhine, Myanmar</Text>
           </View>
-          <View style={styles.mapContainer} >
-            <Text style={styles.mapText} 
-          onPress={() => Linking.openURL("https://maps.app.goo.gl/4GZZPsry1MihvGKi8")}>
-            view map 
-          </Text>
-          <IconButton 
-            icon="chevron-right"
-            size={16}
-            iconColor="#1CB5B0"
-            style={{ marginLeft: -8}}
-          />
+          <View style={styles.mapContainer}>
+            <Text
+              style={styles.mapText}
+              onPress={() =>
+                Linking.openURL("https://maps.app.goo.gl/4GZZPsry1MihvGKi8")
+              }
+            >
+              view map
+            </Text>
+            <IconButton
+              icon="chevron-right"
+              size={16}
+              iconColor="#1CB5B0"
+              style={{ marginLeft: -8 }}
+            />
           </View>
         </View>
-         <View style={styles.descriptionContainer}>
+        <View style={styles.descriptionContainer}>
           <Text
             style={{
               paddingHorizontal: 32,
@@ -212,71 +241,77 @@ const [selectedIndex, setSelectedIndex] = useState(0);
             </Text>
           </TouchableOpacity>
         </View>
+        <ActivitiesGroup
+          activities={NGAPALI_ACTIVITIES}
+          onActivityPress={(a) => console.log(`${a.title} pressed`)}
+        />
         <View>
+          <View>
+            <Restaurant_home />
+          </View>
           <Text
-          style={{
-            fontSize: 16, 
-            fontWeight: "bold",
-            paddingHorizontal: 32,
-            paddingBottom: 12,
-          }}>
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              paddingHorizontal: 32,
+              paddingBottom: 12,
+            }}
+          >
             Souvenirs
           </Text>
         </View>
-       <View style={styles.souvenirs}>
-            {souvenirImages.slice(0, 4).map((img, index) => {
-              const remaining = souvenirImages.length - 4;
-              const isLast = index === 3 && remaining > 0;
+        <View style={styles.souvenirs}>
+          {souvenirImages.slice(0, 4).map((img, index) => {
+            const remaining = souvenirImages.length - 4;
+            const isLast = index === 3 && remaining > 0;
 
-              return (
-                <TouchableOpacity
-                  key={index}
-                  activeOpacity={0.8}
-                  onPress={() => {
-                    setSelectedIndex(index);
-                    setViewerVisible(true);
-                  }}
-                >
-                  <View style={styles.imageWrapper}>
-                    <Image source={img} style={styles.image} />
-
-                    {isLast && (
-                      <View style={styles.overlay}>
-                        <Text style={styles.overlayText}>+{remaining}</Text>
-                      </View>
-                    )}
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-          {viewerVisible && (
-            <View style={styles.viewerContainer}>
-              <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                contentOffset={{ x: selectedIndex * width, y: 0 }}
-              >
-                {souvenirImages.map((img, index) => (
-                  <Image
-                    key={index}
-                    source={img}
-                    style={styles.viewerImage}
-                  />
-                ))}
-              </ScrollView>
-
+            return (
               <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setViewerVisible(false)}
+                key={index}
+                activeOpacity={0.8}
+                onPress={() => {
+                  setSelectedIndex(index);
+                  setViewerVisible(true);
+                }}
               >
-                <Text style={styles.closeText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+                <View style={styles.imageWrapper}>
+                  <Image source={img} style={styles.image} />
 
+                  {isLast && (
+                    <View style={styles.overlay}>
+                      <Text style={styles.overlayText}>+{remaining}</Text>
+                    </View>
+                  )}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
+        {viewerVisible && (
+          <View style={styles.viewerContainer}>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              contentOffset={{ x: selectedIndex * width, y: 0 }}
+            >
+              {souvenirImages.map((img, index) => (
+                <Image key={index} source={img} style={styles.viewerImage} />
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setViewerVisible(false)}
+            >
+              <Text style={styles.closeText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        <View>
+          <Pagoda_home />
+        </View>
+      </View>
     </ScrollView>
   );
 };
@@ -296,7 +331,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     paddingTop: 60,
-    paddingHorizontal: 32, 
+    paddingHorizontal: 32,
     position: "absolute",
     shadowColor: "#000",
     shadowOffset: { width: 4, height: 4 },
@@ -310,7 +345,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingTop: 420,
     borderRadius: 16,
-    zIndex: 10,       
+    zIndex: 10,
     marginBottom: 16,
   },
 
@@ -336,7 +371,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontFamily: "Poppins",
   },
-    ratingContainer: {
+  ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
@@ -360,7 +395,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#555",
     fontFamily: "Poppins",
-    
   },
   mapText: {
     fontSize: 12,
@@ -368,7 +402,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontFamily: "Poppins",
     fontWeight: "bold",
-    textDecorationLine: "underline", 
+    textDecorationLine: "underline",
   },
   mapContainer: {
     flexDirection: "row",
@@ -379,68 +413,68 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     paddingBottom: 32,
   },
-souvenirs: {
-  flexDirection: "row",
-  paddingHorizontal: 32,
-},
+  souvenirs: {
+    flexDirection: "row",
+    paddingHorizontal: 32,
+  },
 
-imageWrapper: {
-  position: "relative",
-  marginRight: 12,
-},
+  imageWrapper: {
+    position: "relative",
+    marginRight: 12,
+  },
 
-overlay: {
-  position: "absolute",
-  width: 72,
-  height: 72,
-  borderRadius: 8,
-  backgroundColor: "rgba(0,0,0,0.55)",
-  justifyContent: "center",
-  alignItems: "center",
-},
+  overlay: {
+    position: "absolute",
+    width: 72,
+    height: 72,
+    borderRadius: 8,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 
-overlayText: {
-  color: "#fff",
-  fontSize: 18,
-  fontWeight: "bold",
-},
+  overlayText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 
-/* Viewer */
-viewerContainer: {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "#fff",
-  zIndex: 100,
-},
+  /* Viewer */
+  viewerContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#fff",
+    zIndex: 100,
+  },
 
-viewerImage: {
-  width: width,
-  height: "100%",
-  resizeMode: "contain",
-  marginRight: 8,
-},
+  viewerImage: {
+    width: width,
+    height: "100%",
+    resizeMode: "contain",
+    marginRight: 8,
+  },
 
-closeButton: {
-  position: "absolute",
-  top: 40,
-  right: 20,
-  backgroundColor: "rgba(0,0,0,0.6)",
-  borderRadius: 20,
-  padding: 10,
-},
+  closeButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    borderRadius: 20,
+    padding: 10,
+  },
 
-closeText: {
-  color: "#fff",
-  fontSize: 18,
-  fontWeight: "bold",
-},
+  closeText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 
-image: {
-  width: 72,
-  height: 72,
-  borderRadius: 8,
-},
+  image: {
+    width: 72,
+    height: 72,
+    borderRadius: 8,
+  },
 });

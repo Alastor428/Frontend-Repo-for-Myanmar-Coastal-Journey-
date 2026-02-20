@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import {
   Ionicons,
   MaterialCommunityIcons,
@@ -7,12 +8,13 @@ import {
 } from "@expo/vector-icons";
 
 const HomeButton4: React.FC = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View style={styles.container}>
-
       <View style={styles.item}>
         <Pressable
-          onPress={() => alert("Bus Ticket")}
+          onPress={() => navigation.navigate("BusTicket")}
           style={({ pressed }) => [
             styles.iconButton,
             pressed && styles.pressed,
@@ -25,7 +27,6 @@ const HomeButton4: React.FC = () => {
         </Text>
       </View>
 
- 
       <View style={styles.item}>
         <Pressable
           onPress={() => alert("Hotel Booking")}
@@ -41,7 +42,6 @@ const HomeButton4: React.FC = () => {
         </Text>
       </View>
 
-    
       <View style={styles.item}>
         <Pressable
           onPress={() => alert("Tour Guide")}
@@ -64,11 +64,7 @@ const HomeButton4: React.FC = () => {
             pressed && styles.pressed,
           ]}
         >
-          <Ionicons
-            name="information-circle"
-            size={24}
-            color="#1CB5B0"
-          />
+          <Ionicons name="information-circle" size={24} color="#1CB5B0" />
         </Pressable>
         <Text style={[styles.iconLabel, styles.aboutText]} numberOfLines={1}>
           About Us
@@ -82,17 +78,12 @@ export default HomeButton4;
 
 const styles = StyleSheet.create({
   container: {
-    width: 325,
+    width: "100%",
     height: 84,
-    position: "absolute",
-    top: 80,
-    left: 33,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-
-    zIndex: 10,
-    elevation: 10,
+    marginBottom: 20,
   },
 
   item: {

@@ -31,7 +31,11 @@ const DUMMY_USER = {
   password: "123456",
 };
 
-const WelcomeScreen: React.FC = () => {
+type Props = {
+  onLoginSuccess: () => void;
+};
+
+const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
   const leftAnim = useRef(new Animated.Value(-width)).current;
   const rightAnim = useRef(new Animated.Value(width)).current;
   const sheetAnim = useRef(new Animated.Value(height)).current;
@@ -84,6 +88,7 @@ const WelcomeScreen: React.FC = () => {
   // ---------- LOGIN ----------
   const handleLogin = () => {
     Keyboard.dismiss();
+
     if (!email || !password) {
       setError("Fill the data first");
       return;
@@ -91,7 +96,7 @@ const WelcomeScreen: React.FC = () => {
 
     if (email === DUMMY_USER.email && password === DUMMY_USER.password) {
       setError("");
-      alert("Login successful!");
+      onLoginSuccess();
     } else {
       setError("Invalid email or password");
       setEmail("");
@@ -99,71 +104,69 @@ const WelcomeScreen: React.FC = () => {
     }
   };
 
-const handleSignUp = () => {
-  Keyboard.dismiss();
+  const handleSignUp = () => {
+    Keyboard.dismiss();
 
-  // 1. Check if all fields are filled
-  if (
-    !signupUserName ||
-    !signupEmail ||
-    !signupPassword ||
-    !signupConfirmPassword ||
-    !nrcState ||
-    !nrcTownship ||
-    !nrcType ||
-    !nrcNumber
-  ) {
-    setSignupError("Fill all fields first");
-    return;
-  }
+    // 1. Check if all fields are filled
+    if (
+      !signupUserName ||
+      !signupEmail ||
+      !signupPassword ||
+      !signupConfirmPassword ||
+      !nrcState ||
+      !nrcTownship ||
+      !nrcType ||
+      !nrcNumber
+    ) {
+      setSignupError("Fill all fields first");
+      return;
+    }
 
-  // 2. Check password match
-  if (signupPassword !== signupConfirmPassword) {
-    setSignupError("Passwords do not match");
-    return;
-  }
+    // 2. Check password match
+    if (signupPassword !== signupConfirmPassword) {
+      setSignupError("Passwords do not match");
+      return;
+    }
 
-  // 3. Check if terms are accepted
-  if (!acceptTerms) {
-    setSignupError("You must accept terms and conditions");
-    return;
-  }
+    // 3. Check if terms are accepted
+    if (!acceptTerms) {
+      setSignupError("You must accept terms and conditions");
+      return;
+    }
 
-  // 4. Combine NRC
-  const NRC = `${nrcState}/${nrcTownship}(${nrcType})${nrcNumber}`;
-  
-  // 5. Check if DOB is selected
-  if (!dob) {
-    setSignupError("Fill all fields first");
-    return;
-  }
+    // 4. Combine NRC
+    const NRC = `${nrcState}/${nrcTownship}(${nrcType})${nrcNumber}`;
 
-  // 6. Log all sign up values
-  console.log("SIGN UP DATA:");
-  console.log("UserName:", signupUserName);
-  console.log("Email:", signupEmail);
-  console.log("Password:", signupPassword);
-  console.log("Confirm Password:", signupConfirmPassword);
-  console.log("NRC:", NRC);
-  console.log("Accept Terms:", acceptTerms);
-  console.log("DOB:", dob.toDateString());
+    // 5. Check if DOB is selected
+    if (!dob) {
+      setSignupError("Fill all fields first");
+      return;
+    }
 
-  // 7. Success: reset fields and switch to Sign In
-  alert("Account created successfully!");
-  setSignupUserName("");
-  setSignupEmail("");
-  setSignupPassword("");
-  setSignupConfirmPassword("");
-  setNrcState("");
-  setNrcTownship("");
-  setNrcType("");
-  setNrcNumber("");
-  setAcceptTerms(false);
-  setSignupError("");
-  setActiveTab("signin");
-};
+    // 6. Log all sign up values
+    console.log("SIGN UP DATA:");
+    console.log("UserName:", signupUserName);
+    console.log("Email:", signupEmail);
+    console.log("Password:", signupPassword);
+    console.log("Confirm Password:", signupConfirmPassword);
+    console.log("NRC:", NRC);
+    console.log("Accept Terms:", acceptTerms);
+    console.log("DOB:", dob.toDateString());
 
-
+    // 7. Success: reset fields and switch to Sign In
+    alert("Account created successfully!");
+    setSignupUserName("");
+    setSignupEmail("");
+    setSignupPassword("");
+    setSignupConfirmPassword("");
+    setNrcState("");
+    setNrcTownship("");
+    setNrcType("");
+    setNrcNumber("");
+    setAcceptTerms(false);
+    setSignupError("");
+    setActiveTab("signin");
+  };
 
   return (
     <View style={styles.container}>
@@ -178,17 +181,15 @@ const handleSignUp = () => {
           <Animated.Text
             style={[styles.name, { transform: [{ translateX: rightAnim }] }]}
           >
-            {" "}Way
+            {" "}
+            Way
           </Animated.Text>
         </View>
       </Animated.View>
 
       {/* BOTTOM SHEET */}
       <Animated.View
-        style={[
-          styles.buttonbox,
-          { transform: [{ translateY: sheetAnim }] },
-        ]}
+        style={[styles.buttonbox, { transform: [{ translateY: sheetAnim }] }]}
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -198,7 +199,11 @@ const handleSignUp = () => {
           <ScrollView
             ref={scrollRef}
             style={{ flex: 1 }}
-            contentContainerStyle={{ flexGrow: 1, alignItems: "center", paddingBottom: 120 }}
+            contentContainerStyle={{
+              flexGrow: 1,
+              alignItems: "center",
+              paddingBottom: 120,
+            }}
             keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
           >
@@ -222,7 +227,7 @@ const handleSignUp = () => {
                 <View style={{ marginTop: 12, width: 328 }}>
                   <RememberMeCheckbox
                     value={rememberMe}
-                    onToggle={() => setRememberMe(prev => !prev)}
+                    onToggle={() => setRememberMe((prev) => !prev)}
                   />
                 </View>
 
@@ -274,7 +279,11 @@ const handleSignUp = () => {
                 </View>
 
                 <View style={{ marginTop: 24 }}>
-                  <DateOfBirth label="Date of Birth" value={dob} onConfirm={setDob} />
+                  <DateOfBirth
+                    label="Date of Birth"
+                    value={dob}
+                    onConfirm={setDob}
+                  />
                 </View>
 
                 <View style={{ marginTop: -12 }}>
@@ -291,10 +300,10 @@ const handleSignUp = () => {
                   />
                 </View>
 
-                <View style={{ marginTop: 12,  width: 328 }}>
+                <View style={{ marginTop: 12, width: 328 }}>
                   <AcceptComponent
                     value={acceptTerms}
-                    onToggle={() => setAcceptTerms(prev => !prev)}
+                    onToggle={() => setAcceptTerms((prev) => !prev)}
                   />
                 </View>
 

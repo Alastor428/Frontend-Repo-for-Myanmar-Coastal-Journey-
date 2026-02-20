@@ -26,7 +26,7 @@ export default SeatLegend;
 
 const styles = StyleSheet.create({
   legendCard: {
-    marginTop:50,
+    marginTop: 20,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -34,17 +34,14 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 5,
     marginBottom: 12,
-    width:"90%",
-    marginLeft:20,
-
-
-    
+    width: "90%",
+    marginLeft: 20,
   },
 
   legendItem: {
@@ -52,7 +49,7 @@ const styles = StyleSheet.create({
   },
 
   legendBox: {
-    width: 36,            // SMALL ICON (like photo)
+    width: 36, // SMALL ICON (like photo)
     height: 36,
     borderRadius: 4,
     marginBottom: 4,
