@@ -139,8 +139,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   swapImage: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 104,
+    // marginTop: 44,
   },
   formSection: {
     width: 328,
