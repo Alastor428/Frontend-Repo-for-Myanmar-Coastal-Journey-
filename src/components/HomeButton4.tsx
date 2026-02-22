@@ -6,6 +6,7 @@ import {
   MaterialCommunityIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
+import { IconButton, Icon } from "react-native-paper";
 
 const HomeButton4: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -20,10 +21,19 @@ const HomeButton4: React.FC = () => {
             pressed && styles.pressed,
           ]}
         >
-          <MaterialCommunityIcons name="bus" size={24} color="#1CB5B0" />
+          {/* <MaterialCommunityIcons name="bus" size={24} color="#1CB5B0" /> */}
+          <View style={{ position: "relative" }}>
+            <IconButton icon="bus" size={28} iconColor="#1cb5b0" />
+            <IconButton
+              icon="airplane"
+              size={20}
+              iconColor="#1cb5b0"
+              style={{ position: "absolute", right: -6, top: 0 }}
+            />
+          </View>
         </Pressable>
-        <Text style={[styles.iconLabel, styles.busText]} numberOfLines={1}>
-          Bus Ticket
+        <Text style={[styles.iconLabel, styles.hotelText]} numberOfLines={1}>
+          Travel Ticket
         </Text>
       </View>
 
@@ -50,7 +60,8 @@ const HomeButton4: React.FC = () => {
             pressed && styles.pressed,
           ]}
         >
-          <Ionicons name="person" size={24} color="#1CB5B0" />
+          {/* <Ionicons name="person" size={24} color="#1CB5B0" /> */}
+          <IconButton icon="account-tie" size={24} iconColor="#1CB5B0" />
         </Pressable>
         <Text style={[styles.iconLabel, styles.tourText]} numberOfLines={1}>
           Tour Guide
@@ -58,16 +69,17 @@ const HomeButton4: React.FC = () => {
       </View>
       <View style={styles.item}>
         <Pressable
-          onPress={() => alert("About Us")}
+          onPress={() => alert("Travel Package")}
           style={({ pressed }) => [
             styles.iconButton,
             pressed && styles.pressed,
           ]}
         >
-          <Ionicons name="information-circle" size={24} color="#1CB5B0" />
+          {/* <Ionicons name="information-circle" size={24} color="#1CB5B0" /> */}
+          <IconButton icon="package-variant" size={24} iconColor="#1CB5B0" /> 
         </Pressable>
-        <Text style={[styles.iconLabel, styles.aboutText]} numberOfLines={1}>
-          About Us
+        <Text style={[styles.iconLabel, styles.hotelText]} numberOfLines={1}>
+          Travel Package
         </Text>
       </View>
     </View>
@@ -102,6 +114,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     elevation: 3,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
 
   pressed: {

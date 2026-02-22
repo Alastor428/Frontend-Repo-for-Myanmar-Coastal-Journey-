@@ -13,6 +13,7 @@ import EditNameScreen from "@/screens/SubScreens/SettingStack/EditNameScreen";
 import AccountSecurityScreen from "@/screens/SubScreens/SettingStack/AccountSecurityScreen";
 import OldPasswordScreen from "@/screens/SubScreens/SettingStack/OldPasswordScreen";
 import ChangePasswordScreen from "@/screens/SubScreens/SettingStack/ChangePasswordScreen";
+import AboutUsScreen from "@/screens/SubScreens/SettingStack/AboutUsScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -42,6 +43,7 @@ export default function RootNavigator() {
       <Stack.Screen name="AccountSecurityScreen" component={AccountSecurityScreen} />
       <Stack.Screen name="OldPasswordScreen" component={OldPasswordScreen} />
       <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+      <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
     </Stack.Navigator>
   );
 }

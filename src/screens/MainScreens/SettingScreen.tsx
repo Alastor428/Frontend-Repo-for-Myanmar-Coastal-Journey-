@@ -18,6 +18,8 @@ import ReportAProblemButton from "@/components/SettingComponent/ReportAProblemBu
 import SupportButton from "@/components/SettingComponent/SupportButton";
 import TermsAndPoliciesButton from "@/components/SettingComponent/TermsAndPoliciesButton";
 import LogoutButton from "@/components/SettingComponent/LogoutButton";
+import AboutUsButton from "@/components/SettingComponent/AboutUsButton";
+import OurTeamButton from "@/components/SettingComponent/OurTeamButton";
 
 interface User {
   id: number;
@@ -102,13 +104,21 @@ const SettingScreen: React.FC = () => {
             <Text style={styles.settingText}>Setting</Text>
             <View style={{ marginBottom: 20 }} >
               <ProfileButton />
+            </View>  
+            <View style={{ marginBottom: 0 }} >
+              <AccountSecurityButton />
             </View>
-            <AccountSecurityButton />
           </View>
 
           {/* Support and About */}
           <View style={{ width: '100%', paddingHorizontal: 32 ,paddingBottom:32}} >
             <Text style={styles.settingText}>Support and About</Text>
+            <View style={{ marginBottom: 20 }} >
+              <AboutUsButton />
+            </View>
+            <View style={{ marginBottom: 20 }} >
+              <OurTeamButton />
+            </View>
             <View style={{ marginBottom: 20 }} >
               <ReportAProblemButton onPress={() => Alert.alert("Report a Problem Pressed")} />
             </View>
@@ -170,6 +180,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+    paddingVertical: 80,
   },
   profileSection: {
     alignItems: "center",
