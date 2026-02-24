@@ -39,7 +39,7 @@ const HomeButton4: React.FC = () => {
 
       <View style={styles.item}>
         <Pressable
-          onPress={() => alert("Hotel Booking")}
+          onPress={() => navigation?.navigate("HotelBookingSearchScreen")}
           style={({ pressed }) => [
             styles.iconButton,
             pressed && styles.pressed,

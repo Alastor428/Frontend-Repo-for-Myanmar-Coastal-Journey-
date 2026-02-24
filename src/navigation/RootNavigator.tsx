@@ -14,6 +14,8 @@ import AccountSecurityScreen from "@/screens/SubScreens/SettingStack/AccountSecu
 import OldPasswordScreen from "@/screens/SubScreens/SettingStack/OldPasswordScreen";
 import ChangePasswordScreen from "@/screens/SubScreens/SettingStack/ChangePasswordScreen";
 import AboutUsScreen from "@/screens/SubScreens/SettingStack/AboutUsScreen";
+import OurTeamScreen from "@/screens/SubScreens/SettingStack/OurTeamScreen";
+import HotelBookingSearchScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelBookingSearchScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +46,8 @@ export default function RootNavigator() {
       <Stack.Screen name="OldPasswordScreen" component={OldPasswordScreen} />
       <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
       <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
+      <Stack.Screen name="OurTeamScreen" component={OurTeamScreen}/>
+      <Stack.Screen name="HotelBookingSearchScreen" component={HotelBookingSearchScreen}/>
     </Stack.Navigator>
   );
 }

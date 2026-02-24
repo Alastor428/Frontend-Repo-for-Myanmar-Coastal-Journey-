@@ -7,14 +7,14 @@ const AboutUsScreen: React.FC = () => {
     const navigation = useNavigation<any>();
     return (    
     <View style={styles.container}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center", justifyContent: "center", width: '100%', paddingBottom: 40}} >
+        <ScrollView contentContainerStyle={{ flexGrow: 1, alignItems: "center", justifyContent: "center", width: '100%'}} >
              {/* Header */}
                 <View style={styles.header}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', width: '100%' , marginTop: 40}} >
                         <IconButton
                         icon="chevron-left"   
                         size={32}
-                        iconColor="#000"
+                        iconColor="#fff"
                         onPress={() => navigation?.goBack?.()}
                         style={{ 
                           margin: 0, 
@@ -57,7 +57,11 @@ const AboutUsScreen: React.FC = () => {
                     </Text>
                     </View>
                     <View style={{  
-                        marginBottom: 8 ,
+                        marginBottom: 24,
+                        borderRadius: 8,
+                        padding: 16,
+                        shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.25, shadowRadius: 3.84,
+                        backgroundColor: "#fff",
                     }} 
                     >
                         <Text style={{ fontSize: 16, fontWeight: "bold", color: "#000" }}>
@@ -90,38 +94,51 @@ const AboutUsScreen: React.FC = () => {
                         <Text style={{ fontSize: 14, fontWeight: "300", marginTop: 4, color: "#000", marginLeft: 36 }} >
                         Using technology to make travel planning seamless.
                         </Text>
-                        <View style={{  
-                        marginBottom: 24,
-                        marginTop: 24,
+                    </View>
+                </View>
+
+                {/* Bottom */}
+                <View
+                style={{
+                    width: '100%',
+                    // height: 280,
+                    // alignItems: 'center',
+                    paddingHorizontal: 32,
+                    paddingVertical: 24,
+                    backgroundColor: "#79D7D4",
+                    // borderTopLeftRadius: 16,
+                    // borderTopRightRadius: 16,
+                    justifyContent: 'center',
+                    marginTop: 20,
+                }}>
+                    <View style={{  
+                    marginBottom: 24,
+                    padding: 16,
                     }}  
                     >
-                         <Text style={{ fontSize: 16, fontWeight: "bold", color: "#000" }}>
+                        <Text style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}>
                             Get in Touch
                         </Text>
                         <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap' }} >
-                            <IconButton icon="email-outline" size={20} iconColor="#1CB5B0" style={{ margin: 0, padding: 0 }} />
-                            <Text style={{ fontSize: 14, fontWeight: "bold", color: "#000", marginTop: 9}}    >
-                            waveway@gmail.com
+                            <IconButton icon="email-outline" size={20} iconColor="#fff" style={{ margin: 0, padding: 0 }} />
+                            <Text style={{ fontSize: 14, fontWeight: "bold", color: "#fff", marginTop: 9}}    >
+                                waveway@gmail.com
                             </Text>
                         </View>
                         <View style={{ marginTop: 8, flexDirection: 'row', flexWrap: 'wrap' }} >
-                            <IconButton icon="phone-outline" size={20} iconColor="#1CB5B0" style={{ margin: 0, padding: 0 }} />
-                            <Text style={{ fontSize: 14, fontWeight: "bold", color: "#000", marginTop: 9}}    >
-                            09123456789
+                            <IconButton icon="phone-outline" size={20} iconColor="#fff" style={{ margin: 0, padding: 0 }} />
+                            <Text style={{ fontSize: 14, fontWeight: "bold", color: "#fff", marginTop: 9}}    >
+                                09123456789
                             </Text>
                         </View>
                         <View style={{ marginTop: 8, flexDirection: 'row' }} >
-                            <IconButton icon="map-marker-outline" size={20} iconColor="#1CB5B0" style={{ margin: 0, padding: 0 }} />
+                            <IconButton icon="map-marker-outline" size={20} iconColor="#fff" style={{ margin: 0, padding: 0 }} />
                             <View style={{ marginLeft: 0 }} >
-                                <Text style={{ fontSize: 14, fontWeight: "bold", color: "#000", marginTop: 9}}    >
-                            107-108/73 MIIT,Mandalay
-                            </Text>
-                            {/* <Text style={{ fontSize: 14, fontWeight: "300", color: "#000", marginTop: 9 }} >
-                            Myanmar Institute of Information Technology,Mandalay,Myanmar
-                            </Text> */}
+                                <Text style={{ fontSize: 14, fontWeight: "bold", color: "#fff", marginTop: 9}}    >
+                                    107-108/73 MIIT,Mandalay
+                                </Text>
                             </View>
                         </View>
-                    </View>
                     </View>
                 </View>
         </ScrollView> 
@@ -135,7 +152,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+    // alignItems: "center",
     justifyContent: "center",
     marginBlockStart: 0,
     },

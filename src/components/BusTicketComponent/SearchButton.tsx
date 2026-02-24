@@ -17,7 +17,7 @@ export default SearchComponent;
 
 const styles = StyleSheet.create({
   container: {
-    width: 328,
+    width: "100%",
     height: 40,
     borderRadius: 8,
     backgroundColor: "#1CB5B0",

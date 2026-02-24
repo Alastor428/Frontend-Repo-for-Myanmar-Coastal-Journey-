@@ -7,7 +7,7 @@ const OurTeamButton: React.FC= () => {
 
   const navigation = useNavigation<any>();
   return (
-    <Card style={styles.card} onPress={() => alert("Our Team Pressed")}>    
+    <Card style={styles.card} onPress={() => navigation?.navigate("OurTeamScreen")}>    
         <View style={styles.container}>
             <IconButton icon="account-group-outline" size={24} iconColor="#1CB5B0" style={styles.icon} />
             <Text style={styles.text}>Our Team</Text>

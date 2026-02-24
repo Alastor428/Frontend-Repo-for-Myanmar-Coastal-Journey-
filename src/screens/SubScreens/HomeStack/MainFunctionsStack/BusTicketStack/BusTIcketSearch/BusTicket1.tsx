@@ -65,7 +65,7 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
       </View>
       <View style={styles.formSection}>
         <PeopleCountComponent
-          label="Adult"
+          label="No. of Passengers"
           value={passengers}
           onChange={setPassengers}
           min={1}
@@ -74,7 +74,7 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
       </View>
       <View style={styles.type}>
         <TicketTypeComponent />
-        <PassengerComponent />
+        {/* <PassengerComponent /> */}
       </View>
       <View style={styles.button}>
         <SearchComponent
@@ -98,15 +98,17 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 40,
-    paddingLeft: 16,
+    justifyContent: "center",
+    paddingTop: 60,
+    paddingHorizontal: 32,
     width: "100%",
-    alignSelf: "flex-start",
+    alignSelf: "flex-start"
   },
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 60,
+    marginLeft: 'auto',
+    marginRight:'auto',
     fontFamily: "Poppins",
   },
   imageWrapper: {

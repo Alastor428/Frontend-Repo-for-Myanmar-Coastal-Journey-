@@ -57,7 +57,7 @@ export default PeopleCountComponent;
 
 const styles = StyleSheet.create({
   container: {
-    width: 328,
+    width: "100%",
     backgroundColor: 'white',
   },
 
