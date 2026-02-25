@@ -11,7 +11,13 @@ import BusTicketSearchResultScreen from "./src/screens/SubScreens/HomeStack/Main
 import BusTicketFinalPaymentScreen from "./src/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/BusTicketFinalPayment/BusTicketFinalPaymentScreen";
 import BusTicketSuccessReceiptScreen from "./src/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/BusTicketFinalPayment/BusTicketSuccessReceiptScreen";
 import BusTicketSeatSelectionScreen from "./src/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/BusTicketSeatSelection/BusTicketSeatSelectionScreen";
-import BeachPackageCard from "./src/components/Ngapali/Choosing_package_card";
+import BeachPackageCard from "./src/screens/SubScreens/TravelPackageStack/Travelpackage_card";
+import BeachPackageScreen from "./src/screens/SubScreens/TravelPackageStack/BeachTravelPackageScreen";
+import PackageIncludesScreen from "./src/screens/SubScreens/TravelPackageStack/Package_includesScreen";
+import BookPackageScreen from "./src/screens/SubScreens/TravelPackageStack/TravelpackagePaymentScreen";
+import TravelpackagePaymentchooseScreen from "./src/screens/SubScreens/TravelPackageStack/TravelpackagePaymentchooseScreen";
+import TravelPackagesdirectionScreen from "./src/screens/SubScreens/TravelPackageStack/TravelPackage_directionScreeen";
+
 
 enableScreens();
 
@@ -34,11 +40,16 @@ const App: React.FC = () => {
   //  <BusTicketSuccessReceiptScreen/>
   //  <BusTicketFinalPaymentScreen/>
   // <BusTicketSearchResultScreen/>
-  <BusTicketSeatSelectionScreen/>
+  // <BusTicketSeatSelectionScreen/>
+//  <BeachPackageScreen/> 
+// {/* <PackageIncludesScreen/> */}
+//  <BookPackageScreen/> 
+// {/* <TravelpackagePaymentchooseScreen/> */}
+// {/* <TravelPackagesdirectionScreen/> */}
+<TravelPackagesdirectionScreen/>
 
 
-
- 
+  
   
   );
 
