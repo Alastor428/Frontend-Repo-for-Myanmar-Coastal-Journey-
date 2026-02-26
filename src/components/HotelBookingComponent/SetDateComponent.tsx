@@ -10,52 +10,28 @@ import {
 registerTranslation("en", en);
 
 interface DateComponentProps {
-  label: string;
   value?: Date;
   onConfirm: (date: Date) => void;
 }
 
 const DateComponent: React.FC<DateComponentProps> = ({
-  label,
   value,
   onConfirm,
 }) => {
   const [open, setOpen] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
 
   return (
-    <View style={styles.container}>
-      <Pressable onPress={() => setOpen(true)}>
+    <View style={styles.shadowWrapper}>
+      <Pressable style={styles.container} onPress={() => setOpen(true)}>
         <TextInput
-          label={label}
-          mode="outlined"
-          value={value ? value.toDateString() : ""}
+          mode="flat"
+          value={value ? value.toDateString() : "Select date"}
           editable={false}
           pointerEvents="none"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           style={styles.input}
-          contentStyle={{
-            fontSize: 14,
-            color: "#000",
-            fontFamily: "Poppins",
-          }}
-          outlineColor={isFocused ? "#1CB5B0" : "rgba(28, 181, 176, 0.5)"}
-          activeOutlineColor="#1CB5B0"
-          theme={{
-            roundness: 8,
-            colors: {
-              primary: "#1CB5B0",
-              text: "#000",
-            },
-            fonts: {
-              bodyLarge: {
-                fontSize: 12,
-                fontFamily: "Poppins",
-                fontWeight: "500",
-              },
-            },
-          }}
+          contentStyle={styles.content}
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
           right={<TextInput.Icon icon="calendar" color="#1CB5B0" />}
         />
       </Pressable>
@@ -81,17 +57,35 @@ const DateComponent: React.FC<DateComponentProps> = ({
 export default DateComponent;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
+  shadowWrapper: {
     width: "100%",
-    height: 48,
-    marginTop: -4,
     marginBottom: 24,
+
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+
+    // Android shadow
+    elevation: 5,
   },
+
+  container: {
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+
   input: {
-    borderRadius: 8,
-    backgroundColor: "white",
-    marginVertical: 8,
-    height: 48,
+    backgroundColor: "transparent",
+  },
+
+  content: {
+    fontSize: 14,
+    color: "#000",
+    fontFamily: "Poppins",
   },
 });

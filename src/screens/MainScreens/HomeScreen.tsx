@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { ScrollView, StyleSheet,View } from "react-native";
 import HomeButton4 from "@/components/HomeButton4";
 import Search from "@/components/Search";
@@ -9,6 +9,7 @@ import BeachGrid from "@/components/BeachComponent/BeachGrid";
 import { LinearGradient } from "expo-linear-gradient";
 
 const HomeScreen = () => {
+  const [searchText, setSearchText] = useState("");
   return (
     <ScrollView
       style={styles.container}
@@ -26,7 +27,10 @@ const HomeScreen = () => {
       </View>
       </LinearGradient>
       <View style={{ paddingHorizontal: 32, paddingBottom: 32, marginTop: -28 }}>
-        <Search />
+        <Search
+        value={searchText}
+        onChangeText={setSearchText}
+        />
         <Discount />
       <Trending />
       <Filter />

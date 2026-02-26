@@ -77,7 +77,7 @@ const OurTeamScreen: React.FC = () => {
                                         icon="phone-outline" 
                                         size={20} 
                                         iconColor="#79d7d4" 
-                                        onPress={()=>Linking.openURL("viber://chat?number=%2B959750468806")}
+                                        onPress={()=>Linking.openURL("viber://chat?number=%2B959265572697")}
                                         style={{marginLeft:-8}}
                                     />
                                     <IconButton 

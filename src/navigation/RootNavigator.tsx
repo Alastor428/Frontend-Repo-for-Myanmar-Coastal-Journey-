@@ -16,6 +16,7 @@ import ChangePasswordScreen from "@/screens/SubScreens/SettingStack/ChangePasswo
 import AboutUsScreen from "@/screens/SubScreens/SettingStack/AboutUsScreen";
 import OurTeamScreen from "@/screens/SubScreens/SettingStack/OurTeamScreen";
 import HotelBookingSearchScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelBookingSearchScreen";
+import HotelResultScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelResultScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,7 @@ export default function RootNavigator() {
       <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
       <Stack.Screen name="OurTeamScreen" component={OurTeamScreen}/>
       <Stack.Screen name="HotelBookingSearchScreen" component={HotelBookingSearchScreen}/>
+      <Stack.Screen name="HotelResultScreen" component={HotelResultScreen}/>
     </Stack.Navigator>
   );
 }
