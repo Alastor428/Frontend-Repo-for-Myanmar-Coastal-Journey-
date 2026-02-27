@@ -19,10 +19,19 @@ const HotelResultScreen: React.FC=() =>{
     const hotels=[
         {
             id:1,
-            image: require("../../../../../../assets/Ngapali/i-would-say-the-best.png"),
+            image: require("../../../../../../assets/Ngapali/Hotels/Amazing Ngapali Resort/1.jpg"),
             title: "Amazing Ngapali Resort",
             location: "https://maps.app.goo.gl/bBPU4YHCVEnozkjW6",
             rating: "5.0",
+            price: "170100 Ks"
+        },
+        {
+            id:2,
+            image: require("../../../../../../assets/Ngapali/Hotels/DiamondHotel.webp"),
+            title: "Diamond Hotel Ngapali",
+            location: "https://maps.app.goo.gl/Cf36Pn72sGqY7ecK7",
+            rating: "5.0",
+            price: "259642 Ks"
         }
     ]
 
@@ -65,7 +74,7 @@ const HotelResultScreen: React.FC=() =>{
                             title={hotel.title}
                             location={hotel.location}
                             rating={hotel.rating}
-                            onPress={() => handleBookPress(hotel.title)}
+                            price={hotel.price}
                         />
                         ))}
                 </View>

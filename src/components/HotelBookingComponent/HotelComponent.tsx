@@ -4,17 +4,20 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  Linking
+  Linking,
+  Alert
 } from "react-native";
 import { Card, Text, IconButton } from "react-native-paper";
 import { ImageSourcePropType } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import BookNowButton from "./BookNowButton";
 
 interface HotelComponentProps {
   imageUrl: ImageSourcePropType;
   title: string;
   location: string;
   rating: string;
-  onPress?: () => void;
+  price: string;
 }
 
 const HotelComponent: React.FC<HotelComponentProps> = ({
@@ -22,8 +25,10 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
   title,
   location,
   rating,
-  onPress,
+  price,
 }) => {
+
+  const navigation = useNavigation<any>();
 
   const [bookmarked, setBookmarked] = useState(false);
 
@@ -32,7 +37,7 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
   };
 
   return (
-    <TouchableOpacity activeOpacity={0.85} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.85}>
       <Card style={styles.card}>
 
         {/* Image Section */}
@@ -86,7 +91,21 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
             </Text>
           </View>
         </View>
-
+        <View style={{width:"100%", flexDirection:"row"}}>
+            <View style={{backgroundColor:"#1CB5B0", width:"50%", height:56, justifyContent:"center", alignItems:"center",borderBottomLeftRadius:8}}>
+              <Text style={{fontSize:16, color:"#fff", fontWeight:"bold"}}>
+                Starting from
+              </Text>
+              <Text style={{fontSize:16, color:"#fff", fontWeight:"bold"}}>
+                {price}
+              </Text>
+            </View>
+            <View style={{ width:"50%", borderBottomRightRadius:8}}>
+              <BookNowButton
+              onPress={()=> navigation?.navigate("HotelDetailScreen")}
+              />
+            </View>
+          </View>
       </Card>
     </TouchableOpacity>
   );
