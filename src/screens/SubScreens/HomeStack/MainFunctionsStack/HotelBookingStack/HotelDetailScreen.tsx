@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
+import HotelRoomComponent from "@/components/HotelBookingComponent/HotelRoomComponent";
 
 interface Hotel {
   id: number;
@@ -20,6 +21,19 @@ interface Hotel {
   overview: string;
   location: string;
   map: string; 
+}
+
+interface Room {
+    id: number;
+    imageUrl: ImageSourcePropType;
+    roomType: string;
+    bedType: string;
+    area: string;
+    limit: string;
+    price: string;
+    status: "available" | "busy";
+    busyUntil?: string; 
+    view:string;
 }
 
 const HotelDetailScreen: React.FC=() =>{
@@ -43,6 +57,32 @@ Make yourself at home in one of the 54 air-conditioned rooms featuring minibars 
   location: "Ngapali",
   map: "https://maps.app.goo.gl/Cf36Pn72sGqY7ecK7"
 });
+
+const [rooms, setRooms] = useState<Room[]>([
+  {
+    id: 1,
+    imageUrl: require("../../../../../../assets/Ngapali/Hotels/Diamond Hotel Ngapali/0220x12000kzjrzurBBFF_W_1280_853_R5.webp"),
+    roomType: "Standard Double Room",
+    bedType: "1 Double Bed",
+    area: "29m²",
+    limit: "2 Adults",
+    price: "280,000 MMK/night",
+    status: "available",
+    view: "Garden View"
+  },
+  {
+    id: 2,
+    imageUrl: require("../../../../../../assets/Ngapali/Hotels/Diamond Hotel Ngapali/0221v12000ab40n7rFCFE_W_1280_853_R5.webp"),
+    roomType: "Deluxe Twin Room",
+    bedType: "2 Single Beds",
+    area: "35m²",
+    limit: "2 Adults",
+    price: "350,000 MMK/night",
+    status: "busy",
+    busyUntil: "25 March 2026",
+    view: "Sea View"
+  },
+]);
 
     return(
         <View style={styles.container}>
@@ -129,6 +169,22 @@ Make yourself at home in one of the 54 air-conditioned rooms featuring minibars 
 
                     {/* Room */}
                     <Text style={{fontSize:14, fontWeight: "500",textDecorationLine: "underline"}}>Rooms</Text>
+                </View>
+                <View style={{ paddingHorizontal: 32, marginTop: 16 }}>
+                    {rooms.map((room) => (
+                        <HotelRoomComponent
+                        key={room.id}
+                        imageUrl={room.imageUrl}
+                        roomType={room.roomType}
+                        bedType={room.bedType}
+                        area={room.area}
+                        limit={room.limit}
+                        price={room.price}
+                        status={room.status}
+                        busyUntil={room.busyUntil}
+                        view={room.view}
+                        />
+                    ))}
                 </View>
             </ScrollView>
         </View>

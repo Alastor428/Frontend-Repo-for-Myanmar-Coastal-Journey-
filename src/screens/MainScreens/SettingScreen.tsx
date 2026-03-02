@@ -120,7 +120,7 @@ const SettingScreen: React.FC = () => {
               <OurTeamButton />
             </View>
             <View style={{ marginBottom: 20 }} >
-              <ReportAProblemButton onPress={() => Alert.alert("Report a Problem Pressed")} />
+              <ReportAProblemButton onPress={() => navigation?.navigate("ReportAPloblemScreen")} />
             </View>
             <View style={{ marginBottom: 20 }} >
               <SupportButton onPress={() => Alert.alert("Support Pressed")} />
