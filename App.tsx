@@ -16,7 +16,10 @@ import BeachPackageScreen from "./src/screens/SubScreens/TravelPackageStack/Beac
 import PackageIncludesScreen from "./src/screens/SubScreens/TravelPackageStack/Package_includesScreen";
 import BookPackageScreen from "./src/screens/SubScreens/TravelPackageStack/TravelpackagePaymentScreen";
 import TravelpackagePaymentchooseScreen from "./src/screens/SubScreens/TravelPackageStack/TravelpackagePaymentchooseScreen";
-import TravelPackagesdirectionScreen from "./src/screens/SubScreens/TravelPackageStack/TravelPackage_directionScreeen";
+
+import BusTicketPayment_pre_screen from "./src/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/BusTicketPayment/BusTicketPayment_pre_screen";
+
+import TravelUpsellScreen from "./src/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/Ticket_adding_hotel_guide";
 
 
 enableScreens();
@@ -45,9 +48,11 @@ const App: React.FC = () => {
 // {/* <PackageIncludesScreen/> */}
 //  <BookPackageScreen/> 
 // {/* <TravelpackagePaymentchooseScreen/> */}
-// {/* <TravelPackagesdirectionScreen/> */}
-<TravelPackagesdirectionScreen/>
-
+// {/* <TravelPackagesdirectionScreen/> *
+// {/* <BusTicketPayment_pre_screen/> */}
+// {/* <BusTicketSearchResultScreen/> */}
+// {/* <TravelPackagesScreen/> */}
+<TravelUpsellScreen/>
 
   
   

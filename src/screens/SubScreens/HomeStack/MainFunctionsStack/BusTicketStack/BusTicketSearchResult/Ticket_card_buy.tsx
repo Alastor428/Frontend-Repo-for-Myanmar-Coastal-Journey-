@@ -7,6 +7,7 @@ interface Ticket {
   type: string;
   departureTime: string;
   price: string;
+  duration: string; 
 }
 
 const ticketData: Ticket[] = [
@@ -15,12 +16,14 @@ const ticketData: Ticket[] = [
     type: "Normal Express (2+2)",
     departureTime: "08:00 am",
     price: "75,000 MMK",
+    duration: "6 hrs 30 mins",
   },
   {
     id: "ticket_buy_2",
     type: "Normal Express (2+2)",
     departureTime: "05:00 pm",
     price: "75,000 MMK",
+    duration: "6 hrs 30 mins",
   },
 ];
 
@@ -46,6 +49,7 @@ const TicketCard_Buy: React.FC = () => {
           </View>
 
           <View style={styles.middleSection}>
+
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Departure Time</Text>
               <Text style={styles.infoValue}>{ticket.departureTime}</Text>
@@ -54,6 +58,12 @@ const TicketCard_Buy: React.FC = () => {
             <View style={styles.infoRow}>
               <Text style={styles.infoLabel}>Price (MMK)</Text>
               <Text style={styles.infoValue}>{ticket.price}</Text>
+            </View>
+
+        
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>Duration</Text>
+              <Text style={styles.infoValue}>{ticket.duration}</Text>
             </View>
           </View>
 
@@ -77,7 +87,7 @@ const styles = StyleSheet.create({
 
   card: {
     width: 328,
-    height: 216,
+    height: 240, 
     marginTop: 111,
     borderRadius: 4,
     backgroundColor: "#79D7D414",
