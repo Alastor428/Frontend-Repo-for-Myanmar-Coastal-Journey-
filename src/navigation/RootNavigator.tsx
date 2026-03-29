@@ -19,7 +19,18 @@ import OldPasswordScreen from "@/screens/SubScreens/SettingStack/OldPasswordScre
 import ChangePasswordScreen from "@/screens/SubScreens/SettingStack/ChangePasswordScreen";
 import AboutUsScreen from "@/screens/SubScreens/SettingStack/AboutUsScreen";
 import ReportAPloblemScreen from "@/screens/SubScreens/SettingStack/ReportAPloblemScreen";
+<<<<<<< HEAD
 
+=======
+import TourGuideSearchScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/TourGuideStack/TourGuideSearchScreen";
+import TourGuideResultScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/TourGuideStack/TourGuideResultScreen";
+import TourGuidePayment_screen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/TourGuideStack/TourGuidePaymentScreen";
+import TourGuidePaymentComfirmScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/TourGuideStack/TourGuidePaymentComfirmScreen";
+import TourGuidePaymentReceiptScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/TourGuideStack/TourGuidePaymentReceiptScreen";
+import PackageSearchScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageSearchScreen";
+import PackageResultScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageResultScreen";
+import PackageDetailScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageDetailScreen";
+>>>>>>> eed236bc82ff5775847c757ba272b8a8ea3978db
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
@@ -41,6 +52,7 @@ export default function RootNavigator() {
       />
       <Stack.Screen name="Ngapali1" component={Ngapali1Screen} />
       <Stack.Screen name="OceanPearl" component={OceanPearl} />
+<<<<<<< HEAD
       <Stack.Screen name="HotelBookingSearchScreen" component={HotelBookingSearchScreen}/>
       <Stack.Screen name="HotelResultScreen" component={HotelResultScreen}/>
       <Stack.Screen name="HotelDetailScreen" component={HotelDetailScreen}/>
@@ -54,6 +66,68 @@ export default function RootNavigator() {
       <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
       <Stack.Screen name="OurTeamScreen" component={OurTeamScreen}/>
       <Stack.Screen name="ReportAPloblemScreen" component={ReportAPloblemScreen}/>
+=======
+      <Stack.Screen
+        name="HotelBookingSearchScreen"
+        component={HotelBookingSearchScreen}
+      />
+      <Stack.Screen
+        name="TourGuideSearchScreen"
+        component={TourGuideSearchScreen}
+      />
+      <Stack.Screen
+        name="TourGuideResultScreen"
+        component={TourGuideResultScreen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentScreen"
+        component={TourGuidePayment_screen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentComfirmScreen"
+        component={TourGuidePaymentComfirmScreen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentReceiptScreen"
+        component={TourGuidePaymentReceiptScreen}
+      />
+      <Stack.Screen name="HotelResultScreen" component={HotelResultScreen} />
+      <Stack.Screen name="HotelDetailScreen" component={HotelDetailScreen} />
+      <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+      <Stack.Screen
+        name="EditDateOfBirthScreen"
+        component={EditDateOfBirthScreen}
+      />
+      <Stack.Screen name="EditGenderScreen" component={EditGenderScreen} />
+      <Stack.Screen name="EditNameScreen" component={EditNameScreen} />
+      <Stack.Screen
+        name="AccountSecurityScreen"
+        component={AccountSecurityScreen}
+      />
+      <Stack.Screen name="OldPasswordScreen" component={OldPasswordScreen} />
+      <Stack.Screen
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+      />
+      <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
+      <Stack.Screen name="OurTeamScreen" component={OurTeamScreen} />
+      <Stack.Screen
+        name="ReportAPloblemScreen"
+        component={ReportAPloblemScreen}
+      />
+      <Stack.Screen
+        name="PackageSearchScreen"
+        component={PackageSearchScreen}
+      />
+      <Stack.Screen
+        name="PackageResultScreen"
+        component={PackageResultScreen}
+      />
+      <Stack.Screen
+        name="PackageDetailScreen"
+        component={PackageDetailScreen}
+      />
+>>>>>>> eed236bc82ff5775847c757ba272b8a8ea3978db
     </Stack.Navigator>
   );
 }
