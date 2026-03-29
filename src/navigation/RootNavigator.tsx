@@ -27,6 +27,8 @@ import TourGuidePaymentReceiptScreen from "@/screens/SubScreens/HomeStack/MainFu
 import PackageSearchScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageSearchScreen";
 import PackageResultScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageResultScreen";
 import PackageDetailScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageDetailScreen";
+import FlightTicketSeatSelectionScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/FlightTicketSeat/FlightTicketSeatSelectionScreen";
+
 const Stack = createNativeStackNavigator();
 
 export default function RootNavigator() {
@@ -45,6 +47,10 @@ export default function RootNavigator() {
       <Stack.Screen
         name="BusTicketSeatSelection"
         component={BusTicketSeatSelectionScreen}
+      />
+      <Stack.Screen
+        name="FlightTicketSeatSelection"
+        component={FlightTicketSeatSelectionScreen}
       />
       <Stack.Screen name="Ngapali1" component={Ngapali1Screen} />
       <Stack.Screen name="OceanPearl" component={OceanPearl} />

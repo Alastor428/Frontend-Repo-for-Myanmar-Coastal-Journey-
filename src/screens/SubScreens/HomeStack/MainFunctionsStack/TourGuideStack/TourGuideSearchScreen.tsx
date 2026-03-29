@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     justifyContent: "center",
     marginBlockStart: 0,
+    marginTop: "-35%",
   },
   header: {
     width: "100%",
