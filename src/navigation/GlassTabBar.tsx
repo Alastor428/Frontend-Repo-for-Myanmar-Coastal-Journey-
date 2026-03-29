@@ -4,17 +4,18 @@ import { BlurView } from "expo-blur";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import { styles } from "./GlassTabBar.styles";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { IconButton, Icon } from "react-native-paper";
 
 function getIconName(routeName: string, isFocused: boolean) {
   switch (routeName) {
     case "Home":
       return "home";
-    case "recent-activities":
-      return "history";
-    case "Bookmark":
+    case "Recent":
+      return "clock-time-four";
+    case "Highlight":
       return "bookmark";
-    case "Profile":
-      return "account";
+    case "Setting":
+      return "cog";
     default:
       return "circle";
   }
@@ -39,11 +40,17 @@ export default function GlassTabBar({
                 onPress={() => navigation.navigate(route.name)}
                 style={[styles.tab, isFocused && styles.activeTab]}
               >
-                <MaterialCommunityIcons
+                {/* <MaterialCommunityIcons
                   name={iconName}
                   size={24}
                   color={isFocused ? "#1CB5AE" : "#8e8e8e"}
-                />
+                />  */}
+                <IconButton
+                  icon={iconName}
+                  size={24}
+                  iconColor={isFocused ? "#1CB5AE" : "#8e8e8e"}
+                  style={{ margin: -8 }}
+                /> 
                 {isFocused && <Text style={styles.label}>{route.name}</Text>}
               </TouchableOpacity>
             );

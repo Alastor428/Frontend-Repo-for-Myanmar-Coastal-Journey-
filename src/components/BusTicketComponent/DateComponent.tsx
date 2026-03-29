@@ -72,6 +72,7 @@ const DateComponent: React.FC<DateComponentProps> = ({
             onConfirm(params.date);
           }
         }}
+        validRange={{ startDate: new Date() }}
       />
     </View>
   );
@@ -82,7 +83,7 @@ export default DateComponent;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    width: 328,
+    width: "100%",
     height: 48,
     marginTop: -4,
     marginBottom: 24,

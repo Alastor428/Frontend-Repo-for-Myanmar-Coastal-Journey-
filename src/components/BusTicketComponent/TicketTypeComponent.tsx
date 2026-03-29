@@ -53,13 +53,13 @@ import { Icon } from 'react-native-paper';
   const styles = StyleSheet.create({
     container: {
       backgroundColor: 'white',
-      width: 160,
+      width: "100%",
       height: 48,
       paddingTop:16,
     },
     dropdown: {
       height: 48,
-      width: 160,
+      width: "100%",
       borderColor: '#1CB5B0',
       opacity: 0.8,
       borderWidth: 0.5,

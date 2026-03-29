@@ -16,7 +16,19 @@ import BeachScreenPhoto from "../../../../../components/BeachComponent/BeachScre
 import ActivitiesGroup from "../../../../../components/Activities/ActivitiesGroup";
 import Restaurant_home from "@/components/Ngapali/Restaurant_home";
 import Pagoda_home from "@/components/Ngapali/Pagoda_home";
+import TravelPackageButton from "@/components/BeachComponent/TravelPackageButton";
+import SelfRegistrationButton from "@/components/BeachComponent/SelfRegistrationButton";
+
 const { width } = Dimensions.get("window");
+interface beachInfo {
+  id: number;
+  name: string;
+  location: string;
+  rating: number;
+  condition?: string;
+  map: string;
+  description: string;
+}
 
 const NGAPALI_ACTIVITIES = [
   {
@@ -72,6 +84,38 @@ const Ngapali1Screen: React.FC<{ navigation?: any }> = ({ navigation }) => {
     setBookmarked(!bookmarked);
   };
 
+  const [beachInfo, setBeach] = useState<beachInfo>({
+    id: 1,
+    name: "Ngapali",
+    location: "Rakhine, Myanmar",
+    rating: 4.5,
+    condition: "We don’t recommend you to visit this place for now because of  the Arakan Army which has taken control over the area since 2024.  ",
+    map: "https://maps.app.goo.gl/4GZZPsry1MihvGKi8",
+    description: `Ngapali Beach is one of the most beautiful coastal destinations in Myanmar, well-known for its clean water, soft white sand, and quiet atmosphere. The beach offers a peaceful natural environment with stunning views, fresh local seafood, and a relaxing lifestyle. Travelers especially love its breathtaking sunset scenery, wide beachfront, and calm, clear waves.
+
+Major Highlights:
+- Visit nearby fishing villages such as Gyeik Taw
+- Take a boat trip to Pearl Island for snorkeling
+- See the Tilawkasayambhu Buddha Statue on the hilltop at the southern end of the beach
+
+Location:
+Ngapali Beach is located in Thandwe (Sandoway) in Rakhine State, Myanmar. It lies approximately 7 km (4 miles) from the nearest major town, Thandwe. The coordinates are approximately Latitude: 18.02° N and Longitude: 94.34° E.
+
+History:
+The name "Ngapali Beach" originates from a local legend where an Italian traveler named it "Napoli". Historically, the area has been associated with a fishing community.
+
+Best Time to Visit:
+Dry season, November to April/May, for sunny weather and calm waves.
+
+Lifestyle (Local Culture & People):
+Fishing families, friendly villagers, ox-drawn carts, and a tranquil atmosphere.
+
+Useful Tips:
+Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respectful of local customs.`,
+  });
+
+  const hasCondition = !!beachInfo?.condition;
+
   const beachPhotos = [
     { id: 1, image: require("../../../../../../assets/Ngapali/NP29.png") },
     { id: 2, image: require("../../../../../../assets/Ngapali/NP1.png") },
@@ -106,27 +150,6 @@ const Ngapali1Screen: React.FC<{ navigation?: any }> = ({ navigation }) => {
     return () => clearInterval(interval);
   }, [activeIndex]);
 
-  const descriptionText = `Ngapali Beach is one of the most beautiful coastal destinations in Myanmar, well-known for its clean water, soft white sand, and quiet atmosphere. The beach offers a peaceful natural environment with stunning views, fresh local seafood, and a relaxing lifestyle. Travelers especially love its breathtaking sunset scenery, wide beachfront, and calm, clear waves.
-
-Major Highlights:
-- Visit nearby fishing villages such as Gyeik Taw
-- Take a boat trip to Pearl Island for snorkeling
-- See the Tilawkasayambhu Buddha Statue on the hilltop at the southern end of the beach
-
-Location:
-Ngapali Beach is located in Thandwe (Sandoway) in Rakhine State, Myanmar. It lies approximately 7 km (4 miles) from the nearest major town, Thandwe. The coordinates are approximately Latitude: 18.02° N and Longitude: 94.34° E.
-
-History:
-The name "Ngapali Beach" originates from a local legend where an Italian traveler named it "Napoli". Historically, the area has been associated with a fishing community.
-
-Best Time to Visit:
-Dry season, November to April/May, for sunny weather and calm waves.
-
-Lifestyle (Local Culture & People):
-Fishing families, friendly villagers, ox-drawn carts, and a tranquil atmosphere.
-
-Useful Tips:
-Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respectful of local customs.`;
   const souvenirImages = [
     require("../../../../../../assets/Ngapali/Souvenirs/NPS1.png"),
     require("../../../../../../assets/Ngapali/Souvenirs/NPS2.png"),
@@ -142,7 +165,8 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 100 }}>
       <View style={styles.sliderContainer}>
         <ScrollView
           ref={scrollRef}
@@ -192,7 +216,7 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
           ))}
         </View>
         <View style={styles.Name}>
-          <Text style={styles.Beach}>Ngapali</Text>
+          <Text style={styles.Beach}>{beachInfo.name}</Text>
           <View style={styles.ratingContainer}>
             <Text style={styles.star}>★</Text>
             <Text style={styles.ratingNumber}>{rating}</Text>
@@ -201,13 +225,13 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
         <View style={styles.locationContainer}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <IconButton icon="map-marker" size={24} iconColor="#1CB5B0" />
-            <Text style={styles.locationText}>Rakhine, Myanmar</Text>
+            <Text style={styles.locationText}>{beachInfo.location}</Text>
           </View>
           <View style={styles.mapContainer}>
             <Text
               style={styles.mapText}
               onPress={() =>
-                Linking.openURL("https://maps.app.goo.gl/4GZZPsry1MihvGKi8")
+                Linking.openURL(beachInfo.map)
               }
             >
               view map
@@ -230,7 +254,7 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
             }}
             numberOfLines={isExpanded ? undefined : 3}
           >
-            {descriptionText}
+            {beachInfo.description}
           </Text>
           <TouchableOpacity
             onPress={() => setIsExpanded(!isExpanded)}
@@ -308,11 +332,53 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
             </TouchableOpacity>
           </View>
         )}
-        <View>
+        <View style={{ paddingBottom: 32 }}>
           <Pagoda_home />
         </View>
       </View>
     </ScrollView>
+    {/* fixedbox */}
+        <View style={styles.fixedBox}>
+          
+          {hasCondition ? (
+          <View style={{ paddingHorizontal: 32 , paddingTop: 16, flexDirection: "row", alignItems: "center"}}>
+            <IconButton
+              icon="alert-circle"
+              size={24}
+              iconColor="red"
+              style={{ margin: 0, padding: 0 }}
+            />
+            {beachInfo?.condition && (
+                <Text style={styles.conditionText}>
+                  {beachInfo.condition}
+                </Text>
+              )}
+          </View>
+          ) : (
+            <View style={{ paddingHorizontal: 32 , paddingTop: 16, flexDirection: "row"}}>
+              <IconButton
+                icon="check-circle"
+                size={24}
+                iconColor="green"
+                style={{ margin: 0, padding: 0 }}
+              />
+              <View style={{ marginTop: 12 }}>
+                <Text style={styles.locationText}>
+                This destination is safe to visit.
+              </Text>
+              </View>
+            </View>
+          )}
+          <View style={{ paddingHorizontal: 32, flexDirection: "row", alignItems: "center", paddingVertical:24 }}>
+              <View style={{ flex: 1 }}>
+                <TravelPackageButton onPress={() => alert("Travel Packages button pressed!")} />
+              </View>
+              <View style={{ flex: 1 , alignItems: "flex-end"}}>
+                <SelfRegistrationButton onPress={() => alert("Self Registration button pressed!")} />
+              </View>
+          </View>
+        </View>
+    </View>
   );
 };
 
@@ -442,6 +508,7 @@ const styles = StyleSheet.create({
   /* Viewer */
   viewerContainer: {
     position: "absolute",
+    height: "100%",
     top: 0,
     left: 0,
     right: 0,
@@ -452,14 +519,14 @@ const styles = StyleSheet.create({
 
   viewerImage: {
     width: width,
-    height: "100%",
+    height: "70%",
     resizeMode: "contain",
     marginRight: 8,
   },
 
   closeButton: {
     position: "absolute",
-    top: 40,
+    top: 100,
     right: 20,
     backgroundColor: "rgba(0,0,0,0.6)",
     borderRadius: 20,
@@ -477,4 +544,32 @@ const styles = StyleSheet.create({
     height: 72,
     borderRadius: 8,
   },
+  fixedBox: {
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: "#fff",
+  justifyContent: "center",
+  alignItems: "center",
+  borderTopLeftRadius: 12,
+  borderTopRightRadius: 12,
+  elevation: 10,
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: -2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 5,
+},
+
+bookButton: {
+  backgroundColor: "#1CB5B0",
+  paddingVertical: 14,
+  paddingHorizontal: 80,
+  borderRadius: 30,
+},
+conditionText: {
+  color: "red",
+  fontSize: 12,
+  marginTop: 4,
+},
 });
