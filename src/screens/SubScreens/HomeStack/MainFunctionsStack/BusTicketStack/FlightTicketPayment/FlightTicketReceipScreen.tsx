@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
+const FlightTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
 
   const {
     amount,
@@ -20,9 +20,9 @@ const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
     travelDate,
     seat,
     paymentMethod,
-    nrcNumber,
+    passportNumber,
     userName,
-  }  = route?.params || {};
+  } = route?.params || {};
 
   return (
     <View style={styles.container}>
@@ -31,28 +31,24 @@ const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
         <Ionicons name="checkmark" size={32} color="#fff" />
       </View>
 
-      <Text style={styles.successText}>Payment successful</Text>
+      <Text style={styles.successText}>Payment Successful</Text>
 
       <Text style={styles.amountText}>-{amount} MMK</Text>
-      <Text style={styles.recipientText}>Recipient : {recipient}</Text>
+      <Text style={styles.recipientText}>Recipient: {recipient}</Text>
 
-  
       <View style={styles.divider} />
 
-    
-      <Row label="Departure Time" value={departureTime} />
-      <Row label="Transaction Time" value={transactionTime} />
+      <Row label="Passenger Name" value={userName} />
+      <Row label="Passport Number" value={passportNumber} />
+      <Row label="Seat" value={seat} />
+      <Row label="Travel Date" value={travelDate} />
+      <Row label="Departure Time" value={departureTime || "-"} />
+      <Row label="Payment Method" value={paymentMethod} />
       <Row label="Transaction No." value={transactionNo} />
+      <Row label="Transaction Time" value={transactionTime} />
       <Row label="Transaction To" value={transactionTo} />
       <Row label="Total Amount" value={`${totalAmount} MMK`} />
-      <Row label="Travel date" value={travelDate} />
-      <Row label="Departure Time" value={departureTime} />
-      <Row label="Purchase seat" value={seat} />
-      <Row label="Payment method" value={paymentMethod} />
-      <Row label="NRC Number" value={nrcNumber} />
-      <Row label="User Name" value={userName} />
 
-   
       <TouchableOpacity
         style={styles.okButton}
         onPress={() => navigation.popToTop()}
@@ -63,8 +59,7 @@ const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
   );
 };
 
-export default BusTicketSuccessReceiptScreen;
-
+export default FlightTicketSuccessReceiptScreen;
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.row}>
@@ -72,7 +67,6 @@ const Row = ({ label, value }: { label: string; value: string }) => (
     <Text style={styles.value}>{value}</Text>
   </View>
 );
-
 
 const styles = StyleSheet.create({
   container: {
@@ -95,6 +89,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: "#2bb6a3",
     fontSize: 16,
+    fontWeight: "600",
   },
   amountText: {
     textAlign: "center",
@@ -130,8 +125,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 6,
     marginTop: 30,
-    
-    
   },
   okText: {
     color: "#fff",

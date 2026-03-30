@@ -141,6 +141,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginLeft: "auto",
+    marginRight: "auto",
   },
 
   imageBox: {

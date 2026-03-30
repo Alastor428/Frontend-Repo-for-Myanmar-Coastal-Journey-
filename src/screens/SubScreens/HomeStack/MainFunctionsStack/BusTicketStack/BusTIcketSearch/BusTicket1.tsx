@@ -33,11 +33,11 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
           onPress={() => navigation?.goBack?.()}
           style={{ margin: 0, padding: 0 }}
         />
-        <Text style={styles.headerText}>Bus Tickets</Text>
+        <Text style={styles.headerText}>Travel Tickets</Text>
       </View>
       <View style={styles.imageWrapper}>
         <Image
-          source={require("../../../../../../../assets/Other/image.png")}
+          source={require("../../../../../../../assets/Other/TravelTicket.png")}
           style={styles.bannerImage}
           resizeMode="cover"
         />

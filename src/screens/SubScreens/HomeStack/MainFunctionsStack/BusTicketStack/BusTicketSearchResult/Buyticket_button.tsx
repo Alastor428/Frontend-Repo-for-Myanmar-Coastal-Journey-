@@ -1,16 +1,19 @@
 import React from "react";
 import { Text, StyleSheet, Pressable } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   ticketId: string;
+  onPress?: () => void; // optional for flight navigation
 }
 
-const BuyTicketButton: React.FC<Props> = ({ ticketId }) => {
-  const navigation = useNavigation<any>();
-
+const BuyTicketButton: React.FC<Props> = ({ ticketId, onPress }) => {
   const handlePress = () => {
-    navigation.navigate("BusTicketSeatSelection");
+    if (onPress) {
+      onPress(); // use custom navigation if provided
+    } else {
+      // default navigation for bus
+      console.log(`Navigate to bus seat selection for ticket: ${ticketId}`);
+    }
   };
 
   return (

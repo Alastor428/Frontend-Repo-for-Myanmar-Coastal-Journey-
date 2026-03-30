@@ -7,52 +7,57 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
-
+const HotelBookingSuccessScreen = ({ route, navigation }: any) => {
   const {
-    amount,
-    recipient,
-    departureTime,
-    transactionTime,
-    transactionNo,
-    transactionTo,
-    totalAmount,
-    travelDate,
-    seat,
-    paymentMethod,
-    nrcNumber,
-    userName,
-  }  = route?.params || {};
+    hotelName,
+    guestName,
+    phone,
+    rooms,
+    adults,
+    nights,
+    totalPrice,
+    paymentType,
+    checkInDate,
+    checkOutDate,
+    remark,
+  } = route?.params || {};
+
+  const transactionNo = `HT-${Date.now()}`;
+  const transactionTime = new Date().toLocaleString();
 
   return (
     <View style={styles.container}>
-     
+      {/* Success Icon */}
       <View style={styles.iconWrapper}>
         <Ionicons name="checkmark" size={32} color="#fff" />
       </View>
 
-      <Text style={styles.successText}>Payment successful</Text>
+      {/* Title */}
+      <Text style={styles.successText}>Booking Successful</Text>
 
-      <Text style={styles.amountText}>-{amount} MMK</Text>
-      <Text style={styles.recipientText}>Recipient : {recipient}</Text>
+      {/* Amount */}
+      <Text style={styles.amountText}>-{totalPrice?.toLocaleString()} MMK</Text>
+      <Text style={styles.recipientText}>Guest: {guestName}</Text>
 
-  
+      {/* Divider */}
       <View style={styles.divider} />
 
-    
-      <Row label="Departure Time" value={departureTime} />
-      <Row label="Transaction Time" value={transactionTime} />
+      {/* Details */}
+      <Row label="Hotel" value={hotelName} />
+      <Row label="Guest Name" value={guestName} />
+      <Row label="Phone" value={phone} />
+      <Row label="Rooms" value={`${rooms}`} />
+      <Row label="Adults" value={`${adults}`} />
+      <Row label="Nights" value={`${nights}`} />
+      <Row label="Check-in" value={checkInDate} />
+      <Row label="Check-out" value={checkOutDate} />
+      <Row label="Payment Method" value={paymentType} />
       <Row label="Transaction No." value={transactionNo} />
-      <Row label="Transaction To" value={transactionTo} />
-      <Row label="Total Amount" value={`${totalAmount} MMK`} />
-      <Row label="Travel date" value={travelDate} />
-      <Row label="Departure Time" value={departureTime} />
-      <Row label="Purchase seat" value={seat} />
-      <Row label="Payment method" value={paymentMethod} />
-      <Row label="NRC Number" value={nrcNumber} />
-      <Row label="User Name" value={userName} />
+      <Row label="Transaction Time" value={transactionTime} />
+      <Row label="Total Amount" value={`${totalPrice} MMK`} />
+      {remark ? <Row label="Remark" value={remark} /> : null}
 
-   
+      {/* OK Button */}
       <TouchableOpacity
         style={styles.okButton}
         onPress={() => navigation.popToTop()}
@@ -63,8 +68,7 @@ const BusTicketSuccessReceiptScreen = ({ route, navigation }: any) => {
   );
 };
 
-export default BusTicketSuccessReceiptScreen;
-
+export default HotelBookingSuccessScreen;
 
 const Row = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.row}>
@@ -72,7 +76,6 @@ const Row = ({ label, value }: { label: string; value: string }) => (
     <Text style={styles.value}>{value}</Text>
   </View>
 );
-
 
 const styles = StyleSheet.create({
   container: {
@@ -130,8 +133,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 6,
     marginTop: 30,
-    
-    
   },
   okText: {
     color: "#fff",

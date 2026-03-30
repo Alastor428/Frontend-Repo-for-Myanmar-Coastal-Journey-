@@ -24,7 +24,7 @@ const RoomTypeComponent: React.FC<Props> = ({
 
   const [visible, setVisible] = useState(false);
 
-  const maxAdults = rooms * 5;
+  const maxAdults = rooms * 2;
 
   const increaseRooms = () => {
     onChangeRooms(rooms + 1);

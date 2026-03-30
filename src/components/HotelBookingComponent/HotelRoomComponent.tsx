@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Card, IconButton } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 interface HotelComponentProps {
   imageUrl: ImageSourcePropType;
@@ -17,8 +18,9 @@ interface HotelComponentProps {
   limit: string;
   price: string;
   status: "available" | "busy";
-  busyUntil?: string; 
+  busyUntil?: string;
   view: string;
+  hotelName?: string; // <-- Add this line
 }
 
 const HotelRoomComponent: React.FC<HotelComponentProps> = ({
@@ -31,75 +33,88 @@ const HotelRoomComponent: React.FC<HotelComponentProps> = ({
   status,
   busyUntil,
   view,
+  hotelName, // <-- Accept hotelName
 }) => {
   const isAvailable = status === "available";
+  const navigation = useNavigation<any>();
+
+  const numericPrice = price
+    ? Number(price.replace(/,/g, "").replace(/ MMK\/night/, ""))
+    : 0;
 
   return (
     <Card style={styles.card}>
-      {/* Image */}
-      <View style={styles.imageContainer}>
-        <Image source={imageUrl} style={styles.image} />
-      </View>
-
-      <View style={styles.content}>
-        <Text style={styles.roomType}>{roomType}</Text>
-
-        {/* Status */}
-        <Text
-          style={[
-            styles.status,
-            { color: isAvailable ? "#1CB5B0" : "#D32F2F" },
-          ]}
-        >
-          {isAvailable ? "Available" : "Busy"}
-        </Text>
-
-        {/* Show busy date only if busy */}
-        {!isAvailable && busyUntil && (
-          <Text style={styles.busyDate}>
-            Busy until: {busyUntil}
-          </Text>
-        )}
-
-        {/* Icons */}
-        <View style={styles.iconRow}>
-          <View style={styles.iconItem}>
-            <IconButton icon="bed" size={18} iconColor="#1CB5B0" />
-            <Text style={styles.iconText}>{bedType}</Text>
-          </View>
-
-          <View style={styles.iconItem}>
-            <IconButton icon="ruler-square" size={18} iconColor="#1CB5B0"/>
-            <Text style={styles.iconText}>{area}</Text>
-          </View>
-
-          <View style={styles.iconItem}>
-            <IconButton icon="account-group" size={18} iconColor="#1CB5B0"/>
-            <Text style={styles.iconText}>{limit}</Text>
-          </View>
+      <View style={styles.innerCard}>
+        <View style={styles.imageContainer}>
+          <Image source={imageUrl} style={styles.image} />
         </View>
 
-        <View><Text style={styles.iconText}>{view}</Text></View>
+        <View style={styles.content}>
+          <Text style={styles.roomType}>{roomType}</Text>
+          {hotelName && <Text style={styles.hotelName}>{hotelName}</Text>}
 
-        {/* Price */}
-        <View style={styles.priceSection}>
-          <Text style={styles.todayPrice}>Today's Price</Text>
-          <Text style={styles.price}>{price}</Text>
-          <Text style={styles.taxText}>include tax & fees</Text>
-        </View>
-
-        {/* Button */}
-        <TouchableOpacity
-          style={[
-            styles.button,
-            { backgroundColor: isAvailable ? "#1CB5B0" : "#ccc" },
-          ]}
-          disabled={!isAvailable}
-        >
-          <Text style={styles.buttonText}>
-            {isAvailable ? "Select Room" : "Unavailable"}
+          <Text
+            style={[
+              styles.status,
+              { color: isAvailable ? "#1CB5B0" : "#D32F2F" },
+            ]}
+          >
+            {isAvailable ? "Available" : "Busy"}
           </Text>
-        </TouchableOpacity>
+
+          {!isAvailable && busyUntil && (
+            <Text style={styles.busyDate}>Busy until: {busyUntil}</Text>
+          )}
+
+          <View style={styles.iconRow}>
+            <View style={styles.iconItem}>
+              <IconButton icon="bed" size={18} iconColor="#1CB5B0" />
+              <Text style={styles.iconText}>{bedType}</Text>
+            </View>
+
+            <View style={styles.iconItem}>
+              <IconButton icon="ruler-square" size={18} iconColor="#1CB5B0" />
+              <Text style={styles.iconText}>{area}</Text>
+            </View>
+
+            <View style={styles.iconItem}>
+              <IconButton icon="account-group" size={18} iconColor="#1CB5B0" />
+              <Text style={styles.iconText}>{limit}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.iconText}>{view}</Text>
+
+          <View style={styles.priceSection}>
+            <Text style={styles.todayPrice}>Today's Price</Text>
+            <Text style={styles.price}>
+              {numericPrice.toLocaleString()} MMK/night
+            </Text>
+            <Text style={styles.taxText}>includes tax & fees</Text>
+          </View>
+
+          <TouchableOpacity
+            style={[
+              styles.button,
+              { backgroundColor: isAvailable ? "#1CB5B0" : "#ccc" },
+            ]}
+            disabled={!isAvailable}
+            onPress={() => navigation.navigate("HotelPaymentScreen", {
+              hotelName,
+              roomType,
+              price,
+              location: "Ngapali",
+              bedType,
+              area,
+              limit,
+              view,
+            })}
+          >
+            <Text style={styles.buttonText}>
+              {isAvailable ? "Select Room" : "Unavailable"}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Card>
   );
@@ -115,6 +130,10 @@ const styles = StyleSheet.create({
     elevation: 4,
     overflow: "hidden",
   },
+  innerCard: {
+    overflow: "hidden",
+    borderRadius: 12,
+  },
   imageContainer: {
     width: "100%",
     height: 200,
@@ -129,6 +148,11 @@ const styles = StyleSheet.create({
   roomType: {
     fontSize: 18,
     fontWeight: "bold",
+  },
+  hotelName: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#555",
   },
   status: {
     fontSize: 14,
@@ -157,7 +181,7 @@ const styles = StyleSheet.create({
   },
   todayPrice: {
     fontSize: 14,
-    color: "#ooo",
+    color: "#555",
   },
   price: {
     fontSize: 18,
@@ -165,7 +189,7 @@ const styles = StyleSheet.create({
   },
   taxText: {
     fontSize: 12,
-    color: "#ooo",
+    color: "#555",
   },
   button: {
     paddingVertical: 12,

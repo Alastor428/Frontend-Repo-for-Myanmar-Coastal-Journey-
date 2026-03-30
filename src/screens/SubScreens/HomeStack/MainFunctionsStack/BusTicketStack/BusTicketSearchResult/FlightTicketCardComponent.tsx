@@ -1,23 +1,25 @@
+// FlightTicketCardComponent.tsx
 import React from "react";
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import BuyTicketButton from "./Buyticket_button";
 import Soldout_TicketButton from "./Soldout_ticket_button";
 
-interface BusTicket {
+interface FlightTicket {
   id: string;
-  type: string;
+  airline: string;
   departureTime: string;
+  arrivalTime: string;
   price: string;
   duration: string;
   status: "available" | "soldout";
 }
 
 interface Props {
-  ticket: BusTicket;
+  ticket: FlightTicket;
   navigation?: any;
 }
 
-const BusTicketCard: React.FC<Props> = ({ ticket, navigation }) => {
+const FlightTicketCard: React.FC<Props> = ({ ticket, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
@@ -29,17 +31,21 @@ const BusTicketCard: React.FC<Props> = ({ ticket, navigation }) => {
               style={styles.logoImage}
             />
           </View>
-          <Text style={styles.typeName}>{ticket.type}</Text>
+          <Text style={styles.typeName}>{ticket.airline}</Text>
         </View>
 
         {/* Middle Section */}
         <View style={styles.middleSection}>
           <View style={styles.infoRow}>
-            <Text>Departure Time</Text>
+            <Text>Departure</Text>
             <Text>{ticket.departureTime}</Text>
           </View>
           <View style={styles.infoRow}>
-            <Text>Price (MMK)</Text>
+            <Text>Arrival</Text>
+            <Text>{ticket.arrivalTime}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Text>Price</Text>
             <Text>{ticket.price}</Text>
           </View>
           <View style={styles.infoRow}>
@@ -53,7 +59,7 @@ const BusTicketCard: React.FC<Props> = ({ ticket, navigation }) => {
           {ticket.status === "available" ? (
             <BuyTicketButton 
               ticketId={ticket.id} 
-              onPress={() => navigation?.navigate("BusTicketSeatSelection", { ticket })}
+              onPress={() => navigation?.navigate("FlightTicketSeatSelection", { ticket })}
             />
           ) : (
             <Soldout_TicketButton ticketId={ticket.id} />
@@ -64,7 +70,7 @@ const BusTicketCard: React.FC<Props> = ({ ticket, navigation }) => {
   );
 };
 
-export default BusTicketCard;
+export default FlightTicketCard;
 
 const styles = StyleSheet.create({
   container: { alignItems: "center", gap: 10 },
@@ -90,5 +96,4 @@ const styles = StyleSheet.create({
   middleSection: { gap: 8 },
   infoRow: { flexDirection: "row", justifyContent: "space-between" },
   buttonContainer: { alignItems: "center" },
-  soldOutText: { color: "red", fontWeight: "bold" },
 });

@@ -3,59 +3,57 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TextInput,
   TouchableOpacity,
   ScrollView,
   Modal,
+  Image,
 } from "react-native";
 import { IconButton } from "react-native-paper";
 import { useNavigation, RouteProp } from "@react-navigation/native";
 
 // ---------------- Props Type ----------------
-type TicketPaymentParams = {
-  busType: string;
+type FlightPaymentParams = {
+  flightType: string;
   travelDate: string;
   departureTime: string;
   adult: number;
-  selectedSeats: string;
+  selectedSeats: string[];
   seatPrice: number;
   totalAmount: string;
   boardingPoint: string;
-  source: string;       // NEW
-  destination: string;  // NEW
+  source: string;
+  destination: string;
 };
 
 type Props = {
-  route: RouteProp<{ params: TicketPaymentParams }, "params">;
+  route: RouteProp<{ params: FlightPaymentParams }, "params">;
 };
 
-const TicketPayment_screen: React.FC<Props> = ({ route }) => {
+const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
   const navigation = useNavigation<any>();
   const params = route?.params;
 
-  // ---------------- Destructure params ----------------
   const {
-    busType = "Normal Express (2+2)",
+    flightType = "Myanmar Airways",
     travelDate = "",
     departureTime = "",
     adult = 0,
-    selectedSeats = "",
-    seatPrice = 75000,
+    selectedSeats = [],
+    seatPrice = 250000,
     totalAmount = "0",
-    boardingPoint = "Chan Mya Shwe Pyi Station",
-    source = "Mandalay",       // NEW
-    destination = "Ngapali",    // NEW
+    boardingPoint = "Yangon Airport",
+    source = "Yangon",
+    destination = "Mandalay",
   } = params;
 
   const price = seatPrice;
-  const promotion = 0;
-  const totalPrice = parseInt(totalAmount) || adult * price;
+  const totalPrice = parseInt(totalAmount) || selectedSeats.length * price;
 
   // ---------------- Passenger Info ----------------
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [nrc, setNrc] = useState("");
+  const [passport, setPassport] = useState("");
   const [remark, setRemark] = useState("");
   const [agree, setAgree] = useState(false);
 
@@ -65,49 +63,35 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 80 }}>
-      {/* ---------------- Header ---------------- */}
+      {/* Header */}
       <View style={styles.header}>
-        <IconButton
-          icon="chevron-left"
-          size={30}
-          onPress={() => navigation.goBack()}
-        />
+        <IconButton icon="chevron-left" size={30} onPress={() => navigation.goBack()} />
         <Text style={styles.headerTitle}>Passenger Details</Text>
       </View>
 
-      {/* ---------------- Ticket Details ---------------- */}
+      {/* Flight Details */}
       <View style={styles.card}>
-        <View style={styles.headerRow}>
-          <Image
-            source={require("../../../../../../../assets/Logo/WW_logo.jpg")}
-            style={styles.logo}
-          />
-          <Text style={styles.busType}>{busType}</Text>
-        </View>
-
+        <Text style={styles.sectionTitle}>{flightType} Flight</Text>
         <Row label="Travel Date" value={travelDate} />
         <Row label="Departure Time" value={departureTime} />
         <Row label="Adult" value={adult} />
-        <Row label="Selected Seats" value={selectedSeats} />
-        <Row label="Price" value={`${price} MMK / ticket`} />
-        <Row label="Promotion" value={`${promotion} MMK`} />
-        <Row label="Total Ticket Price" value={`${totalPrice} MMK`} />
+        <Row label="Selected Seats" value={selectedSeats.join(", ")} />
+        <Row label="Seat Price" value={`${price} MMK / seat`} />
+        <Row label="Total Price" value={`${totalPrice} MMK`} />
         <Row label="Boarding Point" value={boardingPoint} />
-        <Row label="Source" value={source} />            {/* NEW */}
-        <Row label="Destination" value={destination} />  {/* NEW */}
+        <Row label="Source" value={source} />
+        <Row label="Destination" value={destination} />
       </View>
 
-      {/* ---------------- Passenger Info ---------------- */}
+      {/* Passenger Info */}
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Passenger Information</Text>
-
         <TextInput
           style={styles.input}
-          placeholder="Name"
+          placeholder="Full Name"
           value={name}
           onChangeText={setName}
         />
-
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
@@ -115,14 +99,12 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
           value={phone}
           onChangeText={setPhone}
         />
-
         <TextInput
           style={styles.input}
-          placeholder="NRC / Passport"
-          value={nrc}
-          onChangeText={setNrc}
+          placeholder="Passport Number"
+          value={passport}
+          onChangeText={setPassport}
         />
-
         <TextInput
           style={styles.input}
           placeholder="Remark (optional)"
@@ -131,7 +113,7 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
         />
       </View>
 
-      {/* ---------------- Terms & Conditions ---------------- */}
+      {/* Terms & Conditions */}
       <TouchableOpacity
         style={styles.termsRow}
         onPress={() => setAgree((prev) => !prev)}
@@ -142,16 +124,16 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
         </Text>
       </TouchableOpacity>
 
-      {/* ---------------- Confirm Button ---------------- */}
+      {/* Confirm Button */}
       <TouchableOpacity
         style={[styles.confirmBtn, !agree ? styles.disabledBtn : null]}
         disabled={!agree}
         onPress={() => setShowPaymentModal(true)}
       >
-        <Text style={styles.confirmText}>Yes, I Confirm This</Text>
+        <Text style={styles.confirmText}>Proceed to Payment</Text>
       </TouchableOpacity>
 
-      {/* ---------------- Payment Modal ---------------- */}
+      {/* Payment Modal */}
       <Modal
         visible={showPaymentModal}
         transparent
@@ -167,7 +149,10 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
               onPress={() => setSelectedPayment("visa")}
             >
               <View
-                style={[styles.radio, selectedPayment === "visa" ? styles.radioSelected : null]}
+                style={[
+                  styles.radio,
+                  selectedPayment === "visa" ? styles.radioSelected : null,
+                ]}
               />
               <Image
                 source={require("../../../../../../../assets/Logo/visa_logo1.png")}
@@ -181,7 +166,10 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
               onPress={() => setSelectedPayment("mpu")}
             >
               <View
-                style={[styles.radio, selectedPayment === "mpu" ? styles.radioSelected : null]}
+                style={[
+                  styles.radio,
+                  selectedPayment === "mpu" ? styles.radioSelected : null,
+                ]}
               />
               <Image
                 source={require("../../../../../../../assets/Logo/mpu_logo.jpg")}
@@ -194,29 +182,26 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
               style={styles.payNowBtn}
               onPress={() => {
                 setShowPaymentModal(false);
-                navigation.navigate("BusTicketFinalPayment", {
-                  productName: `Bus Ticket - ${busType} (Seats: ${selectedSeats})`,
-                  invoiceNumber: `BT-${Date.now()}`,
+                navigation.navigate("FlightTicketFinalPayment", {
+                  productName: `Flight - ${flightType} (Seats: ${selectedSeats.join(", ")})`,
+                  invoiceNumber: `FT-${Date.now()}`,
                   amount: totalPrice,
                   paymentType: selectedPayment.toUpperCase(),
                   date: new Date().toLocaleDateString(),
                   time: new Date().toLocaleTimeString(),
                   recipient: name || "Passenger",
                   ticketData: {
-                    busType,
+                    flightType,
                     adult,
                     price,
                     totalPrice,
                     selectedSeats,
-                    source,       // NEW
-                    destination,  // NEW
+                    source,
+                    destination,
+                    travelDate,
+                    departureTime,
                   },
-                  passenger: {
-                    name,
-                    phone,
-                    nrc,
-                    remark,
-                  },
+                  passenger: { name, phone, passport, remark },
                 });
               }}
             >
@@ -236,9 +221,8 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
   );
 };
 
-export default TicketPayment_screen;
+export default FlightTicketPaymentScreen;
 
-// ---------------- Row Component ----------------
 const Row = ({ label, value }: { label: string; value: unknown }) => (
   <View style={styles.row}>
     <Text style={styles.rowLabel}>{label}</Text>
@@ -246,19 +230,15 @@ const Row = ({ label, value }: { label: string; value: unknown }) => (
   </View>
 );
 
-// ---------------- Styles ----------------
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#ffffff", padding: 32 },
+  container: { flex: 1, backgroundColor: "#fff", padding: 24 },
   header: { flexDirection: "row", alignItems: "center", paddingTop: 40 },
   headerTitle: { fontSize: 18, fontWeight: "bold", marginLeft: "auto", marginRight: "auto" },
-  card: { backgroundColor: "#ffffff", padding: 8, borderRadius: 6, marginBottom: 16, elevation: 2 },
-  headerRow: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
-  logo: { width: 90, height: 60, marginRight: 10, resizeMode: "contain" },
-  busType: { flex: 1, fontWeight: "600", fontSize: 16, textAlign: "center", color: "#391616" },
+  card: { backgroundColor: "#fff", padding: 12, borderRadius: 6, marginBottom: 16, elevation: 2 },
+  sectionTitle: { fontWeight: "bold", marginBottom: 10 },
   row: { flexDirection: "row", justifyContent: "space-between", marginVertical: 4 },
   rowLabel: { color: "#555" },
   rowValue: { fontWeight: "500" },
-  sectionTitle: { fontWeight: "bold", marginBottom: 10 },
   input: { borderWidth: 1, borderColor: "#7ec8c7", borderRadius: 8, padding: 10, marginBottom: 10 },
   termsRow: { flexDirection: "row", alignItems: "center", marginBottom: 20 },
   checkbox: { width: 18, height: 18, borderWidth: 1, marginRight: 8 },
