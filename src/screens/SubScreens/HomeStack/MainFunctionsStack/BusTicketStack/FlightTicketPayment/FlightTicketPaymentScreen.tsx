@@ -133,53 +133,68 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
         <Text style={styles.confirmText}>Proceed to Payment</Text>
       </TouchableOpacity>
 
-      {/* Payment Modal */}
+      {/* ---------------- Payment Modal ---------------- */}
       <Modal
         visible={showPaymentModal}
         transparent
-        animationType="slide"
+        animationType="fade"
         onRequestClose={() => setShowPaymentModal(false)}
       >
-        <View style={styles.modalOverlay}>
+        <View style={styles.overlay}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Select Payment Method</Text>
+            <Text style={styles.modalTitle}>Payment Method</Text>
+            <Text style={styles.subtitle}>
+              Choose your preferred payment method
+            </Text>
+
+            <View style={styles.amountBox}>
+              <Text style={styles.amountLabel}>Total Amount</Text>
+              <Text style={styles.amount}>{totalPrice.toLocaleString()} MMK</Text>
+              <Text style={styles.traveler}>for {adult} traveler(s)</Text>
+            </View>
+
+            <View style={styles.selectBox}>
+              <Text style={styles.selectText}>
+                Please select one payment method.
+              </Text>
+
+              <View style={styles.paymentRow}>
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => setSelectedPayment("visa")}
+                >
+                  <View style={styles.radioOuter}>
+                    {selectedPayment === "visa" && <View style={styles.radioInner} />}
+                  </View>
+                  <View style={styles.logoBox}>
+                    <Image
+                      source={require("../../../../../../../assets/Logo/visa_logo1.png")}
+                      style={styles.logoImg}
+                    />
+                  </View>
+                  <Text style={styles.optionText}>Pay with VISA</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.paymentOption}
+                  onPress={() => setSelectedPayment("mpu")}
+                >
+                  <View style={styles.radioOuter}>
+                    {selectedPayment === "mpu" && <View style={styles.radioInner} />}
+                  </View>
+                  <View style={styles.logoBox}>
+                    <Image
+                      source={require("../../../../../../../assets/Logo/mpu_logo.jpg")}
+                      style={styles.logoImg}
+                    />
+                  </View>
+                  <Text style={styles.optionText}>Pay with MPU</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
 
             <TouchableOpacity
-              style={styles.paymentOption}
-              onPress={() => setSelectedPayment("visa")}
-            >
-              <View
-                style={[
-                  styles.radio,
-                  selectedPayment === "visa" ? styles.radioSelected : null,
-                ]}
-              />
-              <Image
-                source={require("../../../../../../../assets/Logo/visa_logo1.png")}
-                style={styles.paymentLogo}
-              />
-              <Text>Pay with VISA</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.paymentOption}
-              onPress={() => setSelectedPayment("mpu")}
-            >
-              <View
-                style={[
-                  styles.radio,
-                  selectedPayment === "mpu" ? styles.radioSelected : null,
-                ]}
-              />
-              <Image
-                source={require("../../../../../../../assets/Logo/mpu_logo.jpg")}
-                style={styles.paymentLogo}
-              />
-              <Text>Pay with MPU</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.payNowBtn}
+              style={styles.payButton}
               onPress={() => {
                 setShowPaymentModal(false);
                 navigation.navigate("FlightTicketFinalPayment", {
@@ -205,11 +220,11 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
                 });
               }}
             >
-              <Text style={styles.payNowText}>Pay Now</Text>
+              <Text style={styles.payText}>Pay Now</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.cancelBtn}
+              style={styles.cancelButton}
               onPress={() => setShowPaymentModal(false)}
             >
               <Text style={styles.cancelText}>Cancel</Text>
@@ -223,6 +238,7 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
 
 export default FlightTicketPaymentScreen;
 
+// ---------------- Row Component ----------------
 const Row = ({ label, value }: { label: string; value: unknown }) => (
   <View style={styles.row}>
     <Text style={styles.rowLabel}>{label}</Text>
@@ -230,6 +246,7 @@ const Row = ({ label, value }: { label: string; value: unknown }) => (
   </View>
 );
 
+// ---------------- Styles ----------------
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 24 },
   header: { flexDirection: "row", alignItems: "center", paddingTop: 40 },
@@ -247,15 +264,27 @@ const styles = StyleSheet.create({
   confirmBtn: { backgroundColor: "#2aa8a8", padding: 12, borderRadius: 10, alignItems: "center" },
   disabledBtn: { backgroundColor: "#ccc" },
   confirmText: { color: "#fff", fontWeight: "bold" },
-  modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
-  modalContainer: { width: "85%", backgroundColor: "#fff", borderRadius: 8, padding: 32, alignItems: "center" },
-  modalTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 15, textAlign: "center" },
-  paymentOption: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
-  radio: { width: 18, height: 18, borderRadius: 9, borderWidth: 2, borderColor: "#888", marginRight: 8 },
-  radioSelected: { backgroundColor: "#2aa8a8" },
-  paymentLogo: { width: 50, height: 36, resizeMode: "contain", marginRight: 8 },
-  payNowBtn: { backgroundColor: "#1CB5B0", padding: 12, borderRadius: 8, marginTop: 10, alignItems: "center" },
-  payNowText: { color: "#fff", fontWeight: "bold" },
-  cancelBtn: { padding: 12, borderRadius: 8, marginTop: 10, alignItems: "center" },
-  cancelText: { color: "#1CB5B0", fontWeight: "bold" },
+
+  // ---------------- Payment Modal Styles ----------------
+  overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.4)", justifyContent: "center", alignItems: "center" },
+  modalContainer: { width: "85%", backgroundColor: "white", borderRadius: 15, padding: 20, alignItems: "center" },
+  modalTitle: { fontSize: 22, fontWeight: "bold", textAlign: "center" },
+  subtitle: { fontSize: 14, color: "#555", marginBottom: 15, textAlign: "center" },
+  amountBox: { backgroundColor: "#E6F2F2", padding: 15, borderRadius: 10, alignItems: "center", marginBottom: 15 },
+  amountLabel: { fontSize: 14 },
+  amount: { fontSize: 28, color: "#2BA6A4", fontWeight: "bold" },
+  traveler: { fontSize: 13 },
+  selectBox: { width: "100%", borderWidth: 1, borderColor: "#2BA6A4", borderRadius: 10, padding: 10, marginBottom: 15 },
+  selectText: { marginBottom: 10, fontSize: 14 },
+  paymentRow: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
+  paymentOption: { width: "45%", alignItems: "center" },
+  radioOuter: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: "#2BA6A4", justifyContent: "center", alignItems: "center", marginBottom: 5 },
+  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: "#2BA6A4" },
+  logoBox: { width: 70, height: 40, borderWidth: 1, borderColor: "#2BA6A4", justifyContent: "center", alignItems: "center", marginBottom: 5 },
+  logoImg: { width: 60, height: 30, resizeMode: "contain" },
+  optionText: { fontSize: 13 },
+  payButton: { backgroundColor: "#2BA6A4", padding: 14, borderRadius: 8, width: "100%", alignItems: "center", marginBottom: 10 },
+  payText: { color: "white", fontWeight: "bold", textAlign: "center" },
+  cancelButton: { padding: 12, borderRadius: 8, width: "100%", alignItems: "center", borderWidth: 1, borderColor: "#2BA6A4" },
+  cancelText: { color: "#2BA6A4", fontWeight: "bold", textAlign: "center" },
 });

@@ -8,7 +8,7 @@ interface BeachButtonProps {
 const SelfRegistrationButton: React.FC<BeachButtonProps> = ({ onPress }) => {
   const navigation = useNavigation<any>();
   return (
-    <Card style={styles.card} onPress={() => alert("Self Registration")}>    
+    <Card style={styles.card} onPress={onPress}>    
         <View style={styles.container}>
             <Text style={styles.text}>Self Registration</Text>
         </View>

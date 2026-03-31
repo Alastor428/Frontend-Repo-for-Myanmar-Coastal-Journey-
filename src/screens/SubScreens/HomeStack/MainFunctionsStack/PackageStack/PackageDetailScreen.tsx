@@ -119,6 +119,18 @@ const PackageDetailScreen: React.FC = () => {
         onClose={() => setIsPaymentModalVisible(false)}
         totalAmount={paymentTotalAmount}
         travelers={paymentTravelers}
+        onProceed={(selectedPaymentType: string, remarkText?: string) => {
+    // navigate to PackagePaymentScreen with all necessary params
+    navigation.navigate("PackagePaymentScreen", {
+      packageName: "Myanmar Coastal Journey", // you can pass dynamic package name
+      travelers: paymentTravelers,
+      totalAmount: paymentTotalAmount,
+      paymentType: selectedPaymentType,
+      duration: "3 Days 2 Night", // dynamic if needed
+      remark: remarkText || "",
+    });
+    setIsPaymentModalVisible(false); // close modal
+  }}
       />
     </ScrollView>
   );

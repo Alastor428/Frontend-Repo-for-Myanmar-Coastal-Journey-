@@ -39,6 +39,9 @@ import FlightTicketSuccessReceiptScreen from "@/screens/SubScreens/HomeStack/Mai
 import HotelBookingSuccessScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelReceiptScreen";
 import HotelFinalPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelFinalPaymentScreen";
 import HotelPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelPaymentScreen";
+import PackageBookingSuccessScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageReceiptScreen";
+import PackagePaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackagePaymentScreen";
+import SelfRegistrationScreen from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/SelfRegistrationScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +73,7 @@ export default function RootNavigator() {
       {/* Beach */}
       <Stack.Screen name="Ngapali1" component={Ngapali1Screen} />
       <Stack.Screen name="OceanPearl" component={OceanPearl} />
+      <Stack.Screen name="SelfRegistration" component={SelfRegistrationScreen} />
 
       {/* Hotel */}
       <Stack.Screen name="HotelBookingSearchScreen" component={HotelBookingSearchScreen}/>
@@ -102,6 +106,8 @@ export default function RootNavigator() {
       <Stack.Screen name="PackageSearchScreen" component={PackageSearchScreen} />
       <Stack.Screen name="PackageResultScreen" component={PackageResultScreen} />
       <Stack.Screen name="PackageDetailScreen" component={PackageDetailScreen} />
+      <Stack.Screen name="PackagePaymentScreen" component={PackagePaymentScreen} />
+      <Stack.Screen name="PackageBookingSuccess" component={PackageBookingSuccessScreen} />
     </Stack.Navigator>
   );
 }

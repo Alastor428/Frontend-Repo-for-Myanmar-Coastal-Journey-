@@ -8,7 +8,7 @@ interface BeachButtonProps {
 const TravelPackageButton: React.FC<BeachButtonProps> = ({ onPress }) => {
   const navigation = useNavigation<any>();
   return (
-    <Card style={styles.card} onPress={() => alert("Travel Packages")}>    
+    <Card style={styles.card} onPress={onPress}>    
         <View style={styles.container}>
             <Text style={styles.text}>Travel Packages</Text>
         </View>
