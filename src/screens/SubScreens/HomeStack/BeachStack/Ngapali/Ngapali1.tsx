@@ -58,8 +58,8 @@ const NGAPALI_ACTIVITIES = [
   },
   {
     id: "6",
-    title: "Sunset View",
-    image: require("../../../../../../assets/activities/Sunset.png"),
+    title: "Elephant Observation",
+    image: require("../../../../../../assets/activities/Elephant.png"),
   },
   {
     id: "7",
@@ -68,7 +68,7 @@ const NGAPALI_ACTIVITIES = [
   },
   {
     id: "8",
-    title: "Boat Trip",
+    title: "Island Hopping",
     image: require("../../../../../../assets/activities/Boat.png"),
   },
 ];
