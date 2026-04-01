@@ -8,6 +8,12 @@ import {
   Alert,
   TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
+interface SeatLayoutProps {
+  bookedSeatsInit?: string[];
+  seatPrice?: number;
+}
 
 interface SeatLayoutProps {
   bookedSeatsInit?: string[];
@@ -33,6 +39,7 @@ const seatsData = generateSeats();
 const SeatLayout: React.FC<SeatLayoutProps> = ({ bookedSeatsInit = [], seatPrice = 75000 }) => {
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [bookedSeats, setBookedSeats] = useState<string[]>(bookedSeatsInit);
+  const navigation = useNavigation<any>();
 
   const toggleSeat = (seat: string) => {
     if (bookedSeats.includes(seat)) return;
@@ -107,7 +114,20 @@ const SeatLayout: React.FC<SeatLayoutProps> = ({ bookedSeatsInit = [], seatPrice
         </View>
         <TouchableOpacity
           style={[styles.buyButton, selectedSeats.length === 0 && styles.disabledButton]}
+<<<<<<< HEAD
           onPress={confirmBooking}
+=======
+          onPress={() => navigation.navigate("BusTicketPaymentScreen", {
+            totalAmount: (selectedSeats.length * seatPrice).toString(),
+            adult: selectedSeats.length,
+            selectedSeats: selectedSeats.join(", "),
+            seatPrice: seatPrice,
+            busType: "Normal Express (2+2)",
+            travelDate: new Date().toISOString().split('T')[0],
+            departureTime: "08:30 AM",
+            boardingPoint: "Chan Mya Shwe Pyi Station",
+          }) }
+>>>>>>> origin/LPPK
           disabled={selectedSeats.length === 0}
         >
           <Text style={styles.buyButtonText}>Buy Ticket</Text>

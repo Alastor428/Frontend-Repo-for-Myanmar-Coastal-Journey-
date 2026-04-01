@@ -153,7 +153,14 @@ const FlightTicketSeatSelectionScreen: React.FC<{ navigation?: any }> = ({
               styles.buyButton,
               selectedSeats.length === 0 && styles.disabledButton,
             ]}
+<<<<<<< HEAD
             onPress={confirmBooking}
+=======
+            onPress={navigation.navigate.bind(null, "FlightTicketPaymentScreen", {
+              selectedSeats,
+              seatPrice: FLIGHT_SEAT_PRICE,
+            }) }
+>>>>>>> origin/LPPK
           >
             <Text style={styles.buyButtonText}>Buy Ticket</Text>
           </Pressable>

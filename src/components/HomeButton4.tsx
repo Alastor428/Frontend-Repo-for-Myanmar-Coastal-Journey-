@@ -69,6 +69,7 @@ const HomeButton4: React.FC = () => {
       </View>
       <View style={styles.item}>
         <Pressable
+          //onPress={() => alert("Travel Package")}
           onPress={() => navigation.navigate("PackageSearchScreen")} // Travel Package
           style={({ pressed }) => [
             styles.iconButton,
@@ -76,7 +77,7 @@ const HomeButton4: React.FC = () => {
           ]}
         >
           {/* <Ionicons name="information-circle" size={24} color="#1CB5B0" /> */}
-          <IconButton icon="package-variant" size={24} iconColor="#1CB5B0" />
+          <IconButton icon="package-variant" size={24} iconColor="#1CB5B0" /> 
         </Pressable>
         <Text style={[styles.iconLabel, styles.hotelText]} numberOfLines={1}>
           Travel Package

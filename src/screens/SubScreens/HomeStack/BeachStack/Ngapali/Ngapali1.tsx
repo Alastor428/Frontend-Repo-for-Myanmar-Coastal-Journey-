@@ -371,10 +371,10 @@ Bring sunscreen, hat, slippers, cash, follow safety instructions, and be respect
           )}
           <View style={{ paddingHorizontal: 32, flexDirection: "row", alignItems: "center", paddingVertical:24 }}>
               <View style={{ flex: 1 }}>
-                <TravelPackageButton onPress={() => alert("Travel Packages button pressed!")} />
+                <TravelPackageButton onPress={() => navigation.navigate("PackageSearchScreen")} />
               </View>
-              <View style={{ flex: 1 , alignItems: "flex-end"}}>
-                <SelfRegistrationButton onPress={() => alert("Self Registration button pressed!")} />
+              <View style={{ flex: 1 , marginLeft: "auto"}}>
+                <SelfRegistrationButton onPress={() => navigation.navigate("SelfRegistration")} />
               </View>
           </View>
         </View>

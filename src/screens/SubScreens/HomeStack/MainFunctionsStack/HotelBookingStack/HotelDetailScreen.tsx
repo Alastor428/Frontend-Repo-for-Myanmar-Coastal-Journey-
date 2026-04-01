@@ -172,7 +172,7 @@ const [rooms, setRooms] = useState<Room[]>([
                 </View>
                 <View style={{ paddingHorizontal: 32, marginTop: 16 }}>
                     {rooms.map((room) => (
-                        <HotelRoomComponent
+                    <HotelRoomComponent
                         key={room.id}
                         imageUrl={room.imageUrl}
                         roomType={room.roomType}
@@ -183,6 +183,7 @@ const [rooms, setRooms] = useState<Room[]>([
                         status={room.status}
                         busyUntil={room.busyUntil}
                         view={room.view}
+                        hotelName={hotel.name} //  No more TS error
                         />
                     ))}
                 </View>

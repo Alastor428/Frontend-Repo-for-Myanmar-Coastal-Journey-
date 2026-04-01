@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     fontSize: 12,
     fontFamily: 'Poppins',
-    fontWeight: 'medium',
+    fontWeight: '500',
   },
 
   inputBox: {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 16,
     fontFamily: 'Poppins',
-    fontWeight: 'medium',
+    fontWeight: '500',
     color: '#111827',
     marginRight: 176,
   },

@@ -75,7 +75,7 @@ import { Icon } from 'react-native-paper';
       fontSize: 12,
       paddingHorizontal:8,
       fontFamily: "Poppins",
-      fontWeight: "medium"
+      fontWeight: "500"
     },
     placeholderStyle: {
       fontSize: 16,

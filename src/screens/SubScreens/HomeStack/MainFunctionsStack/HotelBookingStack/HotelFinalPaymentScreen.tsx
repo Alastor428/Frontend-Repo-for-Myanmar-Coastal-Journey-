@@ -17,25 +17,26 @@ const PAYMENT_CONFIG: Record<
 > = {
   VISA: {
     label: "VISA INTERNATIONAL",
-    logo: require("../../../../../../../assets/Logo/visa_logo1.png"),
+    logo: require("../../../../../../assets/Logo/visa_logo1.png"),
   },
   MPU: {
     label: "MYANMAR PAYMENT UNION",
-    logo: require("../../../../../../../assets/Logo/mpu_logo.jpg"),
+    logo: require("../../../../../../assets/Logo/mpu_logo.jpg"),
   },
 };
 
-const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
+const HotelFinalPaymentScreen = ({ route }: any) => {
+  const navigation = useNavigation<any>();
   const {
-    productName = "—",
-    invoiceNumber = "—",
+    hotelName = "—",
+    guest = {},
     amount = 0,
     paymentType = "MPU",
-    date = new Date().toLocaleDateString(),
-    time = new Date().toLocaleTimeString(),
-    recipient = "Passenger",
-    ticketData = {},
-    passenger = {},
+    checkInDate = "",
+    checkOutDate = "",
+    rooms = 1,
+    nights = 1,
+    remark = "",
   } = route?.params || {};
 
   const payment =
@@ -45,20 +46,17 @@ const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
   const [password, setPassword] = React.useState("");
 
   const handleConfirmPayment = () => {
-    // Simulate payment processing
-    navigation.navigate("BusTicketSuccessReceipt", {
-      amount,
-      recipient,
-      departureTime: ticketData.departureTime || "",
-      transactionTime: new Date().toLocaleString(),
-      transactionNo: invoiceNumber,
-      transactionTo: "Bus Ticket Booking",
-      totalAmount: amount,
-      travelDate: ticketData.travelDate || "",
-      seat: ticketData.selectedSeats || "",
-      paymentMethod: paymentType,
-      nrcNumber: passenger.nrc || "",
-      userName: passenger.name || "",
+    navigation.navigate("HotelBookingSuccess", {
+      hotelName,
+      guestName: guest.name || "Guest",
+      phone: guest.phone || "",
+      rooms,
+      nights,
+      totalPrice: amount,
+      paymentType,
+      remark,
+      checkInDate,
+      checkOutDate,
     });
   };
 
@@ -69,44 +67,37 @@ const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.card}>
-
+        {/* Payment Header */}
         <View style={styles.paymentHeader}>
           <Image
             source={payment.logo}
             style={styles.paymentLogo}
             resizeMode="contain"
           />
-
           <View style={styles.paymentTextWrapper}>
-            <Text style={styles.paymentTitle}>
-              {payment.label}
-            </Text>
+            <Text style={styles.paymentTitle}>{payment.label}</Text>
             <Text style={styles.paymentSubText}>
-              Date: {date} | Time: {time}
+              Check-in: {checkInDate} | Check-out: {checkOutDate}
             </Text>
           </View>
         </View>
 
         <View style={styles.divider} />
 
+        {/* Info Rows */}
+        <InfoRow label="Hotel" value={hotelName} />
+        <InfoRow label="Guest Name" value={guest.name || "—"} />
+        <InfoRow label="Phone" value={guest.phone || "—"} />
+        <InfoRow label="Rooms" value={`${rooms}`} />
+        <InfoRow label="Nights" value={`${nights}`} />
         <InfoRow
-          label="Product Description"
-          value={productName}
-        />
-        <InfoRow
-          label="Invoice Number"
-          value={invoiceNumber}
-        />
-        <InfoRow
-          label="Amount"
-          value={`${amount.toLocaleString()} MMK`}
+          label="Total Price"
+          value={`${(amount || 0).toLocaleString()} MMK`}
           bold
         />
-        <InfoRow
-          label="Recipient"
-          value={recipient}
-        />
+        {remark ? <InfoRow label="Remark" value={remark} /> : null}
 
+        {/* Card Inputs */}
         <TextInput
           placeholder="Card Number"
           style={styles.input}
@@ -123,37 +114,33 @@ const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmPayment}>
-        <Text style={styles.confirmText}>
-          CONFIRM PAYMENT
-        </Text>
+      {/* Confirm & Cancel Buttons */}
+      <TouchableOpacity
+        style={styles.confirmButton}
+        onPress={handleConfirmPayment}
+      >
+        <Text style={styles.confirmText}>CONFIRM PAYMENT</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.cancelButton}
         onPress={() => navigation.goBack()}
       >
-        <Text style={styles.cancelText}>
-          CANCEL
-        </Text>
+        <Text style={styles.cancelText}>CANCEL</Text>
       </TouchableOpacity>
 
+      {/* Footer */}
       <View style={styles.footer}>
-        <Ionicons
-          name="lock-closed"
-          size={16}
-          color="#000"
-        />
-        <Text style={styles.footerText}>
-          Secure Encrypted transaction
-        </Text>
+        <Ionicons name="lock-closed" size={16} color="#000" />
+        <Text style={styles.footerText}>Secure Encrypted Transaction</Text>
       </View>
     </ScrollView>
   );
 };
 
-export default BusTicketFinalPaymentScreen;
+export default HotelFinalPaymentScreen;
 
+// ---------------- InfoRow Component ----------------
 const InfoRow = ({
   label,
   value,
@@ -165,24 +152,17 @@ const InfoRow = ({
 }) => (
   <View style={styles.infoRow}>
     <Text style={styles.label}>{label}:</Text>
-    <Text
-      style={[
-        styles.value,
-        bold && { fontWeight: "bold" },
-      ]}
-    >
-      {value}
-    </Text>
+    <Text style={[styles.value, bold && { fontWeight: "bold" }]}>{value}</Text>
   </View>
 );
 
+// ---------------- Styles ----------------
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
   },
-
   card: {
     marginTop: 50,
     borderWidth: 2,
@@ -190,7 +170,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
   },
-
   paymentHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -198,51 +177,18 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 6,
   },
-
   paymentLogo: {
     width: 60,
     height: 40,
     marginRight: 12,
   },
-
-  paymentTextWrapper: {
-    flex: 1,
-  },
-
-  paymentTitle: {
-    fontSize: 14,
-    fontWeight: "bold",
-    color: "#000",
-  },
-
-  paymentSubText: {
-    fontSize: 12,
-    color: "#333",
-    marginTop: 2,
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: "#ccc",
-    marginVertical: 14,
-  },
-
-  infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    height: 40,
-  },
-
-  label: {
-    fontSize: 14,
-    color: "#555",
-  },
-
-  value: {
-    fontSize: 14,
-    color: "#000",
-  },
-
+  paymentTextWrapper: { flex: 1 },
+  paymentTitle: { fontSize: 14, fontWeight: "bold", color: "#000" },
+  paymentSubText: { fontSize: 12, color: "#333", marginTop: 2 },
+  divider: { height: 1, backgroundColor: "#ccc", marginVertical: 14 },
+  infoRow: { flexDirection: "row", justifyContent: "space-between", height: 40 },
+  label: { fontSize: 14, color: "#555" },
+  value: { fontSize: 14, color: "#000" },
   input: {
     borderWidth: 1,
     borderColor: "#82c7cf",
@@ -250,7 +196,6 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 10,
   },
-
   confirmButton: {
     backgroundColor: "#21b3a4",
     borderRadius: 6,
@@ -258,12 +203,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
   },
-
-  confirmText: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-
+  confirmText: { color: "#fff", fontWeight: "bold" },
   cancelButton: {
     backgroundColor: "#e0e0e0",
     borderRadius: 6,
@@ -271,12 +211,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
   },
-
-  cancelText: {
-    color: "#999",
-    fontWeight: "bold",
-  },
-
+  cancelText: { color: "#999", fontWeight: "bold" },
   footer: {
     flexDirection: "row",
     alignItems: "center",
@@ -284,9 +219,5 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 20,
   },
-
-  footerText: {
-    marginLeft: 6,
-    fontSize: 12,
-  },
+  footerText: { marginLeft: 6, fontSize: 12 },
 });
