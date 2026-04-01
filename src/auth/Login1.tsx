@@ -25,13 +25,10 @@ import AcceptComponent from "../components/AuthComponent/AcceptComponent";
 import DateOfBirth from "../components/AuthComponent/DateOfBirth";
 import SetGenderButton from "@/components/AuthComponent/SetGenderButton";
 import PassportComponent from "@/components/AuthComponent/Passport";
+import Phone from "@/components/AuthComponent/Phone";
+import { authApi } from "../api/http";
 
 const { width, height } = Dimensions.get("window");
-
-const DUMMY_USER = {
-  email: "admin@gmail.com",
-  password: "123456",
-};
 
 type Props = {
   onLoginSuccess: () => void;
@@ -51,10 +48,12 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
 
   // Sign Up
   const [signupUserName, setSignupUserName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
+  const [signupPhone, setSignupPhone] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
   const [signupConfirmPassword, setSignupConfirmPassword] = useState("");
   const [signupError, setSignupError] = useState("");
@@ -95,7 +94,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
   }, []);
 
   // Login
-  const handleLogin = () => {
+  const handleLogin = async () => {
     Keyboard.dismiss();
 
     if (!email || !password) {
@@ -103,23 +102,29 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       return;
     }
 
-    if (email === DUMMY_USER.email && password === DUMMY_USER.password) {
+    try {
+      setAuthLoading(true);
       setError("");
+
+      await authApi.login(email, password);
       onLoginSuccess();
-    } else {
-      setError("Invalid email or password");
-      setEmail("");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Login failed";
+      setError(message);
       setPassword("");
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   // Signup
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     Keyboard.dismiss();
 
     if (
       !signupUserName ||
       !signupEmail ||
+      !signupPhone ||
       !signupPassword ||
       !signupConfirmPassword ||
       !dob ||
@@ -143,32 +148,48 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
     }
 
     const NRC = hasNRC
-      ? `${nrcState}/${nrcTownship}(${nrcType})${nrcNumber}`
+      ? `${nrcState}/${nrcTownship.toUpperCase()}(${nrcType})${nrcNumber}`
       : passportNumber;
 
-    console.log("SIGN UP DATA");
-    console.log("UserName:", signupUserName);
-    console.log("Email:", signupEmail);
-    console.log("DOB:", dob?.toDateString());
-    console.log("Gender:", gender);
-    console.log("ID:", NRC);
+    try {
+      setAuthLoading(true);
+      setSignupError("");
 
-    alert("Account created successfully!");
+      await authApi.register({
+        name: signupUserName,
+        email: signupEmail,
+        phone: signupPhone,
+        isForeigner: !hasNRC,
+        nrc: hasNRC ? NRC : undefined,
+        passport: !hasNRC ? NRC : undefined,
+        password: signupPassword,
+        confirmPassword: signupConfirmPassword,
+        dateOfBirth: dob?.toISOString(),
+      });
 
-    setSignupUserName("");
-    setSignupEmail("");
-    setSignupPassword("");
-    setSignupConfirmPassword("");
-    setNrcState("");
-    setNrcTownship("");
-    setNrcType("");
-    setNrcNumber("");
-    setPassportNumber("");
-    setDob(undefined);
-    setGender(null);
-    setAcceptTerms(false);
-    setSignupError("");
-    setActiveTab("signin");
+      alert("Account created successfully!");
+
+      setSignupUserName("");
+      setSignupEmail("");
+      setSignupPhone("");
+      setSignupPassword("");
+      setSignupConfirmPassword("");
+      setNrcState("");
+      setNrcTownship("");
+      setNrcType("");
+      setNrcNumber("");
+      setPassportNumber("");
+      setDob(undefined);
+      setGender(null);
+      setAcceptTerms(false);
+      setSignupError("");
+      setActiveTab("signin");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Signup failed";
+      setSignupError(message);
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   return (
@@ -235,7 +256,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
 
                 {error && <Text style={styles.errorText}>{error}</Text>}
 
-                <SignInButton onPress={handleLogin} disabled={false} />
+                <SignInButton onPress={handleLogin} loading={authLoading} />
 
                 <View style={{ flexDirection: "row", marginTop: 16 }}>
                   <Text style={{ color: "#666" }}>
@@ -263,6 +284,10 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                     value={signupEmail}
                     onChange={setSignupEmail}
                   />
+                </View>
+
+                <View style={{ marginTop: 20 }}>
+                  <Phone value={signupPhone} onChange={setSignupPhone} />
                 </View>
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: 328, marginTop: 32 }}>
@@ -352,7 +377,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                 )}
 
                 <View style={{ marginTop: -8 }}>
-                  <SignUpButton onPress={handleSignUp} disabled={false} />
+                  <SignUpButton onPress={handleSignUp} loading={authLoading} />
                 </View>
 
                 <View style={{ flexDirection: "row", marginTop: 16 }}>
