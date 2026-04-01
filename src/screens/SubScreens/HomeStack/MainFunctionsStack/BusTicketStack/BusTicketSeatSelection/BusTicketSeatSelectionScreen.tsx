@@ -1,15 +1,92 @@
-import React from "react";
-import { View, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, StyleSheet, Text, ActivityIndicator } from "react-native";
 import { IconButton } from "react-native-paper";
+import { useRoute } from "@react-navigation/native";
 import SeatLayout from "./Bus_ticket_seat_layout";
 import SeatLegend from "./Bus_fixed_sample_seat";
+import { loadAuthSession } from "@/auth/authStorage";
 
-const BusTicketSeatSelectionScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
-  
-  const seatSelectionData = {
-    bookedSeats: ["1A", "3B", "4C"], // pre-booked seats
-    seatPrice: 75000,                 // price per seat
-  };
+export type BusTicketCardParams = {
+  id: string;
+  showId: string;
+  type: string;
+  departureTime: string;
+  price: string;
+  duration: string;
+  status: "available" | "soldout";
+  source: string;
+  destination: string;
+  travelDate: string;
+  seatPrice: number;
+  boardingPoint?: string;
+};
+
+const BusTicketSeatSelectionScreen: React.FC<{ navigation?: any }> = ({
+  navigation,
+}) => {
+  const route = useRoute<any>();
+  const ticket = route.params?.ticket as BusTicketCardParams | undefined;
+
+  const [session, setSession] = useState<Awaited<
+    ReturnType<typeof loadAuthSession>
+  > | null>(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const s = await loadAuthSession();
+      if (!cancelled) setSession(s);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (session === undefined) {
+    return (
+      <View style={[styles.outerContainer, styles.centered]}>
+        <ActivityIndicator size="large" color="#1db0a9" />
+      </View>
+    );
+  }
+
+  if (!session) {
+    return (
+      <View style={styles.outerContainer}>
+        <View style={styles.header}>
+          <IconButton
+            icon="chevron-left"
+            size={32}
+            onPress={() => navigation?.goBack?.()}
+            style={{ margin: 0, padding: 0 }}
+          />
+          <Text style={styles.headerText}>Select Seat</Text>
+        </View>
+        <Text style={styles.hint}>
+          Sign in to select seats and complete your bus booking.
+        </Text>
+      </View>
+    );
+  }
+
+  if (!ticket?.showId) {
+    return (
+      <View style={styles.outerContainer}>
+        <View style={styles.header}>
+          <IconButton
+            icon="chevron-left"
+            size={32}
+            onPress={() => navigation?.goBack?.()}
+            style={{ margin: 0, padding: 0 }}
+          />
+          <Text style={styles.headerText}>Select Seat</Text>
+        </View>
+        <Text style={styles.hint}>
+          Missing trip details. Go back and choose a bus from the list.
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.outerContainer}>
@@ -27,8 +104,15 @@ const BusTicketSeatSelectionScreen: React.FC<{ navigation?: any }> = ({ navigati
 
       <View style={{ flex: 1 }}>
         <SeatLayout
-          bookedSeatsInit={seatSelectionData.bookedSeats}
-          seatPrice={seatSelectionData.seatPrice}
+          showId={ticket.showId}
+          accessToken={session.accessToken}
+          userId={session.userId}
+          busType={ticket.type}
+          travelDate={ticket.travelDate}
+          departureTime={ticket.departureTime}
+          source={ticket.source}
+          destination={ticket.destination}
+          boardingPoint={ticket.boardingPoint}
         />
       </View>
     </View>
@@ -37,6 +121,7 @@ const BusTicketSeatSelectionScreen: React.FC<{ navigation?: any }> = ({ navigati
 
 const styles = StyleSheet.create({
   outerContainer: { flex: 1, backgroundColor: "#EFF3F4" },
+  centered: { justifyContent: "center", alignItems: "center" },
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -45,7 +130,20 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     backgroundColor: "#EFF3F4",
   },
-  headerText: { fontSize: 20, fontWeight: "bold", marginLeft: "auto", marginRight: "auto", fontFamily: "Poppins" },
+  headerText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: "auto",
+    marginRight: "auto",
+    fontFamily: "Poppins",
+  },
+  hint: {
+    paddingHorizontal: 32,
+    paddingTop: 24,
+    fontSize: 15,
+    color: "#555",
+    lineHeight: 22,
+  },
 });
 
 export default BusTicketSeatSelectionScreen;

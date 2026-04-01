@@ -1,43 +1,63 @@
 import React, { useState } from "react";
-import { View, ScrollView, Text, StyleSheet, Alert, Image } from "react-native";
-import { IconButton, Icon } from "react-native-paper";
-import Search from "@/components/Search";
-import SearchComponent from "@/components/BusTicketComponent/SearchButton";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  Alert,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { IconButton } from "react-native-paper";
+import { Dropdown } from "react-native-element-dropdown";
 import SetDateComponent from "@/components/HotelBookingComponent/SetDateComponent";
-import RoomTypeComponent from "@/components/HotelBookingComponent/RoomTypeComponent";
 import Trending from "@/components/BeachComponent/Trending";
 import { useNavigation } from "@react-navigation/native";
 
+/** Search keyword sent to API `beachName` (matches Beach.beachName, case-insensitive). */
+const BEACH_OPTIONS = [{ label: "Ngapali Beach", value: "Ngapali" }];
+
 const TourGuideSearchScreen: React.FC = () => {
   const navigation = useNavigation<any>();
-  const [StartDate, setStartDate] = useState<Date | undefined>();
-  const [EndDate, setEndDate] = useState<Date | undefined>();
-  const [searchText, setSearchText] = useState("");
-  const [rooms, setRooms] = useState<number>(1);
-  const [adults, setAdults] = useState<number>(1);
+  const [startDate, setStartDate] = useState<Date | undefined>();
+  const [endDate, setEndDate] = useState<Date | undefined>();
+  const [selectedBeach, setSelectedBeach] = useState<string | null>(
+    BEACH_OPTIONS[0].value
+  );
+  const [beachDropdownFocus, setBeachDropdownFocus] = useState(false);
 
-  // Search Hotel
   const handleSearch = () => {
-    if (!StartDate || !EndDate) {
-      Alert.alert("Error", "Please set start date and due date");
+    const beach = selectedBeach?.trim();
+    if (!beach) {
+      Alert.alert("Beach required", "Please select a beach.");
       return;
     }
 
-    if (StartDate > EndDate) {
-      Alert.alert("Error", "Start date cannot be greater than due date");
+    if (!startDate || !endDate) {
+      Alert.alert(
+        "Dates required",
+        "Please choose a start date and an end date."
+      );
       return;
     }
 
-    const searchPayload = {
-      searchText: searchText.trim(),
-      startDate: StartDate.toISOString(),
-      dueDate: EndDate.toISOString(),
-      rooms,
-      adults,
-    };
+    const s0 = new Date(startDate);
+    s0.setHours(0, 0, 0, 0);
+    const e0 = new Date(endDate);
+    e0.setHours(0, 0, 0, 0);
+    if (e0.getTime() <= s0.getTime()) {
+      Alert.alert(
+        "Invalid dates",
+        "End date must be after the start date (multi-day rental)."
+      );
+      return;
+    }
 
-    console.log("Search Payload:", searchPayload);
-    navigation?.navigate("TourGuideResultScreen");
+    navigation?.navigate("TourGuideResultScreen", {
+      beachName: beach,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
+    });
   };
 
   return (
@@ -51,7 +71,6 @@ const TourGuideSearchScreen: React.FC = () => {
           paddingBottom: 80,
         }}
       >
-        {/* header */}
         <View>
           <Image
             source={require("../../../../../../assets/Ngapali/Hotels/hotel_photo.jpg")}
@@ -105,90 +124,74 @@ const TourGuideSearchScreen: React.FC = () => {
             marginTop: -80,
           }}
         >
-          <View
-            style={{
-              marginBottom: 24,
-              borderRadius: 8,
-              //padding: 16,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              backgroundColor: "#fff",
-              marginTop: -20,
-              paddingVertical: 16,
-            }}
-          >
-            <View style={{ paddingHorizontal: 8 }}>
-              <Search value={searchText} onChangeText={setSearchText} />
+          <View style={styles.card}>
+            <Text style={styles.fieldLabel}>Beach</Text>
+            <Text style={styles.fieldHint}>
+              More beaches can be added later. For now only Ngapali is listed.
+            </Text>
+            <View style={styles.dropdownWrap}>
+              <Dropdown
+                style={[
+                  styles.dropdown,
+                  beachDropdownFocus && { borderColor: "#1CB5B0" },
+                ]}
+                placeholderStyle={styles.dropdownPlaceholder}
+                selectedTextStyle={styles.dropdownSelectedText}
+                data={BEACH_OPTIONS}
+                search={false}
+                maxHeight={220}
+                labelField="label"
+                valueField="value"
+                placeholder="Select beach"
+                value={selectedBeach}
+                onFocus={() => setBeachDropdownFocus(true)}
+                onBlur={() => setBeachDropdownFocus(false)}
+                onChange={(item) => setSelectedBeach(item.value)}
+              />
             </View>
-            <View style={{ paddingHorizontal: 8, flexDirection: "row" }}>
-              <View style={{ width: "48%" }}>
-                <Text style={{ fontSize: 12, marginHorizontal: 8 }}>
-                  Start Date
-                </Text>
+
+            <View
+              style={{
+                paddingHorizontal: 12,
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ width: "58%" }}>
+                <Text style={styles.fieldLabel}>Start date</Text>
                 <SetDateComponent
-                  value={StartDate}
+                  value={startDate}
                   onConfirm={(date) => setStartDate(date)}
                 />
               </View>
-              <View style={{ width: "48%", marginLeft: "auto" }}>
-                <Text style={{ fontSize: 12, marginHorizontal: 8 }}>
-                  Due Date
-                </Text>
+              <View style={{ width: "58%", marginLeft: "auto" }}>
+                <Text style={styles.fieldLabel}>End date</Text>
                 <SetDateComponent
-                  value={EndDate}
+                  value={endDate}
                   onConfirm={(date) => setEndDate(date)}
                 />
               </View>
             </View>
-            {/* <View style={{ paddingHorizontal: 8 }}>
-              <RoomTypeComponent
-                rooms={rooms}
-                adults={adults}
-                onChangeRooms={setRooms}
-                onChangeAdults={setAdults}
-              />
-            </View> */}
-            <View style={{ paddingHorizontal: 8, flexDirection: "row" }}>
-              <View
-                style={{
-                  borderRadius: 50,
-                  width: 40,
-                  height: 40,
-                  backgroundColor: "#fff",
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                }}
-              >
-                <IconButton
-                  icon="map"
-                  size={24}
-                  iconColor="#1CB5B0"
-                  style={{
-                    marginTop: 0,
-                    marginLeft: 0,
-                  }}
-                />
-              </View>
-              <View style={{ marginLeft: "auto", width: "85%" }}>
-                <SearchComponent onPress={handleSearch} />
-              </View>
-            </View>
+
+            {/* <Text style={styles.availabilityHint}>
+              Search shows guides who are marked available and have no
+              overlapping booking in your chosen dates.
+            </Text> */}
+
+            <TouchableOpacity
+              style={styles.searchButton}
+              onPress={handleSearch}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.searchButtonText}>
+                Search available guides
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={{ width: "100%", paddingHorizontal: 32 }}>
           <Trending />
         </View>
-        {/* <View style={{ width: "100%", paddingHorizontal: 32, marginTop: 12 }}>
-          <Text style={{ fontSize: 16, fontWeight: "bold" }}>Offers</Text>
-          <Image
-            source={require("../../../../../../assets/Ngapali/NP5.png")}
-            style={{ width: 327, height: 168, borderRadius: 8, marginTop: 16 }}
-          />
-        </View> */}
       </ScrollView>
     </View>
   );
@@ -200,22 +203,81 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // alignItems: "center",
     justifyContent: "center",
     marginBlockStart: 0,
-    marginTop: "-35%",
+    marginTop: -30,
   },
   header: {
     width: "100%",
-    // height: 280,
     alignItems: "center",
     paddingHorizontal: 32,
-    // paddingBottom: 24,
-    // backgroundColor: "#79D7D4",
-    // borderBottomLeftRadius: 16,
-    // borderBottomRightRadius: 16,
     justifyContent: "center",
     position: "absolute",
-    // marginTop: -8
+  },
+  card: {
+    marginBottom: 24,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    backgroundColor: "#fff",
+    marginTop: -20,
+    paddingVertical: 16,
+    width: "100%",
+    paddingHorizontal: 12,
+  },
+  fieldLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    marginHorizontal: 8,
+    marginBottom: 4,
+    color: "#222",
+  },
+  fieldHint: {
+    fontSize: 11,
+    color: "#777",
+    marginHorizontal: 8,
+    marginBottom: 8,
+  },
+  availabilityHint: {
+    fontSize: 12,
+    color: "#666",
+    marginHorizontal: 8,
+    marginTop: 12,
+    marginBottom: 16,
+    lineHeight: 18,
+  },
+  searchButton: {
+    backgroundColor: "#21b3a4",
+    marginHorizontal: 8,
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  searchButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  dropdownWrap: {
+    paddingHorizontal: 8,
+    marginBottom: 8,
+  },
+  dropdown: {
+    height: 48,
+    borderColor: "#7ec8c7",
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#fff",
+  },
+  dropdownPlaceholder: {
+    fontSize: 15,
+    color: "#999",
+  },
+  dropdownSelectedText: {
+    fontSize: 15,
+    color: "#222",
   },
 });

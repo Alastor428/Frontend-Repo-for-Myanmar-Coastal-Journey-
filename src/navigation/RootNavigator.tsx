@@ -35,7 +35,7 @@ import BusTicketSuccessReceiptScreen from "@/screens/SubScreens/HomeStack/MainFu
 import TicketPayment_screen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/BusTicketPayment/BusTicketPaymentScreen";
 import FlightTicketPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/FlightTicketPayment/FlightTicketPaymentScreen";
 import FlightTicketFinalPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/FlightTicketPayment/FlightTicketFinalPaymentScreen";
-import FlightTicketSuccessReceiptScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/FlightTicketPayment/FlightTicketReceipScreen"; 
+import FlightTicketSuccessReceiptScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/BusTicketStack/FlightTicketPayment/FlightTicketReceipScreen";
 import HotelBookingSuccessScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelReceiptScreen";
 import HotelFinalPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelFinalPaymentScreen";
 import HotelPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/HotelBookingStack/HotelPaymentScreen";
@@ -53,61 +53,145 @@ export default function RootNavigator() {
       initialRouteName="MainTabs"
     >
       <Stack.Screen name="MainTabs" component={TabNavigator} />
-       {/* Bus Ticket */}
+      {/* Bus Ticket */}
       <Stack.Screen name="BusTicket" component={BusTicket1} />
-      <Stack.Screen name="BusTicketSearchResult" component={BusTicketSearchResultScreen} />
-      <Stack.Screen name="BusTicketSeatSelection" component={BusTicketSeatSelectionScreen} />
-      <Stack.Screen name="BusTicketFinalPayment" component={BusTicketFinalPaymentScreen} />
-      <Stack.Screen name="BusTicketSuccessReceipt" component={BusTicketSuccessReceiptScreen} />
+      <Stack.Screen
+        name="BusTicketSearchResult"
+        component={BusTicketSearchResultScreen}
+      />
+      <Stack.Screen
+        name="BusTicketSeatSelection"
+        component={BusTicketSeatSelectionScreen}
+      />
+      <Stack.Screen
+        name="BusTicketFinalPayment"
+        component={BusTicketFinalPaymentScreen}
+      />
+      <Stack.Screen
+        name="BusTicketSuccessReceipt"
+        component={BusTicketSuccessReceiptScreen}
+      />
 
       {/* Demo screen - deprecated */}
-      <Stack.Screen name="BusTicketPayment_pre_screen" component={BusTicketPayment_pre_screen} />
-      <Stack.Screen name="BusTicketPaymentScreen" component={TicketPayment_screen} />
-      
+      <Stack.Screen
+        name="BusTicketPayment_pre_screen"
+        component={BusTicketPayment_pre_screen}
+      />
+      <Stack.Screen
+        name="BusTicketPaymentScreen"
+        component={TicketPayment_screen}
+      />
+
       {/* Flight Ticket */}
-      <Stack.Screen name="FlightTicketSeatSelection" component={FlightTicketSeatSelectionScreen} />
-      <Stack.Screen name="FlightTicketPaymentScreen" component={FlightTicketPaymentScreen} />
-      <Stack.Screen name="FlightTicketFinalPayment" component={FlightTicketFinalPaymentScreen} />
-      <Stack.Screen name="FlightTicketSuccessReceipt" component={FlightTicketSuccessReceiptScreen} />
+      <Stack.Screen
+        name="FlightTicketSeatSelection"
+        component={FlightTicketSeatSelectionScreen}
+      />
+      <Stack.Screen
+        name="FlightTicketPaymentScreen"
+        component={FlightTicketPaymentScreen}
+      />
+      <Stack.Screen
+        name="FlightTicketFinalPayment"
+        component={FlightTicketFinalPaymentScreen}
+      />
+      <Stack.Screen
+        name="FlightTicketSuccessReceipt"
+        component={FlightTicketSuccessReceiptScreen}
+      />
 
       {/* Beach */}
       <Stack.Screen name="Ngapali1" component={Ngapali1Screen} />
       <Stack.Screen name="OceanPearl" component={OceanPearl} />
-      <Stack.Screen name="SelfRegistration" component={SelfRegistrationScreen} />
+      <Stack.Screen
+        name="SelfRegistration"
+        component={SelfRegistrationScreen}
+      />
 
       {/* Hotel */}
-      <Stack.Screen name="HotelBookingSearchScreen" component={HotelBookingSearchScreen}/>
-      <Stack.Screen name="HotelResultScreen" component={HotelResultScreen}/>
-      <Stack.Screen name="HotelDetailScreen" component={HotelDetailScreen}/>
-      <Stack.Screen name="HotelPaymentScreen" component={HotelPaymentScreen}/>
-      <Stack.Screen name="HotelFinalPayment" component={HotelFinalPaymentScreen}/>
-      <Stack.Screen name="HotelBookingSuccess" component={HotelBookingSuccessScreen}/>
+      <Stack.Screen
+        name="HotelBookingSearchScreen"
+        component={HotelBookingSearchScreen}
+      />
+      <Stack.Screen name="HotelResultScreen" component={HotelResultScreen} />
+      <Stack.Screen name="HotelDetailScreen" component={HotelDetailScreen} />
+      <Stack.Screen name="HotelPaymentScreen" component={HotelPaymentScreen} />
+      <Stack.Screen
+        name="HotelFinalPayment"
+        component={HotelFinalPaymentScreen}
+      />
+      <Stack.Screen
+        name="HotelBookingSuccess"
+        component={HotelBookingSuccessScreen}
+      />
 
       {/* Settings */}
       <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
-      <Stack.Screen name="EditDateOfBirthScreen" component={EditDateOfBirthScreen} />
+      <Stack.Screen
+        name="EditDateOfBirthScreen"
+        component={EditDateOfBirthScreen}
+      />
       <Stack.Screen name="EditGenderScreen" component={EditGenderScreen} />
       <Stack.Screen name="EditNameScreen" component={EditNameScreen} />
-      <Stack.Screen name="AccountSecurityScreen" component={AccountSecurityScreen} />
+      <Stack.Screen
+        name="AccountSecurityScreen"
+        component={AccountSecurityScreen}
+      />
       <Stack.Screen name="OldPasswordScreen" component={OldPasswordScreen} />
-      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} />
+      <Stack.Screen
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+      />
       <Stack.Screen name="AboutUsScreen" component={AboutUsScreen} />
-      <Stack.Screen name="OurTeamScreen" component={OurTeamScreen}/>
-      <Stack.Screen name="ReportAPloblemScreen" component={ReportAPloblemScreen}/>
+      <Stack.Screen name="OurTeamScreen" component={OurTeamScreen} />
+      <Stack.Screen
+        name="ReportAPloblemScreen"
+        component={ReportAPloblemScreen}
+      />
 
       {/* Tour Guide */}
-      <Stack.Screen name="TourGuideSearchScreen" component={TourGuideSearchScreen} />
-      <Stack.Screen name="TourGuideResultScreen" component={TourGuideResultScreen} />
-      <Stack.Screen name="TourGuidePaymentScreen" component={TourGuidePayment_screen} />
-      <Stack.Screen name="TourGuidePaymentComfirmScreen" component={TourGuidePaymentComfirmScreen} />
-      <Stack.Screen name="TourGuidePaymentReceiptScreen" component={TourGuidePaymentReceiptScreen} />
+      <Stack.Screen
+        name="TourGuideSearchScreen"
+        component={TourGuideSearchScreen}
+      />
+      <Stack.Screen
+        name="TourGuideResultScreen"
+        component={TourGuideResultScreen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentScreen"
+        component={TourGuidePayment_screen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentComfirmScreen"
+        component={TourGuidePaymentComfirmScreen}
+      />
+      <Stack.Screen
+        name="TourGuidePaymentReceiptScreen"
+        component={TourGuidePaymentReceiptScreen}
+      />
 
       {/* Package */}
-      <Stack.Screen name="PackageSearchScreen" component={PackageSearchScreen} />
-      <Stack.Screen name="PackageResultScreen" component={PackageResultScreen} />
-      <Stack.Screen name="PackageDetailScreen" component={PackageDetailScreen} />
-      <Stack.Screen name="PackagePaymentScreen" component={PackagePaymentScreen} />
-      <Stack.Screen name="PackageBookingSuccess" component={PackageBookingSuccessScreen} />
+      <Stack.Screen
+        name="PackageSearchScreen"
+        component={PackageSearchScreen}
+      />
+      <Stack.Screen
+        name="PackageResultScreen"
+        component={PackageResultScreen}
+      />
+      <Stack.Screen
+        name="PackageDetailScreen"
+        component={PackageDetailScreen}
+      />
+      <Stack.Screen
+        name="PackagePaymentScreen"
+        component={PackagePaymentScreen}
+      />
+      <Stack.Screen
+        name="PackageBookingSuccess"
+        component={PackageBookingSuccessScreen}
+      />
     </Stack.Navigator>
   );
 }

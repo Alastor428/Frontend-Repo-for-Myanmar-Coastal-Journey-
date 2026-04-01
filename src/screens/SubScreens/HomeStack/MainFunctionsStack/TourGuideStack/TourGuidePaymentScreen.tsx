@@ -7,54 +7,66 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
-import { RouteProp, useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import TourGuidePaymentMethodModal from "./TourGuidePaymentMethodModal";
+import { loadAuthSession } from "@/auth/authStorage";
+import { createTourGuideBooking } from "@/api/tourGuideApi";
 
-type RootStackParamList = {
-  GuidePayment: {
-    guideName: string;
-    guideLocation: string;
-    guidePhone: string;
-    guidePrice: string;
-    guideImage: any;
-  };
+export type TourGuidePaymentParams = {
+  tourGuideId: string;
+  guideName: string;
+  guideLocation: string;
+  guidePhone: string;
+  guidePricePerDay: number;
+  guideCurrency: string;
+  guideImage: any;
+  startDate: string;
+  endDate: string;
 };
 
-type Props = {
-  route: RouteProp<RootStackParamList, "GuidePayment">;
-};
-
-const TourGuidePayment_screen: React.FC<Props> = ({ route }) => {
+const TourGuidePayment_screen: React.FC = () => {
   const navigation = useNavigation<any>();
-  const { guideName, guideLocation, guidePhone, guidePrice, guideImage } =
-    route.params;
+  const route = useRoute<any>();
+  const p = route.params as TourGuidePaymentParams | undefined;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [nrc, setNrc] = useState("");
   const [remark, setRemark] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const parsedAmount = Number(guidePrice.replace(/[^0-9]/g, "")) || 0;
+  if (!p?.tourGuideId || !p.startDate || !p.endDate) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.missingParams}>
+          Missing booking details. Go back and choose a guide again.
+        </Text>
+      </View>
+    );
+  }
+
+  const priceLabel = `${Number(p.guidePricePerDay).toLocaleString()} ${p.guideCurrency} / day`;
 
   return (
     <ScrollView style={styles.container}>
-      {/* ================= Guide Info ================= */}
-
       <View style={styles.card}>
         <View style={styles.headerRow}>
-          <Image source={guideImage} style={styles.image} />
-
-          <Text style={styles.guideName}>{guideName}</Text>
+          <Image source={p.guideImage} style={styles.image} />
+          <Text style={styles.guideName}>{p.guideName}</Text>
         </View>
 
-        <Row label="Location" value={guideLocation} />
-        <Row label="Phone" value={guidePhone} />
-        <Row label="Price" value={guidePrice} />
+        <Row label="Location" value={p.guideLocation} />
+        <Row label="Phone" value={p.guidePhone} />
+        <Row label="Price" value={priceLabel} />
+        <Row
+          label="Rental period"
+          value={`${p.startDate.slice(0, 10)} → ${p.endDate.slice(0, 10)}`}
+        />
       </View>
-
-      {/* ================= User Information ================= */}
 
       <View style={styles.card}>
         <Text style={styles.sectionTitle}>Passenger Information</Text>
@@ -71,6 +83,7 @@ const TourGuidePayment_screen: React.FC<Props> = ({ route }) => {
           placeholder="Phone Number"
           value={phone}
           onChangeText={setPhone}
+          keyboardType="phone-pad"
         />
 
         <TextInput
@@ -89,25 +102,54 @@ const TourGuidePayment_screen: React.FC<Props> = ({ route }) => {
       </View>
 
       <TouchableOpacity
-        style={styles.confirmButton}
+        style={[styles.confirmButton, submitting && { opacity: 0.7 }]}
+        disabled={submitting}
         onPress={() => setShowConfirmModal(true)}
       >
-        <Text style={styles.confirmButtonText}>Yes, I Confirm This</Text>
+        {submitting ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.confirmButtonText}>Yes, I Confirm This</Text>
+        )}
       </TouchableOpacity>
 
       <TourGuidePaymentMethodModal
         visible={showConfirmModal}
         onClose={() => setShowConfirmModal(false)}
-        onPayNow={(paymentMethod) => {
+        onPayNow={async (paymentMethod) => {
           setShowConfirmModal(false);
-          navigation.navigate("TourGuidePaymentComfirmScreen", {
-            productName: guideName,
-            invoiceNumber: `TG-${Date.now()}`,
-            amount: parsedAmount,
-            paymentType: paymentMethod === "visa" ? "VISA" : "MPU",
-            date: new Date().toLocaleDateString(),
-            time: new Date().toLocaleTimeString(),
-          });
+          const session = await loadAuthSession();
+          if (!session) {
+            Alert.alert("Sign in required", "Please sign in to book a guide.");
+            return;
+          }
+          setSubmitting(true);
+          try {
+            const res = await createTourGuideBooking(session.accessToken, {
+              tourGuide: p.tourGuideId,
+              guestName: name.trim() || undefined,
+              startDate: p.startDate,
+              endDate: p.endDate,
+              currency: p.guideCurrency,
+            });
+            const booking = res.data;
+            const paymentType = paymentMethod === "visa" ? "VISA" : "MPU";
+            navigation.navigate("TourGuidePaymentComfirmScreen", {
+              bookingId: String(booking._id),
+              productName: p.guideName,
+              invoiceNumber: String(booking._id),
+              amount: booking.totalPrice,
+              paymentType,
+              date: new Date().toLocaleDateString(),
+              time: new Date().toLocaleTimeString(),
+            });
+          } catch (e: unknown) {
+            const msg =
+              e instanceof Error ? e.message : "Could not create booking";
+            Alert.alert("Booking failed", msg);
+          } finally {
+            setSubmitting(false);
+          }
         }}
       />
     </ScrollView>
@@ -116,8 +158,6 @@ const TourGuidePayment_screen: React.FC<Props> = ({ route }) => {
 
 export default TourGuidePayment_screen;
 
-/* ================= Row Component ================= */
-
 const Row = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.row}>
     <Text style={styles.rowLabel}>{label}</Text>
@@ -125,15 +165,17 @@ const Row = ({ label, value }: { label: string; value: string }) => (
   </View>
 );
 
-/* ================= Styles ================= */
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     padding: 16,
   },
-
+  missingParams: {
+    padding: 24,
+    fontSize: 15,
+    color: "#666",
+  },
   card: {
     backgroundColor: "#fff",
     padding: 16,
@@ -141,45 +183,41 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 20,
   },
-
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
   },
-
   image: {
     width: 60,
     height: 60,
     borderRadius: 6,
     marginRight: 10,
   },
-
   guideName: {
     fontSize: 18,
     fontWeight: "600",
+    flex: 1,
   },
-
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 4,
   },
-
   rowLabel: {
     color: "#666",
   },
-
   rowValue: {
     fontWeight: "500",
+    flex: 1,
+    textAlign: "right",
+    marginLeft: 8,
   },
-
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
     marginBottom: 10,
   },
-
   input: {
     borderWidth: 1,
     borderColor: "#7ec8c7",
@@ -187,17 +225,16 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 10,
   },
-
   confirmButton: {
     backgroundColor: "#21b3a4",
     padding: 10,
     borderRadius: 8,
     alignItems: "center",
+    minHeight: 44,
+    justifyContent: "center",
   },
-
   confirmButtonText: {
     color: "#fff",
     fontWeight: "bold",
   },
-
 });

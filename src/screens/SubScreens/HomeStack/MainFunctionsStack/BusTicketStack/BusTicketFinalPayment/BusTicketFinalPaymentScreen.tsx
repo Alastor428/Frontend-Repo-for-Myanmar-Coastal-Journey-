@@ -7,9 +7,12 @@ import {
   TextInput,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { loadAuthSession } from "@/auth/authStorage";
+import { confirmBusSeats } from "@/api/busSeatApi";
 
 const PAYMENT_CONFIG: Record<
   string,
@@ -43,23 +46,71 @@ const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
 
   const [cardNumber, setCardNumber] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
 
   const handleConfirmPayment = () => {
-    // Simulate payment processing
-    navigation.navigate("BusTicketSuccessReceipt", {
-      amount,
-      recipient,
-      departureTime: ticketData.departureTime || "",
-      transactionTime: new Date().toLocaleString(),
-      transactionNo: invoiceNumber,
-      transactionTo: "Bus Ticket Booking",
-      totalAmount: amount,
-      travelDate: ticketData.travelDate || "",
-      seat: ticketData.selectedSeats || "",
-      paymentMethod: paymentType,
-      nrcNumber: passenger.nrc || "",
-      userName: passenger.name || "",
-    });
+    void (async () => {
+      const showId = ticketData.showId as string | undefined;
+      const seatStr = String(ticketData.selectedSeats || "");
+      const seatIds = seatStr
+        .split(/[,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      if (showId && seatIds.length > 0) {
+        setSubmitting(true);
+        try {
+          const session = await loadAuthSession();
+          if (!session) {
+            Alert.alert("Sign in required", "Log in to complete this booking.");
+            return;
+          }
+          const res = await confirmBusSeats(session.accessToken, showId, {
+            seatIds,
+            passengerName: passenger.name?.trim() || undefined,
+            passengerNrc: passenger.nrc?.trim() || undefined,
+          });
+          const txId = res.data?.purchase?._id ?? invoiceNumber;
+          navigation.navigate("BusTicketSuccessReceipt", {
+            amount,
+            recipient,
+            departureTime: ticketData.departureTime || "",
+            transactionTime: new Date().toLocaleString(),
+            transactionNo: String(txId),
+            transactionTo:
+              (ticketData as { ticketLabel?: string }).ticketLabel ||
+              "Bus Ticket Booking",
+            totalAmount: amount,
+            travelDate: ticketData.travelDate || "",
+            seat: ticketData.selectedSeats || "",
+            paymentMethod: paymentType,
+            nrcNumber: passenger.nrc || "",
+            userName: passenger.name || "",
+          });
+        } catch (e: unknown) {
+          const msg = e instanceof Error ? e.message : "Booking failed.";
+          Alert.alert("Payment / booking", msg);
+        } finally {
+          setSubmitting(false);
+        }
+        return;
+      }
+
+      navigation.navigate("BusTicketSuccessReceipt", {
+        amount,
+        recipient,
+        departureTime: ticketData.departureTime || "",
+        transactionTime: new Date().toLocaleString(),
+        transactionNo: invoiceNumber,
+        transactionTo: "Bus Ticket Booking",
+        totalAmount: amount,
+        travelDate: ticketData.travelDate || "",
+        seat: ticketData.selectedSeats || "",
+        paymentMethod: paymentType,
+        nrcNumber: passenger.nrc || "",
+        userName: passenger.name || "",
+      });
+    })();
   };
 
   return (
@@ -123,10 +174,16 @@ const BusTicketFinalPaymentScreen = ({ navigation, route }: any) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmPayment}>
-        <Text style={styles.confirmText}>
-          CONFIRM PAYMENT
-        </Text>
+      <TouchableOpacity
+        style={[styles.confirmButton, submitting && { opacity: 0.7 }]}
+        onPress={handleConfirmPayment}
+        disabled={submitting}
+      >
+        {submitting ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.confirmText}>CONFIRM PAYMENT</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity

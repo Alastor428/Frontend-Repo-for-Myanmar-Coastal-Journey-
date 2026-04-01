@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -7,8 +7,12 @@ import {
   TextInput,
   ScrollView,
   Image,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { loadAuthSession } from "@/auth/authStorage";
+import { confirmTourGuideBooking } from "@/api/tourGuideApi";
 
 const PAYMENT_CONFIG: Record<string, { label: string; logo: any }> = {
   VISA: {
@@ -23,6 +27,7 @@ const PAYMENT_CONFIG: Record<string, { label: string; logo: any }> = {
 
 const TourGuidePaymentComfirmScreen = ({ navigation, route }: any) => {
   const {
+    bookingId,
     productName = "—",
     invoiceNumber = "—",
     amount = 0,
@@ -30,6 +35,8 @@ const TourGuidePaymentComfirmScreen = ({ navigation, route }: any) => {
     date = new Date().toLocaleDateString(),
     time = new Date().toLocaleTimeString(),
   } = route?.params || {};
+
+  const [confirming, setConfirming] = useState(false);
 
   const payment = PAYMENT_CONFIG[paymentType] || PAYMENT_CONFIG.MPU;
 
@@ -74,10 +81,57 @@ const TourGuidePaymentComfirmScreen = ({ navigation, route }: any) => {
       </View>
 
       <TouchableOpacity
-        style={styles.confirmButton}
-        onPress={() => navigation.navigate("TourGuidePaymentReceiptScreen")}
+        style={[styles.confirmButton, confirming && { opacity: 0.75 }]}
+        disabled={confirming || !bookingId}
+        onPress={async () => {
+          if (!bookingId) {
+            Alert.alert("Error", "Missing booking reference.");
+            return;
+          }
+          const session = await loadAuthSession();
+          if (!session) {
+            Alert.alert("Sign in required", "Please sign in again.");
+            return;
+          }
+          setConfirming(true);
+          try {
+            const res = await confirmTourGuideBooking(
+              session.accessToken,
+              bookingId
+            );
+            const b = res.data;
+            const g =
+              b.tourGuide && typeof b.tourGuide === "object"
+                ? (b.tourGuide as { name?: string; gender?: string })
+                : null;
+            navigation.navigate("TourGuidePaymentReceiptScreen", {
+              transactionTime: `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+              transactionNo: String(b._id),
+              transactionTo: "Wave Way",
+              totalAmount: String(b.totalPrice),
+              rentalStart: b.startDate?.slice?.(0, 10) ?? String(b.startDate),
+              rentalEnd: b.endDate?.slice?.(0, 10) ?? String(b.endDate),
+              guideName: g?.name ?? productName,
+              gender: g?.gender ?? "—",
+              paymentMethod: paymentType === "VISA" ? "VISA" : "MPU",
+              nrcNumber: "—",
+              userName: b.guestName ?? "—",
+              status: b.status ?? "Confirmed",
+            });
+          } catch (e: unknown) {
+            const msg =
+              e instanceof Error ? e.message : "Could not confirm payment";
+            Alert.alert("Payment failed", msg);
+          } finally {
+            setConfirming(false);
+          }
+        }}
       >
-        <Text style={styles.confirmText}>CONFIRM PAYMENT</Text>
+        {confirming ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <Text style={styles.confirmText}>CONFIRM PAYMENT</Text>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity

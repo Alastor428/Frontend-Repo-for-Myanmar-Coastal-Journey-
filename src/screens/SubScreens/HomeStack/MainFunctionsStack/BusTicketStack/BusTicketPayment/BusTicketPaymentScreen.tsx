@@ -22,8 +22,9 @@ type TicketPaymentParams = {
   seatPrice: number;
   totalAmount: string;
   boardingPoint: string;
-  source: string;       // NEW
-  destination: string;  // NEW
+  source: string;
+  destination: string;
+  showId?: string;
 };
 
 type Props = {
@@ -44,9 +45,10 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
     seatPrice = 75000,
     totalAmount = "0",
     boardingPoint = "Chan Mya Shwe Pyi Station",
-    source = "Mandalay",       // NEW
-    destination = "Ngapali",    // NEW
-  } = params;
+    source = "Mandalay",
+    destination = "Ngapali",
+    showId = "",
+  } = params ?? {};
 
   const price = seatPrice;
   const promotion = 0;
@@ -236,6 +238,10 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
                     selectedSeats,
                     source,
                     destination,
+                    showId,
+                    travelDate,
+                    departureTime,
+                    seatPrice: price,
                   },
                   passenger: {
                     name,

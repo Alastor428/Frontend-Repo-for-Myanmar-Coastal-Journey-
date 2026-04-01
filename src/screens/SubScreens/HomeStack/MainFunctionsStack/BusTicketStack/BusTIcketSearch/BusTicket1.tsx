@@ -15,7 +15,6 @@ import SourceComponent from "../../../../../../components/BusTicketComponent/Sou
 import DestinationComponent from "../../../../../../components/BusTicketComponent/DestinationComponent";
 import DateComponent from "../../../../../../components/BusTicketComponent/DateComponent";
 import PeopleCountComponent from "../../../../../../components/BusTicketComponent/No.ofPeopleComponent";
-import TicketTypeComponent from "../../../../../../components/BusTicketComponent/TicketTypeComponent";
 import PassengerComponent from "../../../../../../components/BusTicketComponent/PassengerTypeComponent";
 import SearchComponent from "../../../../../../components/BusTicketComponent/SearchButton";
 
@@ -24,6 +23,8 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const scrollRef = useRef<ScrollView | null>(null);
   const [passengers, setPassengers] = useState(1);
   const [travelDate, setTravelDate] = useState<Date | undefined>();
+  const [source, setSource] = useState<string | null>(null);
+  const [destination, setDestination] = useState<string | null>(null);
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
@@ -44,9 +45,9 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
       </View>
       <View style={styles.desContainer}>
         <View style={styles.sourceDest}>
-          <SourceComponent />
+          <SourceComponent value={source} onChange={setSource} />
           <View style={styles.destSpacer}>
-            <DestinationComponent />
+            <DestinationComponent value={destination} onChange={setDestination} />
           </View>
         </View>
         <View style={styles.swapIcon}>
@@ -72,13 +73,15 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
           max={20}
         />
       </View>
-      <View style={styles.type}>
-        <TicketTypeComponent />
-        {/* <PassengerComponent /> */}
-      </View>
+      {/* <PassengerComponent /> */}
       <View style={styles.button}>
         <SearchComponent
-          onPress={() => navigation?.navigate("BusTicketSearchResult")}
+          onPress={() =>
+            navigation?.navigate("BusTicketSearchResult", {
+              source,
+              destination,
+            })
+          }
         />
       </View>
     </ScrollView>

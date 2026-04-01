@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 import { Icon } from "react-native-paper";
 
 interface SearchProps {
   value: string;
   onChangeText: (text: string) => void;
+  placeholder?: string;
 }
 
 const Search: React.FC<SearchProps> = ({
   value,
   onChangeText,
+  placeholder = "Search Your Destination",
 }) => {
   // const [text, setText] = useState<string>("");
 
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Search Your Destination"
+        placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         style={styles.input}

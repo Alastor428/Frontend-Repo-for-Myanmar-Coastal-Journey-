@@ -1,86 +1,157 @@
-// BusTicketSearchResultScreen.tsx
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
+  FlatList,
   TouchableOpacity,
-  Pressable,
+  ActivityIndicator,
 } from "react-native";
 import { IconButton } from "react-native-paper";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import BusTicketCard from "./Ticket_card_buy";
 import FlightTicketCard from "./FlightTicketCardComponent";
-import Soldout_TicketButton from "./Soldout_ticket_button";
-import BuyTicketButton from "./Buyticket_button";
+import { loadAuthSession } from "@/auth/authStorage";
+import {
+  listBusShows,
+  countAvailableSeats,
+  type BusShowDto,
+} from "@/api/busSeatApi";
 
-interface BusTicket {
-  id: string;
-  type: string;
-  departureTime: string;
-  price: string;
-  duration: string;
-  status: "available" | "soldout";
+function travelDateLabel(show: BusShowDto): string {
+  const t = show.ticket;
+  if (t && typeof t === "object" && t.departureDate) {
+    const d = String(t.departureDate);
+    return d.includes("T") ? d.slice(0, 10) : d.slice(0, 10);
+  }
+  return "—";
 }
 
-interface FlightTicket {
-  id: string;
-  airline: string;
-  departureTime: string;
-  arrivalTime: string;
-  price: string;
-  duration: string;
-  status: "available" | "soldout";
+function mapShowToCardTicket(show: BusShowDto) {
+  const t = show.ticket;
+  const source =
+    t && typeof t === "object" ? String(t.source ?? "—") : "—";
+  const destination =
+    t && typeof t === "object" ? String(t.destination ?? "—") : "—";
+  const type =
+    t && typeof t === "object" && t.ticketName
+      ? String(t.ticketName)
+      : "Bus";
+
+  const available = countAvailableSeats(show) > 0;
+
+  return {
+    id: String(show._id),
+    showId: String(show._id),
+    type,
+    departureTime: show.departureTime,
+    price: `${show.price.toLocaleString()} MMK`,
+    duration: "—",
+    status: available ? ("available" as const) : ("soldout" as const),
+    source,
+    destination,
+    travelDate: travelDateLabel(show),
+    seatPrice: show.price,
+    boardingPoint: source,
+  };
+}
+
+function mapShowToFlightCard(show: BusShowDto) {
+  const t = show.ticket;
+  const source =
+    t && typeof t === "object" ? String(t.source ?? "—") : "—";
+  const destination =
+    t && typeof t === "object" ? String(t.destination ?? "—") : "—";
+  const airline =
+    t && typeof t === "object" && t.ticketName
+      ? String(t.ticketName)
+      : "Myanmar Airways";
+  return {
+    id: `flight-${show._id}`,
+    showId: String(show._id),
+    airline,
+    departureTime: show.departureTime,
+    arrivalTime: "—",
+    price: `${show.price.toLocaleString()} MMK`,
+    duration: "—",
+    status: ("available" as const),
+    source,
+    destination,
+    travelDate: travelDateLabel(show),
+    seatPrice: show.price,
+    boardingPoint: source,
+  };
 }
 
 const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
   navigation,
 }) => {
+  const route = useRoute<any>();
+  const selectedSource = (route.params?.source as string | undefined)?.trim();
+  const selectedDestination = (route.params?.destination as string | undefined)?.trim();
+  const MAX_BUS_RESULTS = 80;
   const [activeTab, setActiveTab] = useState<"bus" | "flight">("bus");
+  const [busTickets, setBusTickets] = useState<ReturnType<
+    typeof mapShowToCardTicket
+  >[]>([]);
+  const [flightTickets, setFlightTickets] = useState<ReturnType<
+    typeof mapShowToFlightCard
+  >[]>([]);
+  const [busLoading, setBusLoading] = useState(false);
+  const [busHint, setBusHint] = useState<string | null>(null);
 
-  const busTickets: BusTicket[] = [
-    {
-      id: "bus1",
-      type: "Normal Express (2+2)",
-      departureTime: "08:00 am",
-      price: "75,000 MMK",
-      duration: "5h 30m",
-      status: "available",
-    },
-    {
-      id: "bus2",
-      type: "Normal Express (2+2)",
-      departureTime: "12:00 pm",
-      price: "75,000 MMK",
-      duration: "5h 30m",
-      status: "soldout",
-    },
-  ];
+  const loadBusShows = useCallback(async () => {
+    setBusHint(null);
+    setBusLoading(true);
+    try {
+      const session = await loadAuthSession();
+      const res = await listBusShows(session?.accessToken);
+      const shows = (res.data ?? []).filter((show) => {
+        const t = show.ticket;
+        if (!t || typeof t !== "object") return false;
+        const src = String(t.source ?? "").trim();
+        const dst = String(t.destination ?? "").trim();
+        if (selectedSource && src !== selectedSource) return false;
+        if (selectedDestination && dst !== selectedDestination) return false;
+        return true;
+      });
 
-  const flightTickets: FlightTicket[] = [
-    {
-      id: "flight1",
-      airline: "Myanmar Airways",
-      departureTime: "09:00 am",
-      arrivalTime: "10:30 am",
-      price: "250,000 MMK",
-      duration: "1h 30m",
-      status: "available",
-    },
-    {
-      id: "flight2",
-      airline: "Air KBZ",
-      departureTime: "02:00 pm",
-      arrivalTime: "03:30 pm",
-      price: "300,000 MMK",
-      duration: "1h 30m",
-      status: "soldout",
-    },
-  ];
+      const busMapped = shows
+        .filter((s) => {
+          const t = s.ticket;
+          return t && typeof t === "object" ? t.isForeigner !== true : false;
+        })
+        .map(mapShowToCardTicket);
+      const flightMapped = shows
+        .filter((s) => {
+          const t = s.ticket;
+          return t && typeof t === "object" ? t.isForeigner === true : false;
+        })
+        .map(mapShowToFlightCard);
+
+      setBusTickets(busMapped.slice(0, MAX_BUS_RESULTS));
+      setFlightTickets(flightMapped.slice(0, MAX_BUS_RESULTS));
+      if (busMapped.length > MAX_BUS_RESULTS || flightMapped.length > MAX_BUS_RESULTS) {
+        setBusHint(`Showing first ${MAX_BUS_RESULTS} trips for speed.`);
+      }
+    } catch (e: unknown) {
+      setBusTickets([]);
+      setFlightTickets([]);
+      const msg = e instanceof Error ? e.message : "Could not load bus trips.";
+      setBusHint(msg);
+    } finally {
+      setBusLoading(false);
+    }
+  }, [selectedDestination, selectedSource]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadBusShows();
+    }, [loadBusShows])
+  );
 
   return (
     <View style={styles.outerContainer}>
-      {/* Header */}
       <View style={styles.header}>
         <IconButton
           icon="chevron-left"
@@ -90,7 +161,6 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
         <Text style={styles.headerText}>Search Results</Text>
       </View>
 
-      {/* Tab Bar */}
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[styles.tab, activeTab === "bus" && styles.activeTab]}
@@ -117,31 +187,46 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
         </TouchableOpacity>
       </View>
 
-      {/* Content */}
-      // BusTicketSearchResultScreen.tsx
-<ScrollView showsVerticalScrollIndicator={false}>
-  {/* Bus Tickets */}
-{activeTab === "bus" &&
-    busTickets.map((ticket) => (
-      <BusTicketCard key={ticket.id} ticket={ticket} navigation={navigation} />
-    ))}
-
-  {/* Flight Tickets */}
-  {activeTab === "flight" &&
-    (flightTickets.length === 0 ? (
-      <Text style={{ textAlign: "center", marginTop: 50 }}>
-        No flights available
-      </Text>
-    ) : (
-      flightTickets.map((ticket) => (
-        <FlightTicketCard
-          key={ticket.id}
-          ticket={ticket}
-          navigation={navigation}
-        />
-      ))
-    ))}
-</ScrollView>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={activeTab === "bus" ? busTickets : flightTickets}
+        keyExtractor={(item: any) => item.id}
+        contentContainerStyle={{ paddingBottom: 24 }}
+        renderItem={({ item }: any) =>
+          activeTab === "bus" ? (
+            <BusTicketCard ticket={item} navigation={navigation} />
+          ) : (
+            <FlightTicketCard ticket={item} navigation={navigation} />
+          )
+        }
+        ListHeaderComponent={
+          activeTab === "bus" ? (
+            <>
+              {busLoading ? (
+                <ActivityIndicator
+                  style={{ marginTop: 40 }}
+                  size="large"
+                  color="#1CB5B0"
+                />
+              ) : null}
+              {busHint ? <Text style={styles.hint}>{busHint}</Text> : null}
+            </>
+          ) : null
+        }
+        ListEmptyComponent={
+          activeTab === "bus" ? (
+            !busLoading && !busHint ? (
+              <Text style={styles.empty}>
+                No bus trips found. Seed or create bus shows in backend.
+              </Text>
+            ) : null
+          ) : (
+            <Text style={{ textAlign: "center", marginTop: 50 }}>
+              No flights available
+            </Text>
+          )
+        }
+      />
     </View>
   );
 };
@@ -182,4 +267,17 @@ const styles = StyleSheet.create({
   activeTab: { backgroundColor: "#1CB5B0" },
   tabText: { color: "#000000", fontWeight: "500" },
   activeText: { color: "#FFFFFF" },
+  hint: {
+    textAlign: "center",
+    marginTop: 16,
+    paddingHorizontal: 24,
+    color: "#666",
+    fontSize: 14,
+  },
+  empty: {
+    textAlign: "center",
+    marginTop: 40,
+    color: "#999",
+    fontSize: 15,
+  },
 });

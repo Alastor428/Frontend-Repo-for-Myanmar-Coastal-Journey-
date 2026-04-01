@@ -12,6 +12,10 @@ interface GuideCardProps {
   languages: string[];
   price: string;
   status: string;
+  /** When true, status label uses a busy color */
+  statusBusy?: boolean;
+  /** Dim rent button (still uses onRentPress for feedback, e.g. alert) */
+  rentDisabled?: boolean;
   onRentPress?: () => void;
 }
 
@@ -25,6 +29,8 @@ const GuideCard: React.FC<GuideCardProps> = ({
   languages,
   price,
   status,
+  statusBusy = false,
+  rentDisabled = false,
   onRentPress,
 }) => {
   return (
@@ -41,7 +47,14 @@ const GuideCard: React.FC<GuideCardProps> = ({
             <Text style={styles.location}>{location}</Text>
           </View>
 
-          <Text style={styles.available}>{status}</Text>
+          <Text
+            style={[
+              styles.statusText,
+              statusBusy ? styles.statusBusy : styles.statusAvailable,
+            ]}
+          >
+            {status}
+          </Text>
 
           <View style={styles.row}>
             <Ionicons name="call-outline" size={16} color="#000" />
@@ -86,8 +99,14 @@ const GuideCard: React.FC<GuideCardProps> = ({
       </View>
 
       {/* Button */}
-      <TouchableOpacity style={styles.button} onPress={onRentPress}>
-        <Text style={styles.buttonText}>Rent this guide</Text>
+      <TouchableOpacity
+        style={[styles.button, rentDisabled && styles.buttonDisabled]}
+        onPress={onRentPress}
+        activeOpacity={0.85}
+      >
+        <Text style={styles.buttonText}>
+          {rentDisabled ? "Unavailable for these dates" : "Rent this guide"}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -133,10 +152,16 @@ const styles = StyleSheet.create({
     color: "#777",
   },
 
-  available: {
-    color: "green",
+  statusText: {
     fontSize: 13,
     marginTop: 2,
+    fontWeight: "600",
+  },
+  statusAvailable: {
+    color: "#2e7d32",
+  },
+  statusBusy: {
+    color: "#c62828",
   },
 
   phone: {
@@ -202,6 +227,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 6,
     alignItems: "center",
+  },
+  buttonDisabled: {
+    backgroundColor: "#b0b0b0",
   },
 
   buttonText: {

@@ -14,16 +14,18 @@ import { useNavigation, RouteProp } from "@react-navigation/native";
 
 // ---------------- Props Type ----------------
 type FlightPaymentParams = {
-  flightType: string;
+  flightType?: string;
+  busType?: string;
   travelDate: string;
   departureTime: string;
   adult: number;
-  selectedSeats: string[];
+  selectedSeats: string[] | string;
   seatPrice: number;
   totalAmount: string;
   boardingPoint: string;
   source: string;
   destination: string;
+  showId?: string;
 };
 
 type Props = {
@@ -36,6 +38,7 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
 
   const {
     flightType = "Myanmar Airways",
+    busType,
     travelDate = "",
     departureTime = "",
     adult = 0,
@@ -45,10 +48,19 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
     boardingPoint = "Yangon Airport",
     source = "Yangon",
     destination = "Mandalay",
+    showId = "",
   } = params;
 
+  const flightLabel = busType || flightType;
+  const selectedSeatIds = Array.isArray(selectedSeats)
+    ? selectedSeats
+    : String(selectedSeats)
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
   const price = seatPrice;
-  const totalPrice = parseInt(totalAmount) || selectedSeats.length * price;
+  const totalPrice = parseInt(totalAmount) || selectedSeatIds.length * price;
 
   // ---------------- Passenger Info ----------------
   const [name, setName] = useState("");
@@ -71,11 +83,11 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
 
       {/* Flight Details */}
       <View style={styles.card}>
-        <Text style={styles.sectionTitle}>{flightType} Flight</Text>
+        <Text style={styles.sectionTitle}>{flightLabel} Flight</Text>
         <Row label="Travel Date" value={travelDate} />
         <Row label="Departure Time" value={departureTime} />
         <Row label="Adult" value={adult} />
-        <Row label="Selected Seats" value={selectedSeats.join(", ")} />
+        <Row label="Selected Seats" value={selectedSeatIds.join(", ")} />
         <Row label="Seat Price" value={`${price} MMK / seat`} />
         <Row label="Total Price" value={`${totalPrice} MMK`} />
         <Row label="Boarding Point" value={boardingPoint} />
@@ -198,7 +210,7 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
               onPress={() => {
                 setShowPaymentModal(false);
                 navigation.navigate("FlightTicketFinalPayment", {
-                  productName: `Flight - ${flightType} (Seats: ${selectedSeats.join(", ")})`,
+                  productName: `Flight - ${flightLabel} (Seats: ${selectedSeatIds.join(", ")})`,
                   invoiceNumber: `FT-${Date.now()}`,
                   amount: totalPrice,
                   paymentType: selectedPayment.toUpperCase(),
@@ -206,15 +218,17 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
                   time: new Date().toLocaleTimeString(),
                   recipient: name || "Passenger",
                   ticketData: {
-                    flightType,
+                    flightType: flightLabel,
                     adult,
                     price,
                     totalPrice,
-                    selectedSeats,
+                    selectedSeats: selectedSeatIds,
                     source,
                     destination,
                     travelDate,
                     departureTime,
+                    seatPrice: price,
+                    showId,
                   },
                   passenger: { name, phone, passport, remark },
                 });
