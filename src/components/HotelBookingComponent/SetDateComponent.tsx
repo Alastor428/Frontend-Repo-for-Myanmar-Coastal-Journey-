@@ -14,18 +14,23 @@ interface DateComponentProps {
   onConfirm: (date: Date) => void;
 }
 
-const DateComponent: React.FC<DateComponentProps> = ({
-  value,
-  onConfirm,
-}) => {
+const DateComponent: React.FC<DateComponentProps> = ({ value, onConfirm }) => {
   const [open, setOpen] = useState(false);
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
 
   return (
     <View style={styles.shadowWrapper}>
       <Pressable style={styles.container} onPress={() => setOpen(true)}>
         <TextInput
           mode="flat"
-          value={value ? value.toDateString() : "Select date"}
+          value={value ? formatDate(value) : "Select date"}
           editable={false}
           pointerEvents="none"
           style={styles.input}
@@ -49,6 +54,7 @@ const DateComponent: React.FC<DateComponentProps> = ({
           }
         }}
         validRange={{ startDate: new Date() }}
+        presentationStyle="pageSheet"
       />
     </View>
   );
@@ -59,24 +65,24 @@ export default DateComponent;
 const styles = StyleSheet.create({
   shadowWrapper: {
     width: "100%",
-    marginBottom: 24,
+    marginBottom: 20,
 
     // iOS shadow
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
 
     // Android shadow
-    elevation: 5,
+    elevation: 4,
   },
 
   container: {
-    height: 40,
-    borderRadius: 20,
+    height: 48,
+    borderRadius: 12,
     backgroundColor: "#fff",
     justifyContent: "center",
-    overflow: "hidden",
+    // paddingHorizontal: 10,
   },
 
   input: {
@@ -86,6 +92,5 @@ const styles = StyleSheet.create({
   content: {
     fontSize: 14,
     color: "#000",
-    fontFamily: "Poppins",
   },
 });

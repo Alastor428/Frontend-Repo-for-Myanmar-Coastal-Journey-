@@ -4,13 +4,19 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Icon } from 'react-native-paper';
 
   const data = [
-    { label: 'Local', value: '1' },
-    { label: 'Foreigner', value: '2' },
+    { label: 'Local', value: 'Local' },
+    { label: 'Foreigner', value: 'Foreigner' },
   ];
 
-  const TicketTypeComponent = () => {
-    const [value, setValue] = useState(null);
+  type TicketTypeComponentProps = {
+    value?: string | null;
+    onChange?: (value: string) => void;
+  };
+
+  const TicketTypeComponent: React.FC<TicketTypeComponentProps> = ({ value: valueProp, onChange }) => {
+    const [internalValue, setInternalValue] = useState<string | null>(null);
     const [isFocus, setIsFocus] = useState(false);
+    const value = valueProp ?? internalValue;
 
     const renderLabel = () => {
       if (value || isFocus) {
@@ -40,7 +46,8 @@ import { Icon } from 'react-native-paper';
           onFocus={() => setIsFocus(true)}
           onBlur={() => setIsFocus(false)}
           onChange={item => {
-            setValue(item.value);
+            if (!onChange) setInternalValue(item.value);
+            onChange?.(item.value);
             setIsFocus(false);
           }}
         />

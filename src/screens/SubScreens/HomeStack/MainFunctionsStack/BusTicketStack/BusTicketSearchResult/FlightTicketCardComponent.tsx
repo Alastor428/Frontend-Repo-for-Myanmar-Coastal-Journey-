@@ -6,12 +6,18 @@ import Soldout_TicketButton from "./Soldout_ticket_button";
 
 interface FlightTicket {
   id: string;
+  showId: string;
   airline: string;
   departureTime: string;
   arrivalTime: string;
   price: string;
   duration: string;
   status: "available" | "soldout";
+  source: string;
+  destination: string;
+  travelDate: string;
+  seatPrice: number;
+  boardingPoint?: string;
 }
 
 interface Props {

@@ -2,19 +2,38 @@ import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const GuidePaymentSuccessScreen = ({ navigation }: any) => {
-  // Hardcoded receipt data
+export type TourGuideReceiptParams = {
+  transactionTime?: string;
+  transactionNo?: string;
+  transactionTo?: string;
+  totalAmount?: string;
+  rentalStart?: string;
+  rentalEnd?: string;
+  guideName?: string;
+  gender?: string;
+  paymentMethod?: string;
+  nrcNumber?: string;
+  userName?: string;
+  status?: string;
+};
+
+const GuidePaymentSuccessScreen = ({ navigation, route }: any) => {
+  const p = (route?.params as TourGuideReceiptParams) || {};
+
   const receiptData = {
-    transactionTime: "10/01/2026 00:33:10",
-    transactionNo: "000000000001",
-    transactionTo: "Wave Way",
-    totalAmount: "40,000",
-    rentalDate: "2026-01-12",
-    guideName: "Nandar",
-    gender: "Female",
-    paymentMethod: "KBZ Pay",
-    nrcNumber: "13/NASANA(N)071666",
-    userName: "Pa Pa",
+    transactionTime:
+      p.transactionTime ?? `${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`,
+    transactionNo: p.transactionNo ?? "—",
+    transactionTo: p.transactionTo ?? "Wave Way",
+    totalAmount: p.totalAmount ?? "0",
+    rentalStart: p.rentalStart ?? "—",
+    rentalEnd: p.rentalEnd ?? "—",
+    guideName: p.guideName ?? "—",
+    gender: p.gender ?? "—",
+    paymentMethod: p.paymentMethod ?? "—",
+    nrcNumber: p.nrcNumber ?? "—",
+    userName: p.userName ?? "—",
+    status: p.status ?? "Confirmed",
   };
 
   return (
@@ -25,20 +44,27 @@ const GuidePaymentSuccessScreen = ({ navigation }: any) => {
 
       <Text style={styles.successText}>Payment Successful</Text>
 
-      <Text style={styles.amountText}>{receiptData.totalAmount} MMK</Text>
+      <Text style={styles.amountText}>
+        {Number(receiptData.totalAmount).toLocaleString()} MMK
+      </Text>
 
       <View style={styles.divider} />
 
+      <Row label="Status" value={receiptData.status} />
       <Row label="Transaction Time" value={receiptData.transactionTime} />
       <Row label="Transaction No." value={receiptData.transactionNo} />
       <Row label="Transaction To" value={receiptData.transactionTo} />
-      <Row label="Total Amount" value={`${receiptData.totalAmount} MMK`} />
-      <Row label="Rental Date" value={receiptData.rentalDate} />
+      <Row
+        label="Total Amount"
+        value={`${Number(receiptData.totalAmount).toLocaleString()} MMK`}
+      />
+      <Row label="Start date" value={receiptData.rentalStart} />
+      <Row label="End date" value={receiptData.rentalEnd} />
       <Row label="Guide Name" value={receiptData.guideName} />
       <Row label="Gender" value={receiptData.gender} />
       <Row label="Payment Method" value={receiptData.paymentMethod} />
       <Row label="NRC Number" value={receiptData.nrcNumber} />
-      <Row label="User Name" value={receiptData.userName} />
+      <Row label="Guest Name" value={receiptData.userName} />
 
       <TouchableOpacity
         style={styles.okButton}
@@ -100,10 +126,13 @@ const styles = StyleSheet.create({
   label: {
     color: "#666",
     fontSize: 14,
+    flex: 1,
   },
   value: {
     fontSize: 14,
     fontWeight: "500",
+    flex: 1,
+    textAlign: "right",
   },
   okButton: {
     backgroundColor: "#2bb6a3",

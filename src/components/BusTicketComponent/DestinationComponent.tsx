@@ -4,16 +4,22 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Icon } from "react-native-paper";
 
 const data = [
-  { label: "Ngapali", value: "1" },
-  { label: "Chaung Tha", value: "2" },
-  { label: "Ngwe Saung", value: "3" },
-  { label: "Dawei", value: "4" },
-  { label: "Kawthaung", value: "5" },
+  { label: "Ngapali", value: "Ngapali" },
+  { label: "Chaung Tha", value: "Chaung Tha" },
+  { label: "Ngwe Saung", value: "Ngwe Saung" },
+  { label: "Dawei", value: "Dawei" },
+  { label: "Kawthaung", value: "Kawthaung" },
 ];
 
-const DestinationComponent = () => {
-  const [value, setValue] = useState(null);
+type DestinationComponentProps = {
+  value?: string | null;
+  onChange?: (value: string) => void;
+};
+
+const DestinationComponent: React.FC<DestinationComponentProps> = ({ value: valueProp, onChange }) => {
+  const [internalValue, setInternalValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
+  const value = valueProp ?? internalValue;
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -44,7 +50,8 @@ const DestinationComponent = () => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.value);
+          if (!onChange) setInternalValue(item.value);
+          onChange?.(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (

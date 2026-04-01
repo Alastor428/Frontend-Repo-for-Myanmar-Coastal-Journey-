@@ -1,55 +1,82 @@
-import React from "react";
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import React, { useCallback, useState } from "react";
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import { IconButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import TourGuideCard from "@/components/TourGuide/TourGuideCard";
+import { loadAuthSession } from "@/auth/authStorage";
+import { listTourGuides, type TourGuideDto } from "@/api/tourGuideApi";
+
+const defaultGuideImage = require("../../../../../../assets/tourguide/tourguidephoto.jpg");
+
+type ResultParams = {
+  startDate?: string;
+  endDate?: string;
+  beachName?: string;
+};
+
+function beachLabel(g: TourGuideDto): string {
+  const b = g.beach;
+  if (b && typeof b === "object" && b.beachName) return b.beachName;
+  return "Myanmar";
+}
 
 const TourGuideResultScreen: React.FC = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+  const { startDate, endDate, beachName = "" } =
+    (route.params as ResultParams) || {};
 
-  const tourGuides = [
-    {
-      id: 1,
-      image: require("../../../../../../assets/tourguide/tourguidephoto.jpg"),
-      name: "Nandar",
-      location: "Ngapali Beach, Rakhine",
-      phone: "+959123456789",
-      experience: "8 years experience",
-      gender: "Female",
-      languages: ["French", "English", "Spanish"],
-      price: "40,000 MMK / day",
-      status: "Available",
-    },
-    {
-      id: 2,
-      image: require("../../../../../../assets/tourguide/tourguidephoto.jpg"),
-      name: "Ko Aung",
-      location: "Bagan, Myanmar",
-      phone: "+959987654321",
-      experience: "6 years experience",
-      gender: "Male",
-      languages: ["English", "Chinese"],
-      price: "35,000 MMK / day",
-      status: "Available",
-    },
-    {
-      id: 3,
-      image: require("../../../../../../assets/tourguide/tourguidephoto.jpg"),
-      name: "Mya Thiri",
-      location: "Inle Lake, Shan",
-      phone: "+959111222333",
-      experience: "10 years experience",
-      gender: "Female",
-      languages: ["English", "Thai"],
-      price: "50,000 MMK / day",
-      status: "Available",
-    },
-  ];
+  const [guides, setGuides] = useState<TourGuideDto[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const session = await loadAuthSession();
+      if (!session) {
+        setGuides([]);
+        setError("Please sign in to browse tour guides.");
+        return;
+      }
+      const res = await listTourGuides(session.accessToken, {
+        page: 1,
+        limit: 50,
+        availableOnly: false,
+        beachName: beachName.trim() || undefined,
+        startDate: startDate,
+        endDate: endDate,
+      });
+      setGuides(res.data ?? []);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Could not load tour guides";
+      setError(msg);
+      setGuides([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [beachName, startDate, endDate]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load])
+  );
+
+  const start = startDate ?? new Date().toISOString();
+  const end = endDate ?? new Date(Date.now() + 86400000).toISOString();
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
         <View style={styles.header}>
           <IconButton
             icon="chevron-left"
@@ -58,35 +85,74 @@ const TourGuideResultScreen: React.FC = () => {
             onPress={() => navigation?.goBack?.()}
             style={styles.backButton}
           />
-
           <Text style={styles.headerTitle}>Tour Guide Results</Text>
         </View>
 
-        {/* Tour Guide List */}
+        {beachName.trim() && startDate && endDate ? (
+          <Text style={styles.filterSummary}>
+            {beachName.trim()} · {startDate.slice(0, 10)} → {endDate.slice(0, 10)}
+            {"\n"}
+            <Text style={styles.filterSub}>
+              All guides at this beach; status is for your selected dates.
+            </Text>
+          </Text>
+        ) : null}
+
+        {loading ? (
+          <ActivityIndicator style={{ marginTop: 24 }} size="large" />
+        ) : error ? (
+          <Text style={styles.hint}>{error}</Text>
+        ) : guides.length === 0 ? (
+          <Text style={styles.hint}>
+            No tour guides for this beach yet. Create guides in Postman linked to
+            this beach, or try another beach name.
+          </Text>
+        ) : null}
+
         <View style={styles.listContainer}>
-          {tourGuides.map((tourGuide) => (
-            <TourGuideCard
-              key={tourGuide.id}
-              image={tourGuide.image}
-              name={tourGuide.name}
-              location={tourGuide.location}
-              phone={tourGuide.phone}
-              experience={tourGuide.experience}
-              gender={tourGuide.gender}
-              languages={tourGuide.languages}
-              price={tourGuide.price}
-              status={tourGuide.status}
-              onRentPress={() =>
-                navigation?.navigate("TourGuidePaymentScreen", {
-                  guideName: tourGuide.name,
-                  guideLocation: tourGuide.location,
-                  guidePhone: tourGuide.phone,
-                  guidePrice: tourGuide.price,
-                  guideImage: tourGuide.image,
-                })
-              }
-            />
-          ))}
+          {!loading &&
+            guides.map((tourGuide) => {
+              const rangeStatus =
+                tourGuide.rangeStatus ??
+                (tourGuide.availability === "Busy" ? "Busy" : "Available");
+              const canRent = rangeStatus === "Available";
+              return (
+                <TourGuideCard
+                  key={tourGuide._id}
+                  image={defaultGuideImage}
+                  name={tourGuide.name}
+                  location={beachLabel(tourGuide)}
+                  phone={tourGuide.phone ?? "—"}
+                  experience={`${tourGuide.experienceYears ?? 0} years experience`}
+                  gender={tourGuide.gender ?? "—"}
+                  languages={tourGuide.languages ?? []}
+                  price={`${Number(tourGuide.pricePerDay).toLocaleString()} ${tourGuide.currency ?? "MMK"} / day`}
+                  status={rangeStatus}
+                  statusBusy={rangeStatus === "Busy"}
+                  rentDisabled={!canRent}
+                  onRentPress={
+                    canRent
+                      ? () =>
+                          navigation?.navigate("TourGuidePaymentScreen", {
+                            tourGuideId: tourGuide._id,
+                            guideName: tourGuide.name,
+                            guideLocation: beachLabel(tourGuide),
+                            guidePhone: tourGuide.phone ?? "—",
+                            guidePricePerDay: tourGuide.pricePerDay,
+                            guideCurrency: tourGuide.currency ?? "MMK",
+                            guideImage: defaultGuideImage,
+                            startDate: start,
+                            endDate: end,
+                          })
+                      : () =>
+                          Alert.alert(
+                            "Busy",
+                            "This guide is not free for the dates you picked (booked or marked busy)."
+                          )
+                  }
+                />
+              );
+            })}
         </View>
       </ScrollView>
     </View>
@@ -100,12 +166,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-
   scrollContent: {
     paddingBottom: 80,
     paddingTop: 24,
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
@@ -113,12 +177,10 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 16,
   },
-
   backButton: {
     margin: 0,
     padding: 0,
   },
-
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
@@ -126,10 +188,27 @@ const styles = StyleSheet.create({
     marginRight: "auto",
     color: "#000",
   },
-
+  filterSummary: {
+    fontSize: 13,
+    color: "#555",
+    textAlign: "center",
+    paddingHorizontal: 24,
+    marginBottom: 8,
+  },
+  filterSub: {
+    fontSize: 11,
+    color: "#888",
+    marginTop: 4,
+  },
   listContainer: {
     width: "100%",
-    // paddingHorizontal: 32,
     alignItems: "center",
+  },
+  hint: {
+    textAlign: "center",
+    marginHorizontal: 24,
+    marginTop: 12,
+    color: "#666",
+    fontSize: 14,
   },
 });

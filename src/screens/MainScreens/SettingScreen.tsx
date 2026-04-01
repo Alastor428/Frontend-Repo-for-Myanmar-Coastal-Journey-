@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,9 +8,13 @@ import {
   Modal,
   Image,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { authApi } from "@/api/http";
+import { loadAuthSession } from "@/auth/authStorage";
+import { useAuth } from "@/auth/AuthContext";
 import ProfilePhotoComponent from "@/components/SettingComponent/ProfilePhotoComponent";
 import ProfileButton from "@/components/SettingComponent/ProfileButton";
 import AccountSecurityButton from "@/components/SettingComponent/AccountSecurityButton";
@@ -22,21 +26,68 @@ import AboutUsButton from "@/components/SettingComponent/AboutUsButton";
 import OurTeamButton from "@/components/SettingComponent/OurTeamButton";
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   profilePhoto: any;
   phoneNumber: string;
 }
 
+const defaultProfilePhoto = require("../../../assets/Ngapali/i-would-say-the-best.png");
+
 const SettingScreen: React.FC = () => {
   const [user, setUser] = useState<User>({
-    id: 1,
-    name: "Aung Aung",
-    profilePhoto: require("../../../assets/Ngapali/i-would-say-the-best.png"),
-    phoneNumber: "09123456789",
+    id: "",
+    name: "",
+    profilePhoto: defaultProfilePhoto,
+    phoneNumber: "",
   });
+  const [profileLoading, setProfileLoading] = useState(true);
 
   const navigation = useNavigation<any>();
+  const { logout } = useAuth();
+
+  useFocusEffect(
+    useCallback(() => {
+      let active = true;
+      (async () => {
+        const session = await loadAuthSession();
+        if (!session?.accessToken || !session.userId) {
+          if (active) setProfileLoading(false);
+          return;
+        }
+        try {
+          if (active) setProfileLoading(true);
+          const res = await authApi.getUserById(
+            session.userId,
+            session.accessToken
+          );
+          const d = res.data;
+          const oid =
+            typeof d._id === "string" ? d._id : String(d._id ?? "");
+          if (active) {
+            setUser((prev) => ({
+              ...prev,
+              id: oid,
+              name: d.name ?? "",
+              phoneNumber: d.phone ?? "",
+            }));
+          }
+        } catch {
+          if (active) {
+            Alert.alert(
+              "Profile",
+              "Could not load your account details. Try signing in again."
+            );
+          }
+        } finally {
+          if (active) setProfileLoading(false);
+        }
+      })();
+      return () => {
+        active = false;
+      };
+    }, [])
+  );
 
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -96,8 +147,18 @@ const SettingScreen: React.FC = () => {
             onPress={handlePhotoPress}
           />
 
-          <Text style={styles.name}>{user.name}</Text>
-          <Text style={styles.phoneNumber}>{user.phoneNumber}</Text>
+          {profileLoading ? (
+            <ActivityIndicator style={{ marginTop: 12 }} />
+          ) : (
+            <>
+              <Text style={styles.name}>
+                {user.name || "—"}
+              </Text>
+              <Text style={styles.phoneNumber}>
+                {user.phoneNumber || "—"}
+              </Text>
+            </>
+          )}
 
           {/* Setting text aligned 32px from left */}
           <View style={{ width: '100%', padding: 32 }}>
@@ -143,8 +204,7 @@ const SettingScreen: React.FC = () => {
                     {
                       text: "Yes",
                       onPress: () => {
-                        console.log("User confirmed logout");
-                        // TODO: Add actual logout logic here
+                        void logout();
                       },
                     },
                   ],

@@ -26,12 +26,13 @@ import DateOfBirth from "../components/AuthComponent/DateOfBirth";
 import SetGenderButton from "@/components/AuthComponent/SetGenderButton";
 import PassportComponent from "@/components/AuthComponent/Passport";
 import Phone from "@/components/AuthComponent/Phone";
-import { authApi } from "../api/http";
+import { authApi, userIdFromApiUser } from "../api/http";
+import type { AuthSession } from "./authStorage";
 
 const { width, height } = Dimensions.get("window");
 
 type Props = {
-  onLoginSuccess: () => void;
+  onLoginSuccess: (session: AuthSession) => void | Promise<void>;
 };
 
 const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
@@ -106,8 +107,13 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       setAuthLoading(true);
       setError("");
 
-      await authApi.login(email, password);
-      onLoginSuccess();
+      const res = await authApi.login(email, password);
+      const userId = userIdFromApiUser(res.user);
+      if (!res.accessToken || !userId) {
+        setError("Invalid server response");
+        return;
+      }
+      await onLoginSuccess({ accessToken: res.accessToken, userId });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Login failed";
       setError(message);

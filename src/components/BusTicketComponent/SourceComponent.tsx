@@ -4,14 +4,20 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Icon } from "react-native-paper";
 
 const data = [
-  { label: "Yangon", value: "1" },
-  { label: "Mandalay", value: "2" },
-  { label: "Nay Pyi Taw", value: "3" },
+  { label: "Yangon", value: "Yangon" },
+  { label: "Mandalay", value: "Mandalay" },
+  { label: "Nay Pyi Taw", value: "Nay Pyi Taw" },
 ];
 
-const SourceComponent = () => {
-  const [value, setValue] = useState(null);
+type SourceComponentProps = {
+  value?: string | null;
+  onChange?: (value: string) => void;
+};
+
+const SourceComponent: React.FC<SourceComponentProps> = ({ value: valueProp, onChange }) => {
+  const [internalValue, setInternalValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
+  const value = valueProp ?? internalValue;
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -44,7 +50,8 @@ const SourceComponent = () => {
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          setValue(item.value);
+          if (!onChange) setInternalValue(item.value);
+          onChange?.(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (
