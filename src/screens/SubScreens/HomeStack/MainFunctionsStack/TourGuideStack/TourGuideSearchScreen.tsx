@@ -157,14 +157,14 @@ const TourGuideSearchScreen: React.FC = () => {
                 justifyContent: "space-between",
               }}
             >
-              <View style={{ width: "58%" }}>
+              <View style={{ width: "48%" }}>
                 <Text style={styles.fieldLabel}>Start date</Text>
                 <SetDateComponent
                   value={startDate}
                   onConfirm={(date) => setStartDate(date)}
                 />
               </View>
-              <View style={{ width: "58%", marginLeft: "auto" }}>
+              <View style={{ width: "48%", marginLeft: "auto" }}>
                 <Text style={styles.fieldLabel}>End date</Text>
                 <SetDateComponent
                   value={endDate}
