@@ -13,16 +13,17 @@ import { Dropdown } from "react-native-element-dropdown";
 import SetDateComponent from "@/components/HotelBookingComponent/SetDateComponent";
 import Trending from "@/components/BeachComponent/Trending";
 import { useNavigation } from "@react-navigation/native";
+import { SEED_BEACH_DROPDOWN_ITEMS } from "@/constants/travelSeedPlaces";
 
 /** Search keyword sent to API `beachName` (matches Beach.beachName, case-insensitive). */
-const BEACH_OPTIONS = [{ label: "Ngapali Beach", value: "Ngapali" }];
+const BEACH_OPTIONS = SEED_BEACH_DROPDOWN_ITEMS;
 
 const TourGuideSearchScreen: React.FC = () => {
   const navigation = useNavigation<any>();
   const [startDate, setStartDate] = useState<Date | undefined>();
   const [endDate, setEndDate] = useState<Date | undefined>();
   const [selectedBeach, setSelectedBeach] = useState<string | null>(
-    BEACH_OPTIONS[0].value
+    null
   );
   const [beachDropdownFocus, setBeachDropdownFocus] = useState(false);
 
@@ -127,7 +128,7 @@ const TourGuideSearchScreen: React.FC = () => {
           <View style={styles.card}>
             <Text style={styles.fieldLabel}>Beach</Text>
             <Text style={styles.fieldHint}>
-              More beaches can be added later. For now only Ngapali is listed.
+              Choose from all seeded beaches.
             </Text>
             <View style={styles.dropdownWrap}>
               <Dropdown
@@ -138,11 +139,12 @@ const TourGuideSearchScreen: React.FC = () => {
                 placeholderStyle={styles.dropdownPlaceholder}
                 selectedTextStyle={styles.dropdownSelectedText}
                 data={BEACH_OPTIONS}
-                search={false}
+                search
                 maxHeight={220}
                 labelField="label"
                 valueField="value"
                 placeholder="Select beach"
+                searchPlaceholder="Search beach..."
                 value={selectedBeach}
                 onFocus={() => setBeachDropdownFocus(true)}
                 onBlur={() => setBeachDropdownFocus(false)}

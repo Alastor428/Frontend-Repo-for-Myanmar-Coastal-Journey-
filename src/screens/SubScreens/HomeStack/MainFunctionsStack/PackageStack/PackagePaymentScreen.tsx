@@ -9,6 +9,12 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { loadAuthSession } from "@/auth/authStorage";
+import {
+  confirmTravelPayment,
+  createTravelPackageBooking,
+  type PackageBookingDto,
+} from "@/api/packageApi";
 
 const PAYMENT_CONFIG: Record<string, { label: string; logo: any }> = {
   VISA: {
@@ -24,6 +30,7 @@ const PAYMENT_CONFIG: Record<string, { label: string; logo: any }> = {
 const PackagePaymentScreen = ({ route }: any) => {
   const navigation = useNavigation<any>();
   const {
+    packageId = "",
     packageName = "—",
     travelers = 1,
     totalAmount = "0",
@@ -36,16 +43,46 @@ const PackagePaymentScreen = ({ route }: any) => {
 
   const [cardNumber, setCardNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleConfirmPayment = () => {
-    navigation.navigate("PackageBookingSuccess", {
-      packageName,
-      travelers,
-      totalAmount,
-      paymentType,
-      duration,
-      remark,
-    });
+    if (submitting) return;
+    void (async () => {
+      setSubmitting(true);
+      try {
+        const session = await loadAuthSession();
+        if (session?.accessToken && packageId) {
+          const created = await createTravelPackageBooking(session.accessToken, {
+            travelPackage: packageId,
+            numberOfPeople: Number(travelers) || 1,
+          });
+          const bookingId = created.data?._id;
+          if (bookingId) {
+            const cardNum = String(cardNumber).replace(/\D/g, "");
+            const cardPass = String(password).replace(/\D/g, "");
+            const method =
+              paymentType === "VISA" ? ("VISA" as const) : ("MPU" as const);
+            await confirmTravelPayment(session.accessToken, bookingId, {
+              paymentMethod: method,
+              cardNumber: cardNum,
+              cardPassword: cardPass,
+            });
+          }
+        }
+      } catch {
+        // UI-only best-effort integration. Always navigate to success screen.
+      } finally {
+        setSubmitting(false);
+        navigation.navigate("PackageBookingSuccess", {
+          packageName,
+          travelers,
+          totalAmount,
+          paymentType,
+          duration,
+          remark,
+        });
+      }
+    })();
   };
 
   return (

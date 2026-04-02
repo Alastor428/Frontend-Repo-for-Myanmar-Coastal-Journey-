@@ -19,6 +19,14 @@ import PassengerComponent from "../../../../../../components/BusTicketComponent/
 import SearchComponent from "../../../../../../components/BusTicketComponent/SearchButton";
 
 const { width } = Dimensions.get("window");
+
+function formatLocalYmd(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const scrollRef = useRef<ScrollView | null>(null);
   const [passengers, setPassengers] = useState(1);
@@ -47,7 +55,10 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
         <View style={styles.sourceDest}>
           <SourceComponent value={source} onChange={setSource} />
           <View style={styles.destSpacer}>
-            <DestinationComponent value={destination} onChange={setDestination} />
+            <DestinationComponent
+              value={destination}
+              onChange={setDestination}
+            />
           </View>
         </View>
         <View style={styles.swapIcon}>
@@ -80,6 +91,7 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
             navigation?.navigate("BusTicketSearchResult", {
               source,
               destination,
+              travelDate: travelDate ? formatLocalYmd(travelDate) : undefined,
             })
           }
         />
@@ -105,13 +117,13 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingHorizontal: 32,
     width: "100%",
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
   },
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
-    marginLeft: 'auto',
-    marginRight:'auto',
+    marginLeft: "auto",
+    marginRight: "auto",
     fontFamily: "Poppins",
   },
   imageWrapper: {

@@ -2,22 +2,21 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { Icon } from "react-native-paper";
-
-const data = [
-  { label: "Yangon", value: "Yangon" },
-  { label: "Mandalay", value: "Mandalay" },
-  { label: "Nay Pyi Taw", value: "Nay Pyi Taw" },
-];
+import { SEED_CITY_DROPDOWN_ITEMS } from "@/constants/travelSeedPlaces";
 
 type SourceComponentProps = {
   value?: string | null;
   onChange?: (value: string) => void;
 };
 
-const SourceComponent: React.FC<SourceComponentProps> = ({ value: valueProp, onChange }) => {
+const SourceComponent: React.FC<SourceComponentProps> = ({
+  value: valueProp,
+  onChange,
+}) => {
   const [internalValue, setInternalValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
   const value = valueProp ?? internalValue;
+  const data = SEED_CITY_DROPDOWN_ITEMS;
 
   const renderLabel = () => {
     if (value || isFocus) {
@@ -50,8 +49,8 @@ const SourceComponent: React.FC<SourceComponentProps> = ({ value: valueProp, onC
         onFocus={() => setIsFocus(true)}
         onBlur={() => setIsFocus(false)}
         onChange={(item) => {
-          if (!onChange) setInternalValue(item.value);
-          onChange?.(item.value);
+          if (onChange) onChange(item.value);
+          else setInternalValue(item.value);
           setIsFocus(false);
         }}
         renderLeftIcon={() => (

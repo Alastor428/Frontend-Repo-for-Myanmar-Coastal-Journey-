@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { IconButton } from "react-native-paper";
 import { useNavigation, RouteProp } from "@react-navigation/native";
+import { loadAuthSession } from "@/auth/authStorage";
+import { authApi } from "@/api/http";
 
 // ---------------- Props Type ----------------
 type FlightPaymentParams = {
@@ -68,6 +70,32 @@ const FlightTicketPaymentScreen: React.FC<Props> = ({ route }) => {
   const [passport, setPassport] = useState("");
   const [remark, setRemark] = useState("");
   const [agree, setAgree] = useState(false);
+
+  // Prefill name/phone from logged-in account (do not override user edits).
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const session = await loadAuthSession();
+      if (!active) return;
+      if (!session?.accessToken || !session.userId) return;
+      try {
+        const res = await authApi.getUserById(
+          session.userId,
+          session.accessToken
+        );
+        const u = res.data;
+        setName((prev) => (prev.trim().length ? prev : u.name ?? ""));
+        setPhone((prev) => (prev.trim().length ? prev : u.phone ?? ""));
+        const passportIdentity = (u.passport ?? u.nrc ?? "").toString();
+        setPassport((prev) => (prev.trim().length ? prev : passportIdentity));
+      } catch {
+        // ignore
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // ---------------- Payment Modal ----------------
   const [showPaymentModal, setShowPaymentModal] = useState(false);

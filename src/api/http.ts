@@ -117,6 +117,8 @@ export type AuthUserProfile = {
   name: string;
   phone: string;
   email?: string;
+  nrc?: string;
+  passport?: string;
 };
 
 const getJsonAuth = async <T>(path: string, accessToken: string): Promise<T> => {

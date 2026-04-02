@@ -1,13 +1,11 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import {
   View,
   StyleSheet,
   ScrollView,
   Dimensions,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   Text,
-  TouchableOpacity,
+  Alert,
   Image,
 } from "react-native";
 import { IconButton } from "react-native-paper";
@@ -21,10 +19,11 @@ import SearchComponent from "../../../../../components/BusTicketComponent/Search
 import PackageResultScreen from "./PackageResultScreen";
 
 const { width } = Dimensions.get("window");
-const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
+const PackageSearchScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   const scrollRef = useRef<ScrollView | null>(null);
-  const [passengers, setPassengers] = useState(1);
   const [travelDate, setTravelDate] = useState<Date | undefined>();
+  const [fromCity, setFromCity] = useState<string | null>(null);
+  const [toBeach, setToBeach] = useState<string | null>(null);
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.header}>
@@ -45,9 +44,9 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
       </View>
       <View style={styles.desContainer}>
         <View style={styles.sourceDest}>
-          <SourceComponent />
+          <SourceComponent value={fromCity} onChange={setFromCity} />
           <View style={styles.destSpacer}>
-            <DestinationComponent />
+            <DestinationComponent value={toBeach} onChange={setToBeach} />
           </View>
         </View>
         <View style={styles.swapIcon}>
@@ -67,14 +66,27 @@ const BusTicket1: React.FC<{ navigation?: any }> = ({ navigation }) => {
 
       <View style={styles.button}>
         <SearchComponent
-          onPress={() => navigation?.navigate("PackageResultScreen")}
+          onPress={() => {
+            if (!fromCity || !toBeach || !travelDate) {
+              Alert.alert(
+                "Missing information",
+                "Please choose source, destination, and depart date."
+              );
+              return;
+            }
+            navigation?.navigate("PackageResultScreen", {
+              from: fromCity,
+              to: toBeach,
+              departOnDate: travelDate.toISOString(),
+            });
+          }}
         />
       </View>
     </ScrollView>
   );
 };
 
-export default BusTicket1;
+export default PackageSearchScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,

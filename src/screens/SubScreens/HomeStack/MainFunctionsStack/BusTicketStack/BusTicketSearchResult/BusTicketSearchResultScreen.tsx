@@ -29,14 +29,11 @@ function travelDateLabel(show: BusShowDto): string {
 
 function mapShowToCardTicket(show: BusShowDto) {
   const t = show.ticket;
-  const source =
-    t && typeof t === "object" ? String(t.source ?? "—") : "—";
+  const source = t && typeof t === "object" ? String(t.source ?? "—") : "—";
   const destination =
     t && typeof t === "object" ? String(t.destination ?? "—") : "—";
   const type =
-    t && typeof t === "object" && t.ticketName
-      ? String(t.ticketName)
-      : "Bus";
+    t && typeof t === "object" && t.ticketName ? String(t.ticketName) : "Bus";
 
   const available = countAvailableSeats(show) > 0;
 
@@ -58,14 +55,13 @@ function mapShowToCardTicket(show: BusShowDto) {
 
 function mapShowToFlightCard(show: BusShowDto) {
   const t = show.ticket;
-  const source =
-    t && typeof t === "object" ? String(t.source ?? "—") : "—";
+  const source = t && typeof t === "object" ? String(t.source ?? "—") : "—";
   const destination =
     t && typeof t === "object" ? String(t.destination ?? "—") : "—";
   const airline =
     t && typeof t === "object" && t.ticketName
-      ? String(t.ticketName)
-      : "Myanmar Airways";
+      ? `Flight · ${String(t.ticketName)}`
+      : "Flight · Myanmar Airways";
   return {
     id: `flight-${show._id}`,
     showId: String(show._id),
@@ -74,7 +70,7 @@ function mapShowToFlightCard(show: BusShowDto) {
     arrivalTime: "—",
     price: `${show.price.toLocaleString()} MMK`,
     duration: "—",
-    status: ("available" as const),
+    status: "available" as const,
     source,
     destination,
     travelDate: travelDateLabel(show),
@@ -88,15 +84,20 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
 }) => {
   const route = useRoute<any>();
   const selectedSource = (route.params?.source as string | undefined)?.trim();
-  const selectedDestination = (route.params?.destination as string | undefined)?.trim();
+  const selectedDestination = (
+    route.params?.destination as string | undefined
+  )?.trim();
+  const selectedTravelDate = (
+    route.params?.travelDate as string | undefined
+  )?.trim();
   const MAX_BUS_RESULTS = 80;
   const [activeTab, setActiveTab] = useState<"bus" | "flight">("bus");
-  const [busTickets, setBusTickets] = useState<ReturnType<
-    typeof mapShowToCardTicket
-  >[]>([]);
-  const [flightTickets, setFlightTickets] = useState<ReturnType<
-    typeof mapShowToFlightCard
-  >[]>([]);
+  const [busTickets, setBusTickets] = useState<
+    ReturnType<typeof mapShowToCardTicket>[]
+  >([]);
+  const [flightTickets, setFlightTickets] = useState<
+    ReturnType<typeof mapShowToFlightCard>[]
+  >([]);
   const [busLoading, setBusLoading] = useState(false);
   const [busHint, setBusHint] = useState<string | null>(null);
 
@@ -113,25 +114,22 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
         const dst = String(t.destination ?? "").trim();
         if (selectedSource && src !== selectedSource) return false;
         if (selectedDestination && dst !== selectedDestination) return false;
+        if (selectedTravelDate) {
+          const label = travelDateLabel(show);
+          if (label !== selectedTravelDate) return false;
+        }
         return true;
       });
 
-      const busMapped = shows
-        .filter((s) => {
-          const t = s.ticket;
-          return t && typeof t === "object" ? t.isForeigner !== true : false;
-        })
-        .map(mapShowToCardTicket);
-      const flightMapped = shows
-        .filter((s) => {
-          const t = s.ticket;
-          return t && typeof t === "object" ? t.isForeigner === true : false;
-        })
-        .map(mapShowToFlightCard);
+      const busMapped = shows.map(mapShowToCardTicket);
+      const flightMapped = shows.map(mapShowToFlightCard);
 
       setBusTickets(busMapped.slice(0, MAX_BUS_RESULTS));
       setFlightTickets(flightMapped.slice(0, MAX_BUS_RESULTS));
-      if (busMapped.length > MAX_BUS_RESULTS || flightMapped.length > MAX_BUS_RESULTS) {
+      if (
+        busMapped.length > MAX_BUS_RESULTS ||
+        flightMapped.length > MAX_BUS_RESULTS
+      ) {
         setBusHint(`Showing first ${MAX_BUS_RESULTS} trips for speed.`);
       }
     } catch (e: unknown) {
@@ -142,7 +140,7 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
     } finally {
       setBusLoading(false);
     }
-  }, [selectedDestination, selectedSource]);
+  }, [selectedDestination, selectedSource, selectedTravelDate]);
 
   useFocusEffect(
     useCallback(() => {
@@ -200,31 +198,25 @@ const BusTicketSearchResultScreen: React.FC<{ navigation?: any }> = ({
           )
         }
         ListHeaderComponent={
-          activeTab === "bus" ? (
-            <>
-              {busLoading ? (
-                <ActivityIndicator
-                  style={{ marginTop: 40 }}
-                  size="large"
-                  color="#1CB5B0"
-                />
-              ) : null}
-              {busHint ? <Text style={styles.hint}>{busHint}</Text> : null}
-            </>
-          ) : null
+          <>
+            {busLoading ? (
+              <ActivityIndicator
+                style={{ marginTop: 40 }}
+                size="large"
+                color="#1CB5B0"
+              />
+            ) : null}
+            {busHint ? <Text style={styles.hint}>{busHint}</Text> : null}
+          </>
         }
         ListEmptyComponent={
-          activeTab === "bus" ? (
-            !busLoading && !busHint ? (
-              <Text style={styles.empty}>
-                No bus trips found. Seed or create bus shows in backend.
-              </Text>
-            ) : null
-          ) : (
-            <Text style={{ textAlign: "center", marginTop: 50 }}>
-              No flights available
+          !busLoading && !busHint ? (
+            <Text style={styles.empty}>
+              {selectedTravelDate
+                ? `No trips for ${selectedTravelDate}. Try another date or re-seed the database.`
+                : "No trips found. Pick source, destination, and date, or seed bus data in the backend."}
             </Text>
-          )
+          ) : null
         }
       />
     </View>

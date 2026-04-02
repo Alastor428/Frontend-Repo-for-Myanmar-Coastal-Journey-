@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,42 +8,84 @@ import {
   ScrollView,
 } from "react-native";
 import { IconButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import HotelPaymentMethodModal from "./HotelPaymentMethodModel"; // make sure this file exists
+import { useNavigation, useRoute } from "@react-navigation/native";
+import HotelPaymentMethodModal from "./HotelPaymentMethodModel";
+import { loadAuthSession } from "@/auth/authStorage";
+import { authApi } from "@/api/http";
 
-const HotelPaymentScreen = ({ route }: any) => {
+function formatDateLabel(iso: string): string {
+  if (!iso) return "—";
+  try {
+    return new Date(iso).toLocaleDateString();
+  } catch {
+    return iso.slice(0, 10);
+  }
+}
+
+const HotelPaymentScreen = () => {
   const navigation = useNavigation<any>();
-
+  const route = useRoute<any>();
   const {
+    hotelId = "",
+    roomId = "",
     hotelName = "",
     roomType = "",
-    price = "0",
-    location = "",
-    bedType = "",
+    pricePerNight = 0,
+    beachName = "",
+    checkIn = "",
+    checkOut = "",
+    nights: nightsFromSearch = 1,
+    rooms: roomsFromSearch = 1,
+    adults: adultsFromSearch = 1,
   } = route?.params || {};
-
-  const numericPrice = parseInt(price.replace(/[^0-9]/g, "")) || 0;
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [passport, setPassport] = useState("");
-  const [checkInDate, setCheckInDate] = useState("");
-  const [checkOutDate, setCheckOutDate] = useState("");
-  const [rooms, setRooms] = useState(1);
-  const [adults, setAdults] = useState(2);
-  const [nights, setNights] = useState(1);
   const [remark, setRemark] = useState("");
   const [agree, setAgree] = useState(false);
+  const [nights, setNights] = useState(Math.max(1, Number(nightsFromSearch) || 1));
+  const [rooms, setRooms] = useState(Math.max(1, Number(roomsFromSearch) || 1));
+  const [adults, setAdults] = useState(Math.max(1, Number(adultsFromSearch) || 1));
 
-  const totalPrice = numericPrice * nights * rooms;
+  const checkOutEffective = useMemo(() => {
+    if (!checkIn) return checkOut;
+    const d = new Date(checkIn);
+    d.setDate(d.getDate() + nights);
+    return d.toISOString();
+  }, [checkIn, checkOut, nights]);
+
+  // Prefill name/phone from logged-in account (do not override user edits).
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const session = await loadAuthSession();
+      if (!active) return;
+      if (!session?.accessToken || !session.userId) return;
+      try {
+        const res = await authApi.getUserById(
+          session.userId,
+          session.accessToken
+        );
+        const u = res.data;
+        setName((prev) => (prev.trim().length ? prev : u.name ?? ""));
+        setPhone((prev) => (prev.trim().length ? prev : u.phone ?? ""));
+      } catch {
+        // ignore (user can still type manually)
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const ppn = Number(pricePerNight) || 0;
   const maxAdults = rooms * 2;
+  const totalPrice = ppn * nights * rooms;
 
   const [showModal, setShowModal] = useState(false);
-  const [paymentType, setPaymentType] = useState<"MPU" | "VISA">("MPU");
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <View
           style={{
@@ -74,15 +116,20 @@ const HotelPaymentScreen = ({ route }: any) => {
         </View>
       </View>
 
-      {/* Hotel Info */}
       <View style={styles.card}>
         <Row label="Hotel" value={hotelName} />
-        <Row label="Room Type" value={roomType} />
-        <Row label="Bed Type" value={bedType} />
-        <Row label="Location" value={location} />
-        <Row label="Price per night" value={`${numericPrice.toLocaleString()} MMK`} />
+        <Row label="Room" value={roomType} />
+        <Row label="Beach" value={beachName || "—"} />
+        <Row label="Check-in" value={formatDateLabel(checkIn)} />
+        <Row
+          label="Check-out"
+          value={formatDateLabel(checkOutEffective)}
+        />
+        <Row
+          label="Price / night"
+          value={`${ppn.toLocaleString()} MMK`}
+        />
 
-        {/* Nights Selector */}
         <View style={styles.counterRow}>
           <Text style={styles.counterLabel}>Nights</Text>
           <View style={styles.counter}>
@@ -102,15 +149,14 @@ const HotelPaymentScreen = ({ route }: any) => {
           </View>
         </View>
 
-        {/* Rooms Selector */}
         <View style={styles.counterRow}>
           <Text style={styles.counterLabel}>Rooms</Text>
           <View style={styles.counter}>
             <TouchableOpacity
               onPress={() => {
-                const newRooms = Math.max(1, rooms - 1);
-                setRooms(newRooms);
-                if (adults > newRooms * 2) setAdults(newRooms * 2);
+                const nr = Math.max(1, rooms - 1);
+                setRooms(nr);
+                if (adults > nr * 2) setAdults(nr * 2);
               }}
               style={styles.counterBtn}
             >
@@ -126,7 +172,6 @@ const HotelPaymentScreen = ({ route }: any) => {
           </View>
         </View>
 
-        {/* Adults Selector */}
         <View style={styles.counterRow}>
           <Text style={styles.counterLabel}>Adults</Text>
           <View style={styles.counter}>
@@ -146,12 +191,14 @@ const HotelPaymentScreen = ({ route }: any) => {
           </View>
         </View>
 
-        <Row label="Total" value={`${totalPrice.toLocaleString()} MMK`} />
+        <Row label="Estimated total" value={`${totalPrice.toLocaleString()} MMK`} />
+        <Text style={styles.note}>
+          Final total is calculated on the server from check-in/out dates.
+        </Text>
       </View>
 
-      {/* Guest Info */}
       <View style={styles.card}>
-        <Text style={styles.section}>Guest Info</Text>
+        <Text style={styles.section}>Guest</Text>
         <TextInput
           placeholder="Name"
           style={styles.input}
@@ -163,27 +210,10 @@ const HotelPaymentScreen = ({ route }: any) => {
           style={styles.input}
           value={phone}
           onChangeText={setPhone}
+          keyboardType="phone-pad"
         />
         <TextInput
-          placeholder="Passport"
-          style={styles.input}
-          value={passport}
-          onChangeText={setPassport}
-        />
-        <TextInput
-          placeholder="Check-in Date"
-          style={styles.input}
-          value={checkInDate}
-          onChangeText={setCheckInDate}
-        />
-        <TextInput
-          placeholder="Check-out Date"
-          style={styles.input}
-          value={checkOutDate}
-          onChangeText={setCheckOutDate}
-        />
-        <TextInput
-          placeholder="Remark"
+          placeholder="Remark (optional)"
           style={styles.input}
           value={remark}
           onChangeText={setRemark}
@@ -191,7 +221,6 @@ const HotelPaymentScreen = ({ route }: any) => {
         />
       </View>
 
-      {/* Agree Checkbox */}
       <TouchableOpacity
         onPress={() => setAgree(!agree)}
         style={styles.row}
@@ -202,7 +231,6 @@ const HotelPaymentScreen = ({ route }: any) => {
         <Text>I agree to terms</Text>
       </TouchableOpacity>
 
-      {/* Confirm Button */}
       <TouchableOpacity
         style={[styles.btn, !agree && { backgroundColor: "#ccc" }]}
         disabled={!agree}
@@ -211,7 +239,6 @@ const HotelPaymentScreen = ({ route }: any) => {
         <Text style={styles.btnText}>Confirm Booking</Text>
       </TouchableOpacity>
 
-      {/* Payment Modal */}
       <HotelPaymentMethodModal
         visible={showModal}
         onClose={() => setShowModal(false)}
@@ -220,19 +247,18 @@ const HotelPaymentScreen = ({ route }: any) => {
         onPayNow={(method) => {
           setShowModal(false);
           navigation.navigate("HotelFinalPayment", {
+            hotelId,
+            roomId,
             hotelName,
-            roomType,
-            guestName: name,
-            phone,
-            passport,
+            guest: { name, phone },
             rooms,
             adults,
             nights,
-            totalPrice,
+            amount: totalPrice,
             paymentType: method,
             remark,
-            checkInDate,
-            checkOutDate,
+            checkInDate: checkIn,
+            checkOutDate: checkOutEffective,
           });
         }}
       />
@@ -242,8 +268,7 @@ const HotelPaymentScreen = ({ route }: any) => {
 
 export default HotelPaymentScreen;
 
-// Row helper
-const Row = ({ label, value }: any) => (
+const Row = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.row}>
     <Text>{label}</Text>
     <Text style={styles.value}>{value}</Text>
@@ -281,7 +306,13 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     backgroundColor: "#fafafa",
   },
-  checkbox: { width: 20, height: 20, borderWidth: 2, borderRadius: 4, marginRight: 12 },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderRadius: 4,
+    marginRight: 12,
+  },
   btn: {
     backgroundColor: "#1CB5B0",
     paddingVertical: 15,
@@ -291,12 +322,29 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   btnText: { color: "#fff", fontWeight: "bold", fontSize: 16 },
-
-  // Counter style
-  counterRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginVertical: 12 },
+  counterRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginVertical: 12,
+  },
   counterLabel: { fontSize: 16, fontWeight: "500" },
   counter: { flexDirection: "row", alignItems: "center" },
-  counterBtn: { width: 32, height: 32, borderRadius: 16, backgroundColor: "#1CB5B0", justifyContent: "center", alignItems: "center", marginHorizontal: 8 },
+  counterBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "#1CB5B0",
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 8,
+  },
   counterText: { color: "#fff", fontWeight: "bold", fontSize: 18 },
-  counterNumber: { fontSize: 16, fontWeight: "500", minWidth: 20, textAlign: "center" },
+  counterNumber: {
+    fontSize: 16,
+    fontWeight: "500",
+    minWidth: 20,
+    textAlign: "center",
+  },
+  note: { fontSize: 11, color: "#888", marginTop: 8 },
 });

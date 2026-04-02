@@ -134,7 +134,6 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       !signupPassword ||
       !signupConfirmPassword ||
       !dob ||
-      !gender ||
       (hasNRC
         ? !nrcState || !nrcTownship || !nrcType || !nrcNumber
         : !passportNumber)
@@ -161,7 +160,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       setAuthLoading(true);
       setSignupError("");
 
-      await authApi.register({
+      const res = await authApi.register({
         name: signupUserName,
         email: signupEmail,
         phone: signupPhone,
@@ -173,7 +172,13 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
         dateOfBirth: dob?.toISOString(),
       });
 
-      alert("Account created successfully!");
+      const userId = userIdFromApiUser(res.user);
+      if (res.accessToken && userId) {
+        await onLoginSuccess({ accessToken: res.accessToken, userId });
+        return;
+      }
+
+      alert("Account created successfully! Please sign in.");
 
       setSignupUserName("");
       setSignupEmail("");

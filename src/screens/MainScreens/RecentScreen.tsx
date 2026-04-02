@@ -18,6 +18,14 @@ import {
   listMyBusSeatPurchases,
   type BusSeatPurchaseDto,
 } from "@/api/busSeatApi";
+import {
+  listMyTravelPackageBookings,
+  type PackageBookingDto,
+} from "@/api/packageApi";
+import {
+  listMyHotelBookings,
+  type HotelBookingDto,
+} from "@/api/hotelApi";
 
 function guideNameFromBooking(b: TourGuideBookingDto): string {
   const tg = b.tourGuide;
@@ -122,6 +130,32 @@ const RecentScreen = ({ navigation }: any) => {
   const [busLoading, setBusLoading] = useState(false);
   const [busHint, setBusHint] = useState<string | null>(null);
 
+  const [hotelRows, setHotelRows] = useState<
+    {
+      id: string;
+      name: string;
+      price: number;
+      date: string;
+      screen: string;
+      params: any;
+    }[]
+  >([]);
+  const [hotelLoading, setHotelLoading] = useState(false);
+  const [hotelHint, setHotelHint] = useState<string | null>(null);
+
+  const [packageRows, setPackageRows] = useState<
+    {
+      id: string;
+      name: string;
+      price: number;
+      date: string;
+      screen: string;
+      params: any;
+    }[]
+  >([]);
+  const [packageLoading, setPackageLoading] = useState(false);
+  const [packageHint, setPackageHint] = useState<string | null>(null);
+
   const loadTourBookings = useCallback(async () => {
     setTourGuideHint(null);
     setTourGuideLoading(true);
@@ -187,11 +221,128 @@ const RecentScreen = ({ navigation }: any) => {
     }
   }, []);
 
+  const loadHotelBookings = useCallback(async () => {
+    setHotelHint(null);
+    setHotelLoading(true);
+    try {
+      const session = await loadAuthSession();
+      if (!session) {
+        setHotelRows([]);
+        setHotelHint("Sign in to see your hotel bookings.");
+        return;
+      }
+
+      const res = await listMyHotelBookings(session.accessToken, {
+        page: 1,
+        limit: 30,
+      });
+
+      const rows = (res.data ?? []).map((b: HotelBookingDto) => {
+        const hotelObj = b.hotel && typeof b.hotel === "object" ? b.hotel : null;
+        const hotelName =
+          hotelObj && "hotelName" in hotelObj
+            ? String((hotelObj as any).hotelName ?? "Hotel")
+            : "Hotel";
+
+        const li0 = b.lineItems?.[0] as any;
+        const rooms = Number(li0?.numberOfRooms ?? 1);
+        const adults = Number(li0?.numberOfAdults ?? 1);
+        const nights = Number(li0?.lengthOfStayNights ?? 1);
+        const checkInDate = li0?.checkInDate ? String(li0.checkInDate).slice(0, 10) : "";
+        const checkOutDate = li0?.checkOutDate ? String(li0.checkOutDate).slice(0, 10) : "";
+        const totalPrice = Number(b.totalPrice ?? 0) || 0;
+
+        return {
+          id: `hotel-${b._id}`,
+          name: `${hotelName} (${checkInDate || "—"})`,
+          price: totalPrice,
+          date: String(b.createdAt ?? checkInDate ?? "").slice(0, 10),
+          screen: "HotelBookingSuccess",
+          params: {
+            hotelName,
+            guestName: b.guestName ?? "Guest",
+            phone: "",
+            rooms,
+            adults,
+            nights,
+            totalPrice,
+            paymentType: "MPU",
+            remark: "",
+            checkInDate,
+            checkOutDate,
+          },
+        };
+      });
+
+      setHotelRows(rows);
+    } catch (e) {
+      setHotelRows([]);
+      setHotelHint("Could not load hotel bookings.");
+      // eslint-disable-next-line no-console
+      console.error("Hotel bookings load failed:", e);
+    } finally {
+      setHotelLoading(false);
+    }
+  }, []);
+
+  const loadPackageBookings = useCallback(async () => {
+    setPackageHint(null);
+    setPackageLoading(true);
+    try {
+      const session = await loadAuthSession();
+      if (!session) {
+        setPackageRows([]);
+        setPackageHint("Sign in to see your package bookings.");
+        return;
+      }
+      const res = await listMyTravelPackageBookings(session.accessToken, {
+        page: 1,
+        limit: 30,
+      });
+
+      const rows = (res.data ?? []).map((b: PackageBookingDto) => {
+        const tp = b.travelPackage ?? {};
+        const pkgName = tp?.packageName ?? "Travel Package";
+        const toBeach =
+          tp?.toBeach && typeof tp.toBeach === "object" && "beachName" in tp.toBeach
+            ? String((tp.toBeach as any).beachName ?? "")
+            : "";
+        const nights = Number(tp?.hotel?.nights ?? 1);
+        const days = nights + 1;
+
+        return {
+          id: `package-${b._id}`,
+          name: `${pkgName}${toBeach ? ` (${toBeach})` : ""}`,
+          price: Number(b.totalPrice ?? 0),
+          date: String(b.createdAt ?? "").slice(0, 10),
+          screen: "PackageBookingSuccess",
+          params: {
+            packageName: pkgName,
+            travelers: b.numberOfPeople ?? 1,
+            totalAmount: String(b.totalPrice ?? 0),
+            paymentType: (b.paymentMethod ?? "MPU") as string,
+            duration: `${days} Days ${nights} Night`,
+            remark: "",
+          },
+        };
+      });
+
+      setPackageRows(rows);
+    } catch (e) {
+      setPackageRows([]);
+      setPackageHint(e instanceof Error ? e.message : "Could not load package bookings.");
+    } finally {
+      setPackageLoading(false);
+    }
+  }, []);
+
   useFocusEffect(
     useCallback(() => {
       void loadTourBookings();
       void loadBusPurchases();
-    }, [loadTourBookings, loadBusPurchases])
+      void loadHotelBookings();
+      void loadPackageBookings();
+    }, [loadTourBookings, loadBusPurchases, loadHotelBookings, loadPackageBookings])
   );
 
   const data: Record<string, any[]> = {
@@ -199,53 +350,9 @@ const RecentScreen = ({ navigation }: any) => {
 
     tourguide: tourGuideRows,
 
-    hotel: [
-      {
-        id: "4",
-        name: "Hotel Stay (Ngapali)",
-        price: 120000,
-        date: "2026-03-20",
-        screen: "BusTicketSuccessReceipt",
-        params: {
-          amount: 120000,
-          recipient: "Ngapali Resort",
-          departureTime: "-",
-          transactionTime: "2026-03-20 09:00 AM",
-          transactionNo: "TXN888888",
-          transactionTo: "Hotel",
-          totalAmount: 120000,
-          travelDate: "2026-03-25",
-          seat: "-",
-          paymentMethod: "AYA Pay",
-          nrcNumber: "12/PaTaNa(N)999999",
-          userName: "Swan Linn",
-        },
-      },
-    ],
+    hotel: hotelRows,
 
-    package: [
-      {
-        id: "5",
-        name: "Beach Package (3 Days)",
-        price: 300000,
-        date: "2026-03-15",
-        screen: "BusTicketSuccessReceipt",
-        params: {
-          amount: 300000,
-          recipient: "Travel Agency",
-          departureTime: "6:00 AM",
-          transactionTime: "2026-03-15 07:00 AM",
-          transactionNo: "TXN999999",
-          transactionTo: "Package",
-          totalAmount: 300000,
-          travelDate: "2026-03-18",
-          seat: "-",
-          paymentMethod: "KBZPay",
-          nrcNumber: "12/YaKaNa(N)112233",
-          userName: "Swan Linn",
-        },
-      },
-    ],
+    package: packageRows,
   };
 
   const renderItem = ({ item }: any) => (
@@ -262,6 +369,8 @@ const RecentScreen = ({ navigation }: any) => {
   const listData = data[activeTab];
   const showTourLoading = activeTab === "tourguide" && tourGuideLoading;
   const showBusLoading = activeTab === "transport" && busLoading;
+  const showHotelLoading = activeTab === "hotel" && hotelLoading;
+  const showPackageLoading = activeTab === "package" && packageLoading;
 
   return (
     <View style={styles.container}>
@@ -287,13 +396,21 @@ const RecentScreen = ({ navigation }: any) => {
         <Text style={styles.hint}>{busHint}</Text>
       ) : null}
 
+      {activeTab === "hotel" && hotelHint ? (
+        <Text style={styles.hint}>{hotelHint}</Text>
+      ) : null}
+
+      {activeTab === "package" && packageHint ? (
+        <Text style={styles.hint}>{packageHint}</Text>
+      ) : null}
+
       <FlatList
         data={listData}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          !showTourLoading && !showBusLoading ? (
+          !showTourLoading && !showBusLoading && !showHotelLoading && !showPackageLoading ? (
             <Text style={styles.empty}>No records found</Text>
           ) : null
         }
