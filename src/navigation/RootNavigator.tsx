@@ -42,6 +42,7 @@ import HotelPaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStac
 import PackageBookingSuccessScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackageReceiptScreen";
 import PackagePaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackagePaymentScreen";
 import SelfRegistrationScreen from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/SelfRegistrationScreen";
+import ChaungThaScreen from "@/screens/SubScreens/HomeStack/BeachStack/ChaungTha/ChaungThar";
 
 const Stack = createNativeStackNavigator();
 
@@ -107,6 +108,7 @@ export default function RootNavigator() {
         name="SelfRegistration"
         component={SelfRegistrationScreen}
       />
+      <Stack.Screen name="ChaungTha" component={ChaungThaScreen} />
 
       {/* Hotel */}
       <Stack.Screen
