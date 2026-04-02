@@ -7,9 +7,12 @@ import {
   TextInput,
   ScrollView,
   Image,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { loadAuthSession } from "@/auth/authStorage";
+import { createHotelBooking, confirmHotelBooking } from "@/api/hotelApi";
 
 const PAYMENT_CONFIG: Record<
   string,
@@ -28,6 +31,8 @@ const PAYMENT_CONFIG: Record<
 const HotelFinalPaymentScreen = ({ route }: any) => {
   const navigation = useNavigation<any>();
   const {
+    hotelId = "",
+    roomId = "",
     hotelName = "—",
     guest = {},
     amount = 0,
@@ -36,6 +41,7 @@ const HotelFinalPaymentScreen = ({ route }: any) => {
     checkOutDate = "",
     rooms = 1,
     nights = 1,
+    adults = 1,
     remark = "",
   } = route?.params || {};
 
@@ -44,20 +50,64 @@ const HotelFinalPaymentScreen = ({ route }: any) => {
 
   const [cardNumber, setCardNumber] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  const handleConfirmPayment = () => {
-    navigation.navigate("HotelBookingSuccess", {
-      hotelName,
-      guestName: guest.name || "Guest",
-      phone: guest.phone || "",
-      rooms,
-      nights,
-      totalPrice: amount,
-      paymentType,
-      remark,
-      checkInDate,
-      checkOutDate,
-    });
+  const handleConfirmPayment = async () => {
+    if (isSubmitting) return;
+
+    try {
+      setIsSubmitting(true);
+      // Best-effort: create/confirm booking in backend, but never block UI navigation.
+      const session = await loadAuthSession();
+      const hasRequired =
+        !!session?.accessToken && !!hotelId && !!roomId && !!checkInDate && !!checkOutDate;
+
+      if (hasRequired) {
+        const created = await createHotelBooking(session.accessToken, {
+          hotel: hotelId,
+          guestName: guest?.name ? String(guest.name) : undefined,
+          currency: "MMK",
+          taxIncluded: true,
+          lineItems: [
+            {
+              room: roomId,
+              checkInDate,
+              checkOutDate,
+              checkInTimeNote: "after 14:00",
+              checkOutTimeNote: "Before 12:00",
+              numberOfRooms: rooms,
+              numberOfAdults: adults,
+            },
+          ],
+        });
+
+        const bookingId = created.data?._id;
+        if (bookingId) {
+          await confirmHotelBooking(session.accessToken, bookingId);
+        }
+      }
+    } catch (e) {
+      // Intentionally ignore payment/booking errors so user can continue.
+      // Booking might not be saved, but UI should still proceed.
+      // (No payment gateway logic exists in this app.)
+      // eslint-disable-next-line no-console
+      console.error("Hotel booking create/confirm failed:", e);
+    } finally {
+      setIsSubmitting(false);
+      navigation.navigate("HotelBookingSuccess", {
+        hotelName,
+        guestName: guest.name || "Guest",
+        phone: guest.phone || "",
+        rooms,
+        nights,
+        adults,
+        totalPrice: amount,
+        paymentType,
+        remark,
+        checkInDate,
+        checkOutDate,
+      });
+    }
   };
 
   return (

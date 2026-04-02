@@ -10,37 +10,51 @@ import {
 import { Card, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 
-interface HotelComponentProps {
+interface HotelRoomComponentProps {
+  roomId: string;
+  hotelId: string;
   imageUrl: ImageSourcePropType;
   roomType: string;
   bedType: string;
   area: string;
   limit: string;
   price: string;
+  pricePerNight: number;
   status: "available" | "busy";
   busyUntil?: string;
   view: string;
-  hotelName?: string; // <-- Add this line
+  hotelName?: string;
+  beachName?: string;
+  checkIn: string;
+  checkOut: string;
+  nights: number;
+  roomsCount: number;
+  adults: number;
 }
 
-const HotelRoomComponent: React.FC<HotelComponentProps> = ({
+const HotelRoomComponent: React.FC<HotelRoomComponentProps> = ({
+  roomId,
+  hotelId,
   imageUrl,
   roomType,
   bedType,
   area,
   limit,
   price,
+  pricePerNight,
   status,
   busyUntil,
   view,
-  hotelName, // <-- Accept hotelName
+  hotelName,
+  beachName,
+  checkIn,
+  checkOut,
+  nights,
+  roomsCount,
+  adults,
 }) => {
   const isAvailable = status === "available";
   const navigation = useNavigation<any>();
-
-  const numericPrice = price
-    ? Number(price.replace(/,/g, "").replace(/ MMK\/night/, ""))
-    : 0;
 
   return (
     <Card style={styles.card}>
@@ -51,7 +65,7 @@ const HotelRoomComponent: React.FC<HotelComponentProps> = ({
 
         <View style={styles.content}>
           <Text style={styles.roomType}>{roomType}</Text>
-          {hotelName && <Text style={styles.hotelName}>{hotelName}</Text>}
+          {hotelName ? <Text style={styles.hotelName}>{hotelName}</Text> : null}
 
           <Text
             style={[
@@ -62,9 +76,9 @@ const HotelRoomComponent: React.FC<HotelComponentProps> = ({
             {isAvailable ? "Available" : "Busy"}
           </Text>
 
-          {!isAvailable && busyUntil && (
+          {!isAvailable && busyUntil ? (
             <Text style={styles.busyDate}>Busy until: {busyUntil}</Text>
-          )}
+          ) : null}
 
           <View style={styles.iconRow}>
             <View style={styles.iconItem}>
@@ -86,11 +100,11 @@ const HotelRoomComponent: React.FC<HotelComponentProps> = ({
           <Text style={styles.iconText}>{view}</Text>
 
           <View style={styles.priceSection}>
-            <Text style={styles.todayPrice}>Today's Price</Text>
+            <Text style={styles.todayPrice}>Rate</Text>
             <Text style={styles.price}>
-              {numericPrice.toLocaleString()} MMK/night
+              {pricePerNight.toLocaleString()} MMK/night
             </Text>
-            <Text style={styles.taxText}>includes tax & fees</Text>
+            <Text style={styles.taxText}>Tax settings apply at checkout</Text>
           </View>
 
           <TouchableOpacity
@@ -99,16 +113,21 @@ const HotelRoomComponent: React.FC<HotelComponentProps> = ({
               { backgroundColor: isAvailable ? "#1CB5B0" : "#ccc" },
             ]}
             disabled={!isAvailable}
-            onPress={() => navigation.navigate("HotelPaymentScreen", {
-              hotelName,
-              roomType,
-              price,
-              location: "Ngapali",
-              bedType,
-              area,
-              limit,
-              view,
-            })}
+            onPress={() =>
+              navigation.navigate("HotelPaymentScreen", {
+                hotelId,
+                roomId,
+                hotelName: hotelName ?? "Hotel",
+                roomType,
+                pricePerNight,
+                beachName: beachName ?? "",
+                checkIn,
+                checkOut,
+                nights,
+                rooms: roomsCount,
+                adults,
+              })
+            }
           >
             <Text style={styles.buttonText}>
               {isAvailable ? "Select Room" : "Unavailable"}

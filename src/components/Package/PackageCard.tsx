@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
 type PackagePlanProps = {
+  packageId: string;
   image: any;
   location: string;
   title: string;
@@ -14,6 +15,7 @@ type PackagePlanProps = {
 };
 
 const PackagePlan: React.FC<PackagePlanProps> = ({
+  packageId,
   image,
   location,
   title,
@@ -64,7 +66,11 @@ const PackagePlan: React.FC<PackagePlanProps> = ({
 
         <Pressable
           style={styles.selectBtn}
-          onPress={() => navigation.navigate("PackageDetailScreen")}
+          onPress={() =>
+            navigation.navigate("PackageDetailScreen", {
+              packageId,
+            })
+          }
         >
           <Text style={styles.selectText}>Select Package</Text>
         </Pressable>

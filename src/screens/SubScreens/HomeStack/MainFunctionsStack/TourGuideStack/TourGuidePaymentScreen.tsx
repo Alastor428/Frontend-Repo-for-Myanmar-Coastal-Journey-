@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import TourGuidePaymentMethodModal from "./TourGuidePaymentMethodModal";
 import { loadAuthSession } from "@/auth/authStorage";
 import { createTourGuideBooking } from "@/api/tourGuideApi";
+import { authApi } from "@/api/http";
 
 export type TourGuidePaymentParams = {
   tourGuideId: string;
@@ -38,6 +39,32 @@ const TourGuidePayment_screen: React.FC = () => {
   const [remark, setRemark] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Prefill name/phone from logged-in account (do not override user edits).
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const session = await loadAuthSession();
+      if (!active) return;
+      if (!session?.accessToken || !session.userId) return;
+      try {
+        const res = await authApi.getUserById(
+          session.userId,
+          session.accessToken
+        );
+        const u = res.data;
+        setName((prev) => (prev.trim().length ? prev : u.name ?? ""));
+        setPhone((prev) => (prev.trim().length ? prev : u.phone ?? ""));
+        const identity = (u.nrc ?? u.passport ?? "").toString();
+        setNrc((prev) => (prev.trim().length ? prev : identity));
+      } catch {
+        // ignore
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   if (!p?.tourGuideId || !p.startDate || !p.endDate) {
     return (

@@ -4,44 +4,31 @@ import { Dropdown } from "react-native-element-dropdown";
 import { Icon } from "react-native-paper";
 import { SEED_BEACH_DROPDOWN_ITEMS } from "@/constants/travelSeedPlaces";
 
-type DestinationComponentProps = {
+type Props = {
   value?: string | null;
   onChange?: (value: string) => void;
 };
 
-const DestinationComponent: React.FC<DestinationComponentProps> = ({
-  value: valueProp,
-  onChange,
-}) => {
+const HotelBeachDropdown: React.FC<Props> = ({ value: valueProp, onChange }) => {
   const [internalValue, setInternalValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
   const value = valueProp ?? internalValue;
-  const data = SEED_BEACH_DROPDOWN_ITEMS;
-
-  const renderLabel = () => {
-    if (value || isFocus) {
-      return (
-        <Text style={[styles.label, isFocus && { color: "#1CB5B0" }]}>To</Text>
-      );
-    }
-    return null;
-  };
 
   return (
-    <View style={styles.container}>
-      {renderLabel()}
+    <View style={styles.wrap}>
+      <Text style={styles.caption}>Beach</Text>
       <Dropdown
         style={[styles.dropdown, isFocus && { borderColor: "#1CB5B0" }]}
         placeholderStyle={styles.placeholderStyle}
         selectedTextStyle={styles.selectedTextStyle}
         inputSearchStyle={styles.inputSearchStyle}
         iconStyle={styles.iconStyle}
-        data={data}
+        data={SEED_BEACH_DROPDOWN_ITEMS}
         search
         maxHeight={300}
         labelField="label"
         valueField="value"
-        placeholder={!isFocus ? "To" : "Choose destination..."}
+        placeholder={!isFocus ? "Select beach" : "Search beach..."}
         searchPlaceholder="Search..."
         value={value}
         onFocus={() => setIsFocus(true)}
@@ -59,52 +46,29 @@ const DestinationComponent: React.FC<DestinationComponentProps> = ({
   );
 };
 
-export default DestinationComponent;
+export default HotelBeachDropdown;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    width: 298,
-    height: 48,
-    paddingTop: 16,
-    marginBottom: 16,
+  wrap: {
+    width: "100%",
+    paddingHorizontal: 8,
+    marginBottom: 8,
+  },
+  caption: {
+    fontSize: 12,
+    marginHorizontal: 8,
+    marginBottom: 4,
   },
   dropdown: {
     height: 48,
-    width: 298,
     borderColor: "#1CB5B0",
-    opacity: 0.8,
+    opacity: 0.9,
     borderWidth: 0.5,
     borderRadius: 8,
+    paddingHorizontal: 12,
   },
-  icon: {
-    marginRight: 8,
-  },
-  label: {
-    position: "absolute",
-    backgroundColor: "white",
-    left: 8,
-    top: 8,
-    zIndex: 999,
-    fontSize: 12,
-    paddingHorizontal: 8,
-    fontFamily: "Poppins",
-    fontWeight: "500",
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    fontFamily: "Poppins",
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    fontFamily: "Poppins",
-  },
-  iconStyle: {
-    width: 20,
-    height: 20,
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 14,
-  },
+  placeholderStyle: { fontSize: 14, color: "#999" },
+  selectedTextStyle: { fontSize: 14 },
+  inputSearchStyle: { height: 40, fontSize: 14 },
+  iconStyle: { width: 20, height: 20 },
 });

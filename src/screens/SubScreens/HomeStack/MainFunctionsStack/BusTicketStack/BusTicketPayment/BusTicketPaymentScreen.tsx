@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { IconButton } from "react-native-paper";
 import { useNavigation, RouteProp } from "@react-navigation/native";
+import { loadAuthSession } from "@/auth/authStorage";
+import { authApi } from "@/api/http";
 
 // ---------------- Props Type ----------------
 type TicketPaymentParams = {
@@ -60,6 +62,32 @@ const TicketPayment_screen: React.FC<Props> = ({ route }) => {
   const [nrc, setNrc] = useState("");
   const [remark, setRemark] = useState("");
   const [agree, setAgree] = useState(false);
+
+  // Prefill name/phone from logged-in account (do not override user edits).
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const session = await loadAuthSession();
+      if (!active) return;
+      if (!session?.accessToken || !session.userId) return;
+      try {
+        const res = await authApi.getUserById(
+          session.userId,
+          session.accessToken
+        );
+        const u = res.data;
+        setName((prev) => (prev.trim().length ? prev : u.name ?? ""));
+        setPhone((prev) => (prev.trim().length ? prev : u.phone ?? ""));
+        const identity = (u.nrc ?? u.passport ?? "").toString();
+        setNrc((prev) => (prev.trim().length ? prev : identity));
+      } catch {
+        // ignore
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // ---------------- Payment Modal ----------------
   const [showPaymentModal, setShowPaymentModal] = useState(false);
