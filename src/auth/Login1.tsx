@@ -60,18 +60,15 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
   const [signupError, setSignupError] = useState("");
 
   const [acceptTerms, setAcceptTerms] = useState(false);
-
   const [dob, setDob] = useState<Date>();
   const [gender, setGender] = useState<string | null>(null);
 
   // NRC / Passport
   const [hasNRC, setHasNRC] = useState(true);
-
   const [nrcState, setNrcState] = useState("");
   const [nrcTownship, setNrcTownship] = useState("");
   const [nrcType, setNrcType] = useState("");
   const [nrcNumber, setNrcNumber] = useState("");
-
   const [passportNumber, setPassportNumber] = useState("");
 
   useEffect(() => {
@@ -94,12 +91,12 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
     ]).start();
   }, []);
 
-  // Login
+  // LOGIN
   const handleLogin = async () => {
     Keyboard.dismiss();
 
     if (!email || !password) {
-      setError("Fill the data first");
+      setError("Please enter email and password");
       return;
     }
 
@@ -109,10 +106,12 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
 
       const res = await authApi.login(email, password);
       const userId = userIdFromApiUser(res.user);
+
       if (!res.accessToken || !userId) {
         setError("Invalid server response");
         return;
       }
+
       await onLoginSuccess({ accessToken: res.accessToken, userId });
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Login failed";
@@ -123,7 +122,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
     }
   };
 
-  // Signup
+  // SIGN UP
   const handleSignUp = async () => {
     Keyboard.dismiss();
 
@@ -134,11 +133,13 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       !signupPassword ||
       !signupConfirmPassword ||
       !dob ||
+      !gender ||
       (hasNRC
         ? !nrcState || !nrcTownship || !nrcType || !nrcNumber
         : !passportNumber)
     ) {
-      setSignupError("Fill all fields first");
+      setSignupError("Please fill all fields");
+      scrollRef.current?.scrollToEnd({ animated: true });
       return;
     }
 
@@ -148,7 +149,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
     }
 
     if (!acceptTerms) {
-      setSignupError("You must accept terms and conditions");
+      setSignupError("You must accept terms");
       return;
     }
 
@@ -160,7 +161,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       setAuthLoading(true);
       setSignupError("");
 
-      const res = await authApi.register({
+      await authApi.register({
         name: signupUserName,
         email: signupEmail,
         phone: signupPhone,
@@ -172,28 +173,8 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
         dateOfBirth: dob?.toISOString(),
       });
 
-      const userId = userIdFromApiUser(res.user);
-      if (res.accessToken && userId) {
-        await onLoginSuccess({ accessToken: res.accessToken, userId });
-        return;
-      }
-
       alert("Account created successfully! Please sign in.");
 
-      setSignupUserName("");
-      setSignupEmail("");
-      setSignupPhone("");
-      setSignupPassword("");
-      setSignupConfirmPassword("");
-      setNrcState("");
-      setNrcTownship("");
-      setNrcType("");
-      setNrcNumber("");
-      setPassportNumber("");
-      setDob(undefined);
-      setGender(null);
-      setAcceptTerms(false);
-      setSignupError("");
       setActiveTab("signin");
     } catch (e: unknown) {
       const message = e instanceof Error ? e.message : "Signup failed";
@@ -221,10 +202,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
       </Animated.View>
 
       <Animated.View
-        style={[
-          styles.buttonbox,
-          { transform: [{ translateY: sheetAnim }] },
-        ]}
+        style={[styles.buttonbox, { transform: [{ translateY: sheetAnim }] }]}
       >
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -232,23 +210,23 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
         >
           <ScrollView
             ref={scrollRef}
+            keyboardDismissMode="on-drag"
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               flexGrow: 1,
               alignItems: "center",
               paddingBottom: 120,
             }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
           >
             <View style={styles.handleArea}>
               <View style={styles.rectangle} />
             </View>
 
-            {/* SIGN IN */}
             {activeTab === "signin" ? (
               <>
                 <Text style={styles.signIn}>SIGN IN</Text>
-                <Text style={styles.WB}>Welcome Back !</Text>
+                <Text style={styles.WB}>Welcome Back!</Text>
 
                 <View style={{ marginTop: 24 }}>
                   <EmailComponent value={email} onChange={setEmail} />
@@ -258,7 +236,7 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                   <PasswordComponent value={password} onChange={setPassword} />
                 </View>
 
-                <View style={{ width: "100%", marginTop: 12,paddingHorizontal: 32 }}>
+                <View style={{ width: "100%", marginTop: 12, paddingHorizontal: 32 }}>
                   <RememberMeCheckbox
                     value={rememberMe}
                     onToggle={() => setRememberMe(p => !p)}
@@ -284,49 +262,28 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                 <Text style={styles.WB}>Create your account</Text>
 
                 <View style={{ marginTop: 24 }}>
-                  <SetUserNameComponent
-                    value={signupUserName}
-                    onChange={setSignupUserName}
-                  />
+                  <SetUserNameComponent value={signupUserName} onChange={setSignupUserName} />
                 </View>
 
                 <View style={{ marginTop: 20 }}>
-                  <SetEmailComponent
-                    value={signupEmail}
-                    onChange={setSignupEmail}
-                  />
+                  <SetEmailComponent value={signupEmail} onChange={setSignupEmail} />
                 </View>
 
                 <View style={{ marginTop: 20 }}>
                   <Phone value={signupPhone} onChange={setSignupPhone} />
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: 328, marginTop: 32 }}>
-                  <Text style={{ flex: 1, fontSize: 14, color: "#1CB5B0", fontWeight: "bold" }}>
-                    I don't have NRC
-                  </Text>
-
-                  <TouchableOpacity
-                    onPress={() => setHasNRC(prev => !prev)}
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 4,
-                      borderWidth: 1,
-                      borderColor: "#1CB5B0",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: !hasNRC ? "#1CB5B0" : "white",
-                    }}
-                  >
-                    {!hasNRC && (
-                      <Text style={{ color: "white", fontSize: 12 }}>✓</Text>
-                    )}
-                  </TouchableOpacity>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: 328, marginTop: 32 }}> 
+                  <Text style={{ flex: 1, fontSize: 14, color: "#1CB5B0", fontWeight: "bold" }}> I don't have NRC </Text> 
+                  <TouchableOpacity onPress={() => setHasNRC(prev => !prev)} style={{ width: 20, height: 20, borderRadius: 4, borderWidth: 1, borderColor: "#1CB5B0", alignItems: "center", justifyContent: "center", backgroundColor: !hasNRC ? "#1CB5B0" : "white", }} > 
+                  {!hasNRC && ( 
+                    <Text style={{ color: "white", fontSize: 12 }}>✓</Text> 
+                    )} 
+                  </TouchableOpacity> 
                 </View>
 
-                {hasNRC ? (
-                  <View style={{ marginTop: 8 }}>
+                <View style={{ marginTop: 8 }}>
+                  {hasNRC ? (
                     <SetNRCComponent
                       stateValue={nrcState}
                       onStateChange={setNrcState}
@@ -337,36 +294,19 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                       numberValue={nrcNumber}
                       onNumberChange={setNrcNumber}
                     />
-                  </View>
-                ) : (
-                  <View style={{ marginTop: 8 }}>
-                    <PassportComponent
-                      value={passportNumber}
-                      onChange={setPassportNumber}
-                    />
-                  </View>
-                )}
+                  ) : (
+                    <PassportComponent value={passportNumber} onChange={setPassportNumber} />
+                  )}
+                </View>
 
                 <View style={{ marginTop: 20 }}>
-                  <DateOfBirth
-                    label="Date of Birth"
-                    value={dob}
-                    onConfirm={setDob}
-                  />
+                  <DateOfBirth label="Date of Birth" value={dob} onConfirm={setDob} />
                 </View>
 
-                <View style={{ marginTop: -16 }}>
-                  <SetGenderButton
-                    value={gender}
-                    onChange={setGender}
-                  />
-                </View>
+                <SetGenderButton value={gender} onChange={setGender} />
 
                 <View style={{ marginTop: 8 }}>
-                  <PasswordComponent
-                    value={signupPassword}
-                    onChange={setSignupPassword}
-                  />
+                  <PasswordComponent value={signupPassword} onChange={setSignupPassword} />
                 </View>
 
                 <View style={{ marginTop: 24 }}>
@@ -376,20 +316,16 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
                   />
                 </View>
 
-                <View style={{ width: "100%", marginTop: 12,paddingHorizontal: 32 }}>
+                <View style={{ width: "100%", marginTop: 12, paddingHorizontal: 32 }}>
                   <AcceptComponent
                     value={acceptTerms}
                     onToggle={() => setAcceptTerms(p => !p)}
                   />
                 </View>
 
-                {signupError && (
-                  <Text style={styles.errorText}>{signupError}</Text>
-                )}
+                {signupError && <Text style={styles.errorText}>{signupError}</Text>}
 
-                <View style={{ marginTop: -8 }}>
-                  <SignUpButton onPress={handleSignUp} loading={authLoading} />
-                </View>
+                <SignUpButton onPress={handleSignUp} loading={authLoading} />
 
                 <View style={{ flexDirection: "row", marginTop: 16 }}>
                   <Text style={{ color: "#666" }}>
@@ -411,14 +347,8 @@ const WelcomeScreen: React.FC<Props> = ({ onLoginSuccess }) => {
 export default WelcomeScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#79D7D4",
-  },
-  logo: {
-    marginTop: 162,
-    alignItems: "center",
-  },
+  container: { flex: 1, backgroundColor: "#79D7D4" },
+  logo: { marginTop: 162, alignItems: "center" },
   name: {
     fontFamily: "Irish Grover",
     fontSize: 64,
@@ -434,12 +364,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopLeftRadius: 50,
     borderTopRightRadius: 50,
-    overflow: "hidden",
   },
-  handleArea: {
-    alignItems: "center",
-    paddingTop: 12,
-  },
+  handleArea: { alignItems: "center", paddingTop: 12 },
   rectangle: {
     width: 100,
     height: 8,

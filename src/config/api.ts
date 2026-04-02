@@ -5,4 +5,4 @@ export const API_BASE_URL =
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ((process as any).env?.EXPO_PUBLIC_API_URL as string | undefined) ??
   // Android emulator default:
-  "http://172.20.10.8:3000";
+  "http://192.168.99.96:3000";

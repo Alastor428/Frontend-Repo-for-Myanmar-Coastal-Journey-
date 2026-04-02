@@ -25,8 +25,8 @@ const EmailComponent = ({
       return;
     }
 
-    if (!emailRegex.test(value) && !phoneRegex.test(value)) {
-      setError('Enter a valid email or phone number');
+    if (!emailRegex.test(value)) {
+      setError('Enter a valid email address');
       return;
     }
 
@@ -37,7 +37,7 @@ const EmailComponent = ({
     if (value || isFocus) {
       return (
         <Text style={[styles.label, isFocus && { color: '#1CB5B0' }]}>
-          Email or Phone Number*
+          Email*
         </Text>
       );
     }
@@ -54,7 +54,7 @@ const EmailComponent = ({
             isFocus && { borderColor: '#1CB5B0' },
             error && { borderColor: 'red' },
           ]}
-          placeholder={!isFocus ? 'Enter your Email or Phone Number' : '@gmail.com'}
+          placeholder={!isFocus ? 'Enter your Email' : '@gmail.com'}
           value={value}
           onChangeText={(text) => {
             onChange(text);

@@ -20,10 +20,65 @@ const stateData = [
 ];
 
 const townshipData = [
-  { label: "AhGaYa", value: "AhGaYa" },
+  // Yangon Region (12)
   { label: "KaMaYa", value: "KaMaYa" },
-  { label: "ThaKaTa", value: "ThaKaTa" },
   { label: "YaKaNa", value: "YaKaNa" },
+  { label: "MaYaKa", value: "MaYaKa" },
+  { label: "SaKaTa", value: "SaKaTa" },
+  { label: "TaKaNa", value: "TaKaNa" },
+  { label: "BaTaHta", value: "BaTaHta" },
+  { label: "PaBaTa", value: "PaBaTa" },
+  { label: "AhGaYa", value: "AhGaYa" },
+  { label: "InSeKa", value: "InSeKa" },
+  { label: "Hlaing", value: "Hlaing" },
+
+  // Mandalay Region (9)
+  { label: "MaHaMa", value: "MaHaMa" },
+  { label: "ChanAyeTha", value: "ChanAyeTha" },
+  { label: "AungMyaeTha", value: "AungMyaeTha" },
+  { label: "AmMaNa", value: "AmMaNa" },
+
+  // Ayeyarwady (14)
+  { label: "PaTaNa (Pathein)", value: "PaTaNa" },
+  { label: "HiTaPa (Hinthada)", value: "HiTaPa" },
+
+  // Bago (7)
+  { label: "BaTaLa (Bago)", value: "BaTaLa" },
+  { label: "TaTaKa (Taungoo)", value: "TaTaKa" },
+  { label: "Pyay (Pyay)", value: "Pyay" },
+
+  // Sagaing (5)
+  { label: "SaKaNa (Sagaing)", value: "SaKaNa" },
+  { label: "MoNywa (Monywa)", value: "MoNywa" },
+
+  // Shan (13)
+  { label: "TaTaNa ", value: "TaTaNa" },
+  // { label: "LaShio ", value: "LaShio" },
+  { label: "TaKaNa ", value: "TaKaNa" },
+  { label: "MaSaTa", value: "MaSaTa" },
+
+  // // Rakhine (11)
+  // { label: "SiTtwe", value: "SiTtwe" },
+  // { label: "Thandwe", value: "Thandwe" },
+
+  // Mon (10)
+  { label: "MaLaMa", value: "MaLaMa" },
+
+  // // Tanintharyi (6)
+  // { label: "Dawei (Dawei)", value: "Dawei" },
+  // { label: "Myeik (Myeik)", value: "Myeik" },
+
+  // // Kachin (1)
+  // { label: "MyitKyiNa (Myitkyina)", value: "MyitKyiNa" },
+
+  // Kayin (3)
+  { label: "HpaAn (Hpa-An)", value: "HpaAn" },
+
+  // Kayah (2)
+  { label: "Loikaw (Loikaw)", value: "Loikaw" },
+
+  // Chin (4)
+  { label: "Hakha (Hakha)", value: "Hakha" },
 ];
 
 const typeData = [
