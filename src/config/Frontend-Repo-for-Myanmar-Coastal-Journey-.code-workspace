@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../../../../Documents/Special Project/MCJ/Frontend-Repo-for-Myanmar-Coastal-Journey-"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"json.schemaDownload.enable": false,
+		"json.validate.enable": true
+	}
+}
