@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Card, Text, IconButton } from "react-native-paper";
+import { useBookmarks } from "../../context/BookmarkContext";
 
 import { ImageSourcePropType } from "react-native";
 
@@ -9,37 +10,45 @@ interface TrendingComponentProps {
   title: string;
   onPress?: () => void;
 }
+
 const TrendingComponent: React.FC<TrendingComponentProps> = ({
   imageUrl,
   title,
   onPress,
 }) => {
-  const [bookmarked, setBookmarked] = useState(false);
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
+  const trendingId = title; // Use title as ID
 
   const handleBookmarkPress = () => {
-    setBookmarked(!bookmarked);
+    const item = { id: trendingId, title, image: imageUrl, type: 'beach' as const };
+    if (isBookmarked(trendingId)) {
+      removeBookmark(trendingId);
+    } else {
+      addBookmark(item);
+    }
   };
-  
+
+  const bookmarked = isBookmarked(trendingId);
+
   return (
-    
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
-    <Card style={styles.card}>
-      <View style={styles.container}>
-        <Image source={imageUrl} style={styles.image} />
-         <View style={styles.topRightIcon}>
-          <IconButton
-            icon="bookmark"
-            size={24}
-            iconColor={bookmarked ? "#FFD700" : "#fff"}
-            style={{ margin: 0 }}
-             onPress={handleBookmarkPress}
-          />
+      <Card style={styles.card}>
+        <View style={styles.container}>
+          <Image source={imageUrl} style={styles.image} />
+          <View style={styles.topRightIcon}>
+            <IconButton
+              icon="bookmark"
+              size={24}
+              iconColor={bookmarked ? "#FFD700" : "#fff"}
+              style={{ margin: 0 }}
+              onPress={handleBookmarkPress}
+            />
+          </View>
+          <View style={styles.overlay}>
+            <Text style={styles.title}>{title}</Text>
+          </View>
         </View>
-         <View style={styles.overlay}>
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      </View>
-    </Card>
+      </Card>
     </TouchableOpacity>
   );
 };
@@ -50,7 +59,6 @@ const styles = StyleSheet.create({
   card: {
     margin: 0,
     borderRadius: 10,
-
   },
   container: {
     flexDirection: "row",
@@ -95,3 +103,4 @@ const styles = StyleSheet.create({
     right: 8,
   },
 });
+

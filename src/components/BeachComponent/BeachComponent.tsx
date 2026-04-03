@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { useBookmarks } from "../../context/BookmarkContext";
 import { View, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Card, Text, IconButton } from "react-native-paper";
 
@@ -11,6 +12,7 @@ interface BeachComponentProps {
   width?: number;
   height?: number;
 }
+
 const BeachComponent: React.FC<BeachComponentProps> = ({
   imageUrl,
   title,
@@ -18,11 +20,19 @@ const BeachComponent: React.FC<BeachComponentProps> = ({
   width = 160,
   height = 168,
 }) => {
-  const [bookmarked, setBookmarked] = useState(false);
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
+  const beachId = title; // Use title as ID, or add id prop
 
   const handleBookmarkPress = () => {
-    setBookmarked(!bookmarked);
+    const item = { id: beachId, title, image: imageUrl, type: 'beach' as const };
+    if (isBookmarked(beachId)) {
+      removeBookmark(beachId);
+    } else {
+      addBookmark(item);
+    }
   };
+
+  const bookmarked = isBookmarked(beachId);
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
@@ -97,3 +107,4 @@ const styles = StyleSheet.create({
     right: 8,
   },
 });
+

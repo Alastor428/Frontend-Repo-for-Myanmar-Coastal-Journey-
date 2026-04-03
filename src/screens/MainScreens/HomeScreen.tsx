@@ -34,7 +34,8 @@ const HomeScreen = () => {
         <Discount />
       <Trending />
       <Filter />
-      <BeachGrid />
+      <BeachGrid/>
+      <View style={{ marginBottom: 60 }} />
       </View>
     </ScrollView>
   );

@@ -7,6 +7,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import RootNavigator from "./src/navigation/RootNavigator";
 import Login1 from "./src/auth/Login1";
 import { AuthProvider, useAuth } from "./src/auth/AuthContext";
+import { BookmarkProvider } from "./src/context/BookmarkContext";
+
 import type { AuthSession } from "./src/auth/authStorage";
 
 function AppNavigation() {
@@ -40,10 +42,14 @@ export default function App() {
     <SafeAreaProvider>
       <PaperProvider>
         <AuthProvider>
-          <NavigationContainer>
-            <AppNavigation />
-          </NavigationContainer>
+          <BookmarkProvider>
+            <NavigationContainer>
+              <AppNavigation />
+            </NavigationContainer>
+          </BookmarkProvider>
         </AuthProvider>
+
+
       </PaperProvider>
     </SafeAreaProvider>
   );

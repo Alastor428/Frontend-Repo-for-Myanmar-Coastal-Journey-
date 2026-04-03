@@ -43,6 +43,14 @@ import PackageBookingSuccessScreen from "@/screens/SubScreens/HomeStack/MainFunc
 import PackagePaymentScreen from "@/screens/SubScreens/HomeStack/MainFunctionsStack/PackageStack/PackagePaymentScreen";
 import SelfRegistrationScreen from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/SelfRegistrationScreen";
 import ChaungThaScreen from "@/screens/SubScreens/HomeStack/BeachStack/ChaungTha/ChaungThar";
+import NgweSaungScreen from "@/screens/SubScreens/HomeStack/BeachStack/NgweSaung/Ngwesaung";
+import ShweThaungYanScreen from "@/screens/SubScreens/HomeStack/BeachStack/ShweThaungYan/ShweThaungYanScreen";
+import MaungmaganScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/MaungmaganScree";
+import GawyangyiScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/GawyangyiScreen";
+import GwaScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/GwaScreen";
+import PaNyitScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/PaNyitScreen";
+import KanthayaScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/KanthayaScree";
+import SetseScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/SetseScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -109,6 +117,14 @@ export default function RootNavigator() {
         component={SelfRegistrationScreen}
       />
       <Stack.Screen name="ChaungTha" component={ChaungThaScreen} />
+      <Stack.Screen name="NgweSaung" component={NgweSaungScreen} />
+      <Stack.Screen name="ShweThaungYan" component={ShweThaungYanScreen} />
+      <Stack.Screen name="Maungmagan" component={MaungmaganScreen} />
+      <Stack.Screen name="Gawyangyi" component={GawyangyiScreen} />
+      <Stack.Screen name="Gwa" component={GwaScreen} />
+      <Stack.Screen name="PaNyit" component={PaNyitScreen} />
+      <Stack.Screen name="KanThaYa" component={KanthayaScreen} />
+      <Stack.Screen name="Setse" component={SetseScreen} />
 
       {/* Hotel */}
       <Stack.Screen

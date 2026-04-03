@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useBookmarks, type HotelBookmark } from "../../context/BookmarkContext";
+
 import {
   View,
   StyleSheet,
@@ -40,7 +42,8 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
   bookingContext,
 }) => {
   const navigation = useNavigation<any>();
-  const [bookmarked, setBookmarked] = useState(false);
+  const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
+  const bookmarked = isBookmarked(hotelId);
 
   const goDetail = () => {
     navigation?.navigate("HotelDetailScreen", {
@@ -49,6 +52,23 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
       rating,
       bookingContext,
     });
+  };
+
+  const handleBookmarkPress = () => {
+    const item: HotelBookmark = {
+      id: hotelId,
+      title: title,
+      type: 'hotel',
+      rating: Number(rating),
+      beachName: bookingContext.beachName,
+      minRoomPrice: parseInt(price.replace(/[^0-9]/g, '')) || 0,
+      bookingContext
+    };
+    if (bookmarked) {
+      removeBookmark(hotelId);
+    } else {
+      addBookmark(item);
+    }
   };
 
   return (
@@ -66,7 +86,7 @@ const HotelComponent: React.FC<HotelComponentProps> = ({
                 marginTop: 4,
                 backgroundColor: "rgb(255,255,255,0.09)",
               }}
-              onPress={() => setBookmarked((p) => !p)}
+              onPress={handleBookmarkPress}
             />
           </View>
         </View>
@@ -170,3 +190,4 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
 });
+
