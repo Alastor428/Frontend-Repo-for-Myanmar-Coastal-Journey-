@@ -19,6 +19,7 @@ const KAN_THA_YA_IMAGE = require("../../../assets/KanThaYa/KTY.jpg");
 const PA_NYIT_IMAGE = require("../../../assets/PaNyit/PN.jpg");
 const SETSE_IMAGE = require("../../../assets/Setse/SE.jpg");
 const GAWYANGYI_IMAGE = require("../../../assets/Gawyangyi/G1.jpg");
+const NYAUNGOOPHEE_IMAGE = require("../../../assets/NyaungOoPhee/1.jpg");
 
 const BeachGrid: React.FC = () => {
   const navigation = useNavigation<any>();
@@ -34,6 +35,7 @@ const BeachGrid: React.FC = () => {
     { id:8, title: "Pa Nyit", image: PA_NYIT_IMAGE },
     { id:9, title: "Setse", image: SETSE_IMAGE },
     { id:10, title: "Gawyangyi", image: GAWYANGYI_IMAGE },
+    { id:11, title: "Nyaung Oo Phee", image: NYAUNGOOPHEE_IMAGE},
   ];
 
   return (
@@ -56,6 +58,7 @@ const BeachGrid: React.FC = () => {
               else if (beach.title === "Pa Nyit") navigation.navigate("PaNyit");
               else if (beach.title === "Setse") navigation.navigate("Setse");
               else if (beach.title === "Gawyangyi") navigation.navigate("Gawyangyi");
+              else if (beach.title === "Nyaung Oo Phee") navigation.navigate("NyaungOoPhee");
             }}
           />
         </View>

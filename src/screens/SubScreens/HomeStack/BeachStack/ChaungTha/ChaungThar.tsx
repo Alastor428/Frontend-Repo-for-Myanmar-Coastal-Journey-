@@ -14,7 +14,7 @@ import {
 import { IconButton, shadow } from "react-native-paper";
 import BeachScreenPhoto from "../../../../../components/BeachComponent/BeachScreenPhoto";
 import ActivitiesGroup from "../../../../../components/Activities/ActivitiesGroup";
-import Restaurant_home from "@/components/Ngapali/Restaurant_home";
+import Chaung_Thar_Restaurant_home from "@/components/ChaungThar/Chaung_Thar_Restaurant_home";
 import Pagoda_CT from "@/components/ChaungThar/Pagoda_CT";
 import TravelPackageButton from "@/components/BeachComponent/TravelPackageButton";
 import SelfRegistrationButton from "@/components/BeachComponent/SelfRegistrationButton";
@@ -265,7 +265,7 @@ Bring sunscreen, wear comfortable beachwear, and carry cash as ATMs may be limit
         />
         <View>
           <View>
-            <Restaurant_home />
+            <Chaung_Thar_Restaurant_home />
           </View>
           <Text
             style={{

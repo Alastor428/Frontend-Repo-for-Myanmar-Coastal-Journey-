@@ -51,6 +51,10 @@ import GwaScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/GwaScreen
 import PaNyitScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/PaNyitScreen";
 import KanthayaScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/KanthayaScree";
 import SetseScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/SetseScreen";
+import NyaungOoPheeScreen from "@/screens/SubScreens/HomeStack/BeachStack/Beach/NyaungOoPheeScreen";
+import Naung_Oo_SanAye from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/Restaurants/Naung_Oo_SanAye";
+import Chaung_Thar_Mya_Ken_Thar from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/Restaurants/Chaung_Thar_Mya_Ken_Thar";
+import Chaung_Thar_DW_restaurant from "@/screens/SubScreens/HomeStack/BeachStack/Ngapali/Restaurants/Chaung_Thar_DW_restaurant";
 
 const Stack = createNativeStackNavigator();
 
@@ -125,6 +129,10 @@ export default function RootNavigator() {
       <Stack.Screen name="PaNyit" component={PaNyitScreen} />
       <Stack.Screen name="KanThaYa" component={KanthayaScreen} />
       <Stack.Screen name="Setse" component={SetseScreen} />
+      <Stack.Screen name="NyaungOoPhee" component={NyaungOoPheeScreen} />
+      <Stack.Screen name="SanYateAye" component={Naung_Oo_SanAye} />
+      <Stack.Screen name="MyaKenThar" component={Chaung_Thar_Mya_Ken_Thar} />
+      <Stack.Screen name="D&W" component={Chaung_Thar_DW_restaurant} />
 
       {/* Hotel */}
       <Stack.Screen
