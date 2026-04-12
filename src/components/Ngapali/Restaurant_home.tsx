@@ -17,26 +17,26 @@ interface IRestaurant {
 }
 
 const RESTAURANT_DATA: IRestaurant[] = [
-  {
-    id: "1",
-    name: "Ngapali Kitchen",
-    image: require("../../../assets/ngapali_restaurant/ngapali_kitchen.png"),
-  },
+  // {
+  //   id: "1",
+  //   name: "Ngapali Kitchen",
+  //   image: require("../../../assets/ngapali_restaurant/ngapali_kitchen.png"),
+  // },
   {
     id: "2",
     name: "Ocean Pearl",
     image: require("../../../assets/ngapali_restaurant/ocean_pearl.jpg"),
   },
-  {
-    id: "3",
-    name: "PVI Restaurant",
-    image: require("../../../assets/ngapali_restaurant/Pvi.jpg"),
-  },
-  {
-    id: "4",
-    name: "Sea Queen",
-    image: require("../../../assets/ngapali_restaurant/Sea_queen.jpg"),
-  },
+  // {
+  //   id: "3",
+  //   name: "PVI Restaurant",
+  //   image: require("../../../assets/ngapali_restaurant/Pvi.jpg"),
+  // },
+  // {
+  //   id: "4",
+  //   name: "Sea Queen",
+  //   image: require("../../../assets/ngapali_restaurant/Sea_queen.jpg"),
+  // },
 ];
 
 const Restaurant_home: React.FC = () => {

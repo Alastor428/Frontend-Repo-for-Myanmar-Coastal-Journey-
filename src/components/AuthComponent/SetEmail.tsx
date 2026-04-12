@@ -29,7 +29,7 @@ const SetEmailComponent: React.FC<Props> = ({ value, onChange }) => {
     }
 
     if (!emailRegex.test(value) && !phoneRegex.test(value)) {
-      setError("Please enter a valid email or phone number");
+      setError("Please enter a valid email");
     } else {
       setError("");
     }
@@ -41,7 +41,7 @@ const SetEmailComponent: React.FC<Props> = ({ value, onChange }) => {
         <View style={styles.container}>
           {showLabel && (
             <Text style={[styles.label, isFocus && styles.labelFocus]}>
-              Email or Phone Number*
+              Email*
             </Text>
           )}
 
